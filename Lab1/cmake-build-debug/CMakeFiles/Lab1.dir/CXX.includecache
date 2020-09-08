@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab1/main.cpp
+iostream
+-
+zconf.h
+-
+pthread.h
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab1/pthread.h
+

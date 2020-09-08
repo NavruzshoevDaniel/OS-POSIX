@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab2/main.c
+pthread.h
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab2/pthread.h
+stdio.h
+-
+unistd.h
+-
+stdlib.h
+-
+
