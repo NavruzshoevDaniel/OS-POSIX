@@ -8,7 +8,7 @@ void handler(void*);
 int main(){
         pthread_t thread;
         int i;
-        char *str1[] = {"A", "1", "B", "2", "C"};
+        char *str1[] = {"A", "6", "B", "2", "C"};
 
         if(pthread_create(&thread, NULL, func, str1) != 0){
                 printf("Error, cannot create thread!\n");
