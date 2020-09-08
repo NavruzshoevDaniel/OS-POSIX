@@ -1,4 +1,11 @@
-"/Users/daniel/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/201.7846.88/CLion.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab1
+/home/ninetail/clion-2019.1.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab1
+-- The C compiler identification is GNU 7.5.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc - works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab1/cmake-build-debug
+-- Build files have been written to: /home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab1/cmake-build-debug

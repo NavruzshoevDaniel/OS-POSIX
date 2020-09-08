@@ -5,8 +5,7 @@
 
 #define SUCCESS 0
 
-void *potok(void *param) {
-
+void *thread(void *param) {
     for (int i = 0; i < 10; ++i) {
         sleep(2);
         printf("Thread %d\n", i);
@@ -18,7 +17,7 @@ int main() {
 
     pthread_t id;
 
-    int status = pthread_create(&id, NULL, potok, NULL);
+    int status = pthread_create(&id, NULL, thread, NULL);
 
 
     if (status != SUCCESS) {
