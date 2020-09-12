@@ -18,7 +18,7 @@ int main() {
 
 
     if (status != SUCCESS) {
-        pthread_exit(status);
+        pthread_exit((void *) status);
     }
 
     for (int i = 0; i < 10; ++i) {
