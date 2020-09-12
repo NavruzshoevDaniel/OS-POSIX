@@ -1,17 +1,14 @@
 #include "pthread.h"
 #include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
 
 #define SUCCESS 0
 
 void *potok(void *param) {
 
     for (int i = 0; i < 10; ++i) {
-        sleep(2);
         printf("Thread %d\n", i);
     }
-    return SUCCESS;
+    pthread_exit((void *) SUCCESS);
 }
 
 int main() {
@@ -20,20 +17,19 @@ int main() {
 
     int status = pthread_create(&id, NULL, potok, NULL);
 
-
     if (status != SUCCESS) {
-        exit(status);
-    }
-
-    for (int i = 0; i < 10; ++i) {
-        sleep(1);
-        printf("Main Thread %d\n", i);
+        pthread_exit((void *) status);
     }
 
     status = pthread_join(id, NULL);
 
     if (status != SUCCESS) {
-        exit(status);
+        pthread_exit((void *) status);
     }
-    return SUCCESS;
+
+    for (int i = 0; i < 10; ++i) {
+        printf("Main Thread %d\n", i);
+    }
+
+    pthread_exit((void *) SUCCESS);
 }
