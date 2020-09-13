@@ -11,7 +11,7 @@ void *thread(void *param) {
 int main() {
     pthread_t id;
     if (pthread_create(&id, NULL, thread, NULL)) {
-        return 1;
+        pthread_exit((void*)0);
     }
     for (int i = 0; i < 10; ++i) {
         printf("Main Thread %d\n", i);
