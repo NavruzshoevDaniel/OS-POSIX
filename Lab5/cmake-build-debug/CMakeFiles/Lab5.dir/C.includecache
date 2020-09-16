@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab5/main.c
+stdio.h
+-
+unistd.h
+-
+time.h
+-
+pthread.h
+-
+
