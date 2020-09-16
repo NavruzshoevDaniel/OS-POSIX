@@ -1,39 +1,28 @@
-#include "pthread.h"
+#include <pthread.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
 
-#define SUCCESS 0
-
-void *potok(void *param) {
+void *routine(void *param) {
 
     for (int i = 0; i < 10; ++i) {
-        sleep(2);
         printf("Thread %d\n", i);
     }
-    return SUCCESS;
+    pthread_exit((void *)0);
 }
 
 int main() {
 
     pthread_t id;
+    if (pthread_create(&id, NULL, routine, NULL)) {
+        pthread_exit((void*)0);
+    }
 
-    int status = pthread_create(&id, NULL, potok, NULL);
-
-
-    if (status != SUCCESS) {
-        exit(status);
+    if (pthread_join(id, NULL)) {
+        pthread_exit((void*)0);
     }
 
     for (int i = 0; i < 10; ++i) {
-        sleep(1);
         printf("Main Thread %d\n", i);
     }
 
-    status = pthread_join(id, NULL);
-
-    if (status != SUCCESS) {
-        exit(status);
-    }
-    return SUCCESS;
+    pthread_exit((void *)0);
 }

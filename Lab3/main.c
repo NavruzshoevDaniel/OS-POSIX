@@ -18,7 +18,7 @@ void *start(void *param) {
         printf("%s ", data->lines[i]);
     }
 
-    return SUCCESS;
+    pthread_exit((void *) SUCCESS);
 }
 
 int main() {
@@ -35,7 +35,7 @@ int main() {
     for (int i = 0; i < 4; ++i) {
         int err = pthread_create(&threads[i], NULL, start, &thread_params[i]);
         if (err != 0) {
-            exit(err);
+            pthread_exit((void *) err);
         }
 
     }
@@ -43,10 +43,10 @@ int main() {
     for (int i = 0; i < 4; ++i) {
         int err = pthread_join(threads[i], NULL);
         if (err != 0) {
-            exit(err);
+            pthread_exit((void *) err);
         }
     }
 
 
-    return SUCCESS;
+    pthread_exit((void *) SUCCESS)
 }
