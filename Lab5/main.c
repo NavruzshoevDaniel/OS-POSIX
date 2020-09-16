@@ -48,7 +48,7 @@ void* func(void* ptr){
             }
         }
     }
-    //Since will execute handler after response on the cancel request
+    //Since we execute handler after response on the cancel request
     //We don't need to execute handler again by using non-null value
     //Inside pop-function
     pthread_cleanup_pop(0);
