@@ -34,7 +34,6 @@ int main(int argc, char* argv[]){
 
     THREADS_NUM = atoi(argv[1]);
     pthread_t threads[THREADS_NUM];
-    int stat;
     int i;
 
     struct Param* params;
@@ -42,21 +41,20 @@ int main(int argc, char* argv[]){
 
     for(i = 0; i < THREADS_NUM; i++){
         params[i].offset = i;
-        stat = pthread_create(&threads[i], NULL, execute_thread, &(params[i]));
-        if(stat != 0){
+        if(pthread_create(&threads[i], NULL, execute_thread, &(params[i])) != 0){
             printf("Error while creating thread-%d\n", i);
         }
     }
 
     double result = 0.0;
     for(i = 0; i < THREADS_NUM; i++){
-        stat = pthread_join(threads[i], NULL);
-        if(stat != 0){
+        if(pthread_join(threads[i], NULL) != 0){
             printf("Error while joining thread-%d\n", i);
         }
         result += (params[i]).partial_sum;
     }
 
+    free(params);
     result = result*4.0;
     printf("pi done = %.15g \n", result);
 

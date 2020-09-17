@@ -1,1 +1,3 @@
-/usr/bin/cc -g   CMakeFiles/Lab7.dir/main.c.o  -o Lab7  -lpthread 
+"C:\Program Files\JetBrains\CLion 2020.1.1\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\Lab7.dir/objects.a
+C:\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\ar.exe cr CMakeFiles\Lab7.dir/objects.a @CMakeFiles\Lab7.dir\objects1.rsp
+C:\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\Lab7.dir/objects.a -Wl,--no-whole-archive  -o Lab7.exe -Wl,--out-implib,libLab7.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Lab7.dir\linklibs.rsp
