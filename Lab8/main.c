@@ -79,6 +79,7 @@ int main(int argc, char* argv[]){
         result += (params[i]).partial_sum;
     }
 
+    free(params);
     result = result*4.0;
     printf("pi done - %.15g \n", result);
 

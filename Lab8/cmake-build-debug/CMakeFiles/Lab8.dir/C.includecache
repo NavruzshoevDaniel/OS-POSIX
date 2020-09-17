@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/main.c
+C:/Users/Public/Documents/Clion_Progects/OS-POSIX/Lab8/main.c
 stdio.h
 -
 stdlib.h
