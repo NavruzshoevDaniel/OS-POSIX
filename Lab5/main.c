@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h>
+#include <signal.h>
 #include <pthread.h>
 
+int flag_to_finish = 0;
 void* func();
 void handler(void* ptr);
+void sigAlarm(int sig);
 
 int main(){
     pthread_t  pthread;
@@ -18,12 +20,16 @@ int main(){
     if(pthread_join(pthread, &res)){
         printf("ERROR, cannot join thread!\n");
     }
-
     if(res == PTHREAD_CANCELED){
         printf("Thread canceled\n");
     }
-
     return 0;
+}
+
+void sigAlarm(int sig){
+    if(sig == SIGALRM){
+        flag_to_finish = 1;
+    }
 }
 
 void handler(void* ptr){
@@ -34,20 +40,16 @@ void* func(void* ptr){
     char** str;
     int i;
     str = (char **)ptr;
-    time_t curr;
     pthread_cleanup_push(handler, NULL);
-
-    curr = time(NULL);
-    while(1){
-        pthread_testcancel();//Cancelling point
-        if(curr < time(NULL)){
-            //Print one string every second
-            curr = time(NULL);
-            for(i = 0; i < 5; i++){
-                printf("%s", str[i]);
-            }
+    //Not allow printf() to be cancellation point...FUCK YOU, printf()!!!
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    while(flag_to_finish == 0){
+        for(i = 0; i < 5; i++){
+            printf("%s", str[i]);
         }
     }
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
     //Since we execute handler after response on the cancel request
     //We don't need to execute handler again by using non-null value
     //Inside pop-function

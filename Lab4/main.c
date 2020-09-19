@@ -48,6 +48,5 @@ void* func(void* ptr){
     }
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
-    pthread_exit((void*)0);
 }
 
