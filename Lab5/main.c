@@ -13,12 +13,15 @@ int main(){
     void* res;
     char *str[] = {"Operating ", "System ", "Lab ", "5 ", "Test\n"};
     if(pthread_create(&pthread, NULL, func, str) != 0){
+        printf("ERROR, cannot create thread!\n");
         return 1;
     }
-    sleep(2);
+    signal(SIGALRM, sigAlarm);
+    alarm(2);
     pthread_cancel(pthread);
     if(pthread_join(pthread, &res)){
         printf("ERROR, cannot join thread!\n");
+        return 1;
     }
     if(res == PTHREAD_CANCELED){
         printf("Thread canceled\n");
