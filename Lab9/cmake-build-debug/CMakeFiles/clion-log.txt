@@ -1,0 +1,4 @@
+/home/ninetail/clion-2019.1.4/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab9
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab9/cmake-build-debug
