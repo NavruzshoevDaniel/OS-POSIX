@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <pthread.h>
-#include <zconf.h>
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
@@ -13,11 +12,11 @@ void *thread(void *param) {
 
         printf("Thread %d\n", i);
         pthread_cond_signal(&condition);
-        printf("signal from child\n");
+       // printf("signal from child\n");
         pthread_cond_wait(&condition, &mutex);
 
     }
-    printf("child");
+    //printf("child");
     pthread_cond_signal(&condition);
     pthread_mutex_unlock(&mutex);
     pthread_exit((void *) 0);
@@ -36,7 +35,7 @@ int main() {
     for (int i = 0; i < 10; ++i) {
         printf("Main Thread %d\n", i);
         pthread_cond_signal(&condition);
-        printf("signal from parent\n");
+        //printf("signal from parent\n");
         pthread_cond_wait(&condition, &mutex);
     }
 
