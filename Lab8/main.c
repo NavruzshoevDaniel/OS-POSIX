@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <signal.h>
+#include <math.h>
 #define ITERATIONS_NUM 20000
+
 int THREADS_NUM = 0;
 int flag = 0;
+int max_iter = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_barrier_t barrier;
 
 void quit_handler(int sign){
     signal(sign, SIG_IGN);
@@ -30,17 +35,40 @@ void* execute_thread(void* args){
     double pi = 0.0;
     struct Param* param = (struct Param*)args;
     size_t iterations = 0;
+    size_t com_iter=0;
     for(i = param->offset; ; i += THREADS_NUM) {
         iterations++;
+        com_iter++;
         pi += 1.0/(i*4.0 + 1.0);
         pi -= 1.0/(i*4.0 + 3.0);
         if(iterations == ITERATIONS_NUM){
             iterations = 0;
             if(flag == 1){
+                pthread_mutex_lock(&mutex);
+                if(max_iter!=0){
+                   if(max_iter < com_iter){
+                        max_iter = com_iter;
+                   }
+                }
+                else{
+                   max_iter = com_iter;
+                }
+
+                pthread_mutex_unlock(&mutex);
+                pthread_barrier_wait(&barrier);
+
+                for(;com_iter < max_iter;i += THREADS_NUM){
+                         pi += 1.0/(i*4.0 + 1.0);
+                         pi -= 1.0/(i*4.0 + 3.0);
+                         com_iter++;
+                }
+
+                printf("%d\n",com_iter);
                 break;
             }
         }
     }
+
     printf("thread-%d's partial_sum = %f\n", param->offset, pi);
     ((struct Param*)args)->partial_sum = pi;
     pthread_exit(0);
@@ -51,9 +79,11 @@ int main(int argc, char* argv[]){
         printf("Bad number of arguments!\n");
         return 1;
     }
+
     signal(SIGINT, quit_handler);
     THREADS_NUM = atoi(argv[1]);
     pthread_t threads[THREADS_NUM];
+    pthread_barrier_init(&barrier,NULL,THREADS_NUM);
     int stat;
     int i;
     struct Param* params;
@@ -77,7 +107,10 @@ int main(int argc, char* argv[]){
         result += (params[i]).partial_sum;
     }
     free(params);
+    pthread_barrier_destroy(&barrier);
     result = result*4.0;
     printf("pi done - %.15g \n", result);
+    printf("pi orig - %.15g \n",M_PI);
     return 0;
 }
+
