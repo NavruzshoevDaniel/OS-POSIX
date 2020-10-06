@@ -119,7 +119,7 @@ int copyFolder(const char *sourcePath, const char *destinationPath, mode_t mode)
         }
     }
     free(entry);
-    if (closedir(dir) == -1){
+    if (closedir(dir) == ERROR_CODE) {
         fprintf(stderr, "Couldn't close directory, %s\n", strerror(errno));
     }
 
@@ -188,10 +188,12 @@ void *cpFunction(void *arg) {
         freeCharsets(arg, SIZE_LENGTHS);
         return (void *) ERROR_CODE;
     }
-    if (S_ISDIR(statBuffer.st_mode))
+    if (S_ISDIR(statBuffer.st_mode)) {
         copyFolder(sourcePath, destinationPath, statBuffer.st_mode);
-    else if (S_ISREG(statBuffer.st_mode))
+    } else if (S_ISREG(statBuffer.st_mode)) {
         copyFile(sourcePath, destinationPath, statBuffer.st_mode);
+    }
+
     freeCharsets(arg, SIZE_LENGTHS);
 }
 
@@ -217,7 +219,7 @@ char **parseArguments(char **args) {
     char **result = allocateCharsets(len, SIZE_LENGTHS);
     for (int i = 0; i < 2; i++) {
         strcpy(result[i], args[i]);
-        if (result[i][len[i] - 1] == '/'){
+        if (result[i][len[i] - 1] == '/') {
             result[i][len[i] - 1] = 0;
         }
     }
