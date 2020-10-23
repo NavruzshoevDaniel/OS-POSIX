@@ -10,9 +10,11 @@
 
 
 pthread_mutex_t forks[PHILOSOPHERS];
-pthread_mutex_t lForks;
+pthread_mutex_t lForks = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t maxMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t philosophers[PHILOSOPHERS];
 pthread_cond_t pthreadCond = PTHREAD_COND_INITIALIZER;
+int maxFood = 0;
 
 void *philosopher(void *num);
 
@@ -20,7 +22,7 @@ int food_on_table();
 
 void get_forks(int, int, int);
 
-void down_forks(int, int);
+void down_forks(int, int,int*);
 
 void cancel_threads(int count, pthread_t *threads);
 
@@ -71,7 +73,7 @@ void *philosopher(void *num) {
     printf("Philosopher#%d sit down to dinner.\n", id);
     right_fork = id % PHILOSOPHERS;
     left_fork = (id + 1) % PHILOSOPHERS;
-
+    int eatenFood = 0;
     f = food_on_table();
     while (f) {
         printf("Philosopher#%d: get dinner %d,\n", id, f);
@@ -80,7 +82,7 @@ void *philosopher(void *num) {
         pthread_mutex_unlock(&lForks);
         printf("Philosopher#%d: eating.\n", id);
         usleep(DELAY * (FOOD - f + 1));
-        down_forks(left_fork, right_fork);
+        down_forks(left_fork, right_fork,&eatenFood);
         f = food_on_table();
     }
 
@@ -118,7 +120,8 @@ void get_forks(int phil, int forkLeft, int forkRight) {
 }
 
 
-void down_forks(int f1, int f2) {
+void down_forks(int f1, int f2,int *eatenFood) {
+    *eatenFood++;
     pthread_mutex_unlock(&forks[f1]);
     pthread_mutex_unlock(&forks[f2]);
     pthread_cond_broadcast(&pthreadCond);
