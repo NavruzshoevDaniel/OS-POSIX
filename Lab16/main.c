@@ -5,30 +5,30 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_STRING_SIZE 5
-
+#define MAX_STRING_SIZE 10
 
 typedef struct node {
     char str[MAX_STRING_SIZE];
     struct node *next;
 } node;
 
-void push(node **head_ref, char *new_data) {
-    node *new_node = (node *) malloc(sizeof(node));
+node *head;
+pthread_mutex_t listMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+int flag = 0;
+
+void push(node **head_ref, const char *new_data) {
+    node *new_node = (node *) calloc(1, sizeof(node));
     strcpy(new_node->str, new_data);
     new_node->next = (*head_ref);
     (*head_ref) = new_node;
 }
 
-node *head ;
-pthread_mutex_t listMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-int flag = 0;
+void printList(node *);
 
-void printList(node*);
 void notifySortListener(int sign) {
+
     if (sign == SIGALRM) {
-        printList(head);
         pthread_cond_signal(&cond);
     }
 
@@ -36,7 +36,6 @@ void notifySortListener(int sign) {
         flag = 1;
         signal(sign, SIG_IGN);
     }
-
 }
 
 void bubbleStrSort(node *listStr) {
@@ -62,18 +61,19 @@ void bubbleStrSort(node *listStr) {
 }
 
 void freeList(node *listStr) {
-    node *next;
-    next = listStr;
+    node *curNode;
+    node *prev;
+    curNode = listStr;
     if (listStr != NULL) {
-        while (next != NULL) {
-            next = listStr->next;
-            free(listStr);
+        while (curNode != NULL) {
+            prev=curNode;
+            curNode = curNode->next;
+            free(prev);
         }
     }
 }
 
 void *sortListener(void *args) {
-
 
     pthread_mutex_lock(&listMutex);
 
@@ -93,6 +93,7 @@ void printList(node *listStr) {
     curNode = listStr;
     if (listStr != NULL) {
         while (curNode != NULL) {
+            printf("%s\n", curNode->str);
             next = curNode->next;
             curNode = next;
 
@@ -102,21 +103,20 @@ void printList(node *listStr) {
 
 int main() {
     pthread_t pthread;
+    head = (node *) calloc(1, sizeof(node));
     char buffer[MAX_STRING_SIZE];
 
-   if (pthread_create(&pthread, NULL, sortListener, NULL) != 0) {
+    if (pthread_create(&pthread, NULL, sortListener, NULL) != 0) {
         printf("ERROR can't create thread");
         pthread_exit((void *) 0);
     }
 
 
     while (flag == 0) {
-        int count = read(1, buffer, MAX_STRING_SIZE - 1);
+        int count = read(0, buffer, MAX_STRING_SIZE - 1);
 
         if (strcmp(buffer, "\n") == 0) {
-            printf("jbjb");
             pthread_mutex_lock(&listMutex);
-            printf("kj");
             printList(head);
             pthread_mutex_unlock(&listMutex);
             memset(buffer, 0, MAX_STRING_SIZE);
@@ -131,9 +131,6 @@ int main() {
         pthread_mutex_unlock(&listMutex);
         memset(buffer, 0, MAX_STRING_SIZE);
     }
-
-
     freeList(head);
-
     pthread_exit((void *) 0);
 }
