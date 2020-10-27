@@ -6,13 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab4/main.c
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab17/main.c
+pthread.h
+-
+signal.h
+-
 stdio.h
 -
 unistd.h
 -
-signal.h
+string.h
 -
-pthread.h
+stdlib.h
 -
 
