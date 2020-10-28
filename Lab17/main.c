@@ -39,8 +39,9 @@ void push(node **head_ref, const char *new_data) {
     lockMutex(&((*head_ref)->mutex));
     strcpy(new_node->str, new_data);
     new_node->next = (*head_ref);
-    (*head_ref) = new_node;
     unlockMutex(&((*head_ref)->mutex));
+    (*head_ref) = new_node;
+
 }
 
 void printList(node *);
@@ -64,8 +65,11 @@ void bubbleStrSort(node *listStr) {
 
     if (listStr != NULL) {
         while (listStr->next != NULL) {
+            lockMutex(&(listStr->mutex));
             node = listStr;
+            lockMutex(&(listStr->next->mutex));
             nestedNode = node->next;
+
             do {
                 if (strcmp(node->str, nestedNode->str) > 0) {
                     char tmp[MAX_STRING_SIZE + 1] = {0};
@@ -75,6 +79,7 @@ void bubbleStrSort(node *listStr) {
                 }
                 nestedNode = nestedNode->next;
             } while (nestedNode != NULL);
+            unlockMutex(&(listStr->mutex));
             listStr = listStr->next;
         }
     }
@@ -114,17 +119,16 @@ void *sortListener(void *args) {
 
 void printList(node *listStr) {
 
-    node *next, *curNode;
+    node *next = NULL, *curNode,*prev;
     curNode = listStr;
     if (listStr != NULL) {
         while (curNode != NULL) {
             lockMutex(&(curNode->mutex));
+            prev = curNode;
             printf("%s\n", curNode->str);
             next = curNode->next;
-            unlockMutex(&(curNode->mutex));
             curNode = next;
-
-
+            unlockMutex(&(prev->mutex));
         }
     }
 }
