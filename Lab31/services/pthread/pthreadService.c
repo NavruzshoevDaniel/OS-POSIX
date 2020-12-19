@@ -16,3 +16,4 @@ void initCondVariable(pthread_cond_t *cond) {
         exit(EXIT_FAILURE);
     }
 }
+

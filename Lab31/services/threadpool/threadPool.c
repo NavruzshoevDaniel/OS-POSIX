@@ -17,7 +17,7 @@ pthread_t *createThreadPool(void *runnableThread, int *threadsId, int count) {
 
     for (int i = 0; i < count; ++i) {
         threadsId[i] = i;
-        initThread(&threads[i], runnableThread, threadsId,i);
+        initThread(&threads[i], runnableThread, threadsId, i);
     }
     return threads;
 }

@@ -177,6 +177,60 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/main.c.s
 .PHONY : main.c.s
 
+services/concurrent/atomicInt.o: services/concurrent/atomicInt.c.o
+
+.PHONY : services/concurrent/atomicInt.o
+
+# target to build an object file
+services/concurrent/atomicInt.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o
+.PHONY : services/concurrent/atomicInt.c.o
+
+services/concurrent/atomicInt.i: services/concurrent/atomicInt.c.i
+
+.PHONY : services/concurrent/atomicInt.i
+
+# target to preprocess a source file
+services/concurrent/atomicInt.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.i
+.PHONY : services/concurrent/atomicInt.c.i
+
+services/concurrent/atomicInt.s: services/concurrent/atomicInt.c.s
+
+.PHONY : services/concurrent/atomicInt.s
+
+# target to generate assembly for a file
+services/concurrent/atomicInt.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s
+.PHONY : services/concurrent/atomicInt.c.s
+
+services/connection/connection.o: services/connection/connection.c.o
+
+.PHONY : services/connection/connection.o
+
+# target to build an object file
+services/connection/connection.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.o
+.PHONY : services/connection/connection.c.o
+
+services/connection/connection.i: services/connection/connection.c.i
+
+.PHONY : services/connection/connection.i
+
+# target to preprocess a source file
+services/connection/connection.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.i
+.PHONY : services/connection/connection.c.i
+
+services/connection/connection.s: services/connection/connection.c.s
+
+.PHONY : services/connection/connection.s
+
+# target to generate assembly for a file
+services/connection/connection.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
+.PHONY : services/connection/connection.c.s
+
 services/pthread/pthreadService.o: services/pthread/pthreadService.c.o
 
 .PHONY : services/pthread/pthreadService.o
@@ -273,6 +327,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... services/concurrent/atomicInt.o"
+	@echo "... services/concurrent/atomicInt.i"
+	@echo "... services/concurrent/atomicInt.s"
+	@echo "... services/connection/connection.o"
+	@echo "... services/connection/connection.i"
+	@echo "... services/connection/connection.s"
 	@echo "... services/pthread/pthreadService.o"
 	@echo "... services/pthread/pthreadService.i"
 	@echo "... services/pthread/pthreadService.s"

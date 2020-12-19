@@ -16,10 +16,10 @@ Queue *createQueue() {
 }
 
 void clearQueue(Queue *queue) {
-    struct Entry *cur = queue->head;
+    Entry *cur = queue->head;
 
     while (cur) {
-        struct Entry *tmp = cur;
+        Entry *tmp = cur;
         cur = cur->next;
         free(tmp);
     }
@@ -29,8 +29,6 @@ void clearQueue(Queue *queue) {
 }
 
 int getSocketFromQueue(Queue *queue) {
-
-    pthread_mutex_lock(&queue->checkSizeMutex);
 
     if (queue->size == 0) {
         return -1;
@@ -47,13 +45,10 @@ int getSocketFromQueue(Queue *queue) {
 
     int result = temp->socket;
     free(temp);
-
-    pthread_mutex_lock(&queue->checkSizeMutex);
     return result;
 }
 
 void putSocketInQueue(Queue *queue, int sock) {
-    pthread_mutex_lock(&queue->checkSizeMutex);
     Entry *temp = malloc(sizeof(Entry));
     temp->socket = sock;
     temp->next = NULL;
@@ -67,7 +62,6 @@ void putSocketInQueue(Queue *queue, int sock) {
     queue->size++;
 
     pthread_cond_signal(&queue->condVar);
-    pthread_mutex_unlock(&queue->checkSizeMutex);
 }
 
 int isEmpty(const Queue *queue) {
