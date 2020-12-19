@@ -1,3 +1,0 @@
-/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab4/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab4/cmake-build-debug/CMakeFiles/Lab4.dir

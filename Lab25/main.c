@@ -11,7 +11,7 @@ int frontend_fd;
 int is_disposed = 0;
 struct addrinfo *backend_ai;
 Connection *connections;
-#define MAX_WAIT_ROOM 540
+#define MAX_WAIT_ROOM 1080
 
 // select_loop.c
 // Updating select mask and select processing.

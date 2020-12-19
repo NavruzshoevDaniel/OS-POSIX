@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define NO_UPDATE_LIMIT_SEC 20
+#define NO_UPDATE_LIMIT_SEC 4
 #define SELECT_TIMEOUT_SEC 100
 
 void time_or_expect(time_t *tloc) {
@@ -16,7 +16,7 @@ void time_or_expect(time_t *tloc) {
 }
 
 void update_max_fd_or_except(int fd, int *max_fd) {
-    if (fd + 1 >= FD_SETSIZE) {
+    if (fd + 1 > FD_SETSIZE) {
         fprintf(stderr, "%sFailed to update_max_fd: fd > FD_SETSIZE\n", RED_COLOR);
         exit(EXIT_FAILURE);
     }
@@ -30,7 +30,6 @@ void select_loop(Connection **connections,
     fd_set readfds, writefds;
     int ready, read;
     char buf[BUFSIZE];
-    Connection *connection;
     time_t time_now;
     struct timeval timeout;
     timeout.tv_sec = SELECT_TIMEOUT_SEC;
@@ -70,6 +69,7 @@ void select_loop(Connection **connections,
             }
         }
 
+
         ready = select(max_fd + 1, &readfds, &writefds, NULL, &timeout);
         if (-1 == ready) {
             throw_and_exit("select");
@@ -80,7 +80,7 @@ void select_loop(Connection **connections,
 
         for (Connection *connection = *connections; connection; connection = connection->next) {
             int connection_is_updated = 0;
-            printf("%sSalamalekum:%d\n", GREEN_COLOR,count++);
+
             // Client -> Frontend
             if (FD_ISSET(connection->client_fd, &readfds)) {
                 int bytes_received =

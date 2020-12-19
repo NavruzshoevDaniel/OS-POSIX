@@ -115,7 +115,7 @@ int copyFolder(const char *sourcePath, const char *destinationPath, mode_t mode)
         } while (status != 0 && errno == EAGAIN);
         if (status != 0) {
             fprintf(stderr, "Couldn't copy %s, %s\n", newPaths[0], strerror(errno));
-            free(newPaths);
+            freeCharsets(newPaths, SIZE_LENGTHS);
         }
     }
     free(entry);

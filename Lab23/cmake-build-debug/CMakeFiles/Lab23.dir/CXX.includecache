@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab23/BlockingQueue.cpp
+pthread.h
+-
+BlockingQueue.h
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab23/BlockingQueue.h
+semaphore.h
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab23/semaphore.h
+string.h
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab23/string.h
+
+/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab23/BlockingQueue.h
+string
+-
+queue
+-
+semaphore.h
+-
+cstring
+-
+

@@ -8,80 +8,80 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug"/>
+				<Option working_dir="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug"/>
+				<Option working_dir="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug"/>
+				<Option working_dir="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Lab8">
-				<Option output="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Lab8" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug"/>
+				<Option output="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Lab8" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 Lab8"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 Lab8"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Lab8/fast">
-				<Option output="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Lab8" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug"/>
+				<Option output="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Lab8" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 Lab8/fast"/>
-					<CompileFile command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j2 -f &quot;/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 Lab8/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/main.c">
+		<Unit filename="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/main.c">
 			<Option target="Lab8"/>
 		</Unit>
-		<Unit filename="/home/ninetail/Desktop/OS/Coop_labs/OS-POSIX/Lab8/CMakeLists.txt">
+		<Unit filename="/Users/daniel/JetBrains/CLionProjects/OS-POSIX/Lab8/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

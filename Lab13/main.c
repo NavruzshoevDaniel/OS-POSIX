@@ -28,7 +28,7 @@ int main() {
         printf("Err\n");
     }
     for (int i = 0; i < 10; ++i) {
-        sem_wait(&mutex);
+        sem_wait(&sem2);
         printf("Parent\n");
         sem_post(&sem1);
     }

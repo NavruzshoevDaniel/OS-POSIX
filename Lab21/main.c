@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sched.h>
 
 #define PHILOSOPHERS 5
-#define DELAY 30000
+#define DELAY 3000
 #define FOOD 50
 #define FALSE 0
 #define TRUE 1
@@ -36,9 +37,34 @@ int main(int argc, char **argv) {
     for (i = 0; i < PHILOSOPHERS; i++) {
         pthread_mutex_init(&forks[i], NULL);
     }
+    pthread_attr_t tattr;
+    int newprio = 20;
+    struct sched_param param;
+
+/* initialized with default attributes */
+    pthread_attr_init (&tattr);
+
+/* safe to get existing scheduling param */
+   pthread_attr_getschedparam (&tattr, &param);
+
+/* set the priority; others are unchanged */
+    param.sched_priority = newprio;
+
+/* setting the new scheduling param */
+   pthread_attr_setschedparam (&tattr, &param);
+
 
     for (i = 0; i < PHILOSOPHERS; i++) {
-        if (pthread_create(&philosophers[i], NULL, philosopher, (void *) i) != 0) {
+        pthread_attr_init (&tattr);
+        pthread_attr_getschedparam (&tattr, &param);
+        param.sched_priority = 0;
+        /*if(i==0){
+            param.sched_priority = 1;
+        } else{
+            param.sched_priority = 5;
+        }*/
+        pthread_attr_setschedparam (&tattr, &param);
+        if (pthread_create(&philosophers[i], &tattr, philosopher, (void *) i) != 0) {
             printf("Failed to create thread#%d\n", i);
             cancel_threads(PHILOSOPHERS, philosophers);
             pthread_mutex_destroy(&lForks);
@@ -77,16 +103,14 @@ void *philosopher(void *num) {
     f = food_on_table();
     while (f) {
         printf("Philosopher#%d: get dinner %d,\n", id, f);
-        pthread_mutex_lock(&lForks);
         get_forks(id, left_fork, right_fork);
-        pthread_mutex_unlock(&lForks);
         printf("Philosopher#%d: eating.\n", id);
         usleep(DELAY * (FOOD - f + 1));
         down_forks(left_fork, right_fork,&eatenFood);
         f = food_on_table();
     }
 
-    printf("Philosopher %d is done eating.\n", id);
+    printf("Philosopher %d is done eating.(%d)\n", id,eatenFood);
     return NULL;
 }
 
@@ -121,7 +145,7 @@ void get_forks(int phil, int forkLeft, int forkRight) {
 
 
 void down_forks(int f1, int f2,int *eatenFood) {
-    *eatenFood++;
+    (*eatenFood)++;
     pthread_mutex_unlock(&forks[f1]);
     pthread_mutex_unlock(&forks[f2]);
     pthread_cond_broadcast(&pthreadCond);

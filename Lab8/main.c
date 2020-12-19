@@ -31,6 +31,7 @@ void cancel_threads(int thr_num, pthread_t* threads){
 }
 
 void* execute_thread(void* args){
+
     int i;
     double pi = 0.0;
     struct Param* param = (struct Param*)args;
