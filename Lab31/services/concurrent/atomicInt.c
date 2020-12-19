@@ -3,16 +3,14 @@
 //
 #include "atomicInt.h"
 
-int incrementAndGet(int value, pthread_mutex_t *mutex) {
+void atomicIncrement(int *value, pthread_mutex_t *mutex) {
     pthread_mutex_lock(mutex);
-    value++;
+    (*value)++;
     pthread_mutex_unlock(mutex);
-    return value;
 }
 
-int decrementAndGet(int value, pthread_mutex_t *mutex){
+void atomicDecrement(int *value, pthread_mutex_t *mutex) {
     pthread_mutex_lock(mutex);
-    value--;
+    (*value)--;
     pthread_mutex_unlock(mutex);
-    return value;
 }

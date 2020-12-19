@@ -7,8 +7,8 @@
 
 #include "pthread.h"
 
-int incrementAndGet(int value, pthread_mutex_t *mutex);
+void atomicIncrement(int *value, pthread_mutex_t *mutex);
 
-int decrementAndGet(int value, pthread_mutex_t *mutex);
+void atomicDecrement(int *value, pthread_mutex_t *mutex);
 
 #endif //LAB31_ATOMICINT_H

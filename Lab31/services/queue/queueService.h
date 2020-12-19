@@ -19,7 +19,7 @@ struct Queue {
     Entry *head;
     Entry *tail;
 
-    pthread_mutex_t checkSizeMutex;//
+    pthread_mutex_t queueMutex;
     pthread_cond_t condVar;
 
 } typedef Queue;

@@ -3,17 +3,19 @@
 //
 #include "pthreadService.h"
 
-void initMutex(pthread_mutex_t *mutex) {
+int initMutex(pthread_mutex_t *mutex) {
     if (pthread_mutex_init(mutex, NULL) != 0) {
         perror("Cannot init mutex");
-        exit(EXIT_FAILURE);
+        return -1;
     }
+    return 0;
 }
 
-void initCondVariable(pthread_cond_t *cond) {
+int initCondVariable(pthread_cond_t *cond) {
     if (pthread_cond_init(cond, NULL) != 0) {
         perror("Cannot init condVar");
-        exit(EXIT_FAILURE);
+        return -1;
     }
+    return 0;
 }
 

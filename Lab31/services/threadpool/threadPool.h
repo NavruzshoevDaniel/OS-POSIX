@@ -9,8 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void initThread(pthread_t *thread, void *runnable, int *threadsId, int i);
-
-pthread_t *createThreadPool(void *runnableThread, int *threadsId, int count);
+int createThreadPool(int count, void *runnable, int *threadsId, pthread_t *poolThreads);
 
 #endif //LAB31_THREADPOOL_H

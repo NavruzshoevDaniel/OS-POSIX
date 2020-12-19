@@ -12,12 +12,10 @@
 enum connectionState {
     GETTING_REQUEST_FROM_CLIENT = 0,
     CONNECTING_TO_SERVER,
-    WRITING_REQUEST,
-    FORWARDING_REQUEST,
-    FORWARDING_RESPONSE,
-    RESPONDING_FROM_CACHE,
-    NOT_ACTIVE,
-    WAITING_DATA_ON_CACHE
+    WRITE_TO_SERVER,
+    READ_FROM_SERVER_WRITE_CLIENT,
+    READ_FROM_CACHE_WRITE_CLIENT,
+    NOT_ACTIVE
 };
 
 struct Connection {
@@ -29,8 +27,9 @@ struct Connection {
     size_t buffer_size;
 
     int cacheIndex;
-    size_t cacheBytesWritten;
+    size_t numChunksWritten;
     int id;
+    char *url;
 } typedef Connection;
 
 void dropConnection(int id,

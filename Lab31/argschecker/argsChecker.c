@@ -4,7 +4,7 @@
 #include "argsChecker.h"
 
 void checkCountArguments(int argc) {
-    if (argc != 2) {
+    if (argc != 3) {
         perror("Wrong count of arguments");
         exit(EXIT_FAILURE);
     }

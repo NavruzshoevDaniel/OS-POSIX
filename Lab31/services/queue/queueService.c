@@ -9,7 +9,7 @@ Queue *createQueue() {
     queue->size = 0;
     queue->head = NULL;
     queue->tail = NULL;
-    initMutex(&queue->checkSizeMutex);
+    initMutex(&queue->queueMutex);
     initCondVariable(&queue->condVar);
 
     return queue;
@@ -24,7 +24,7 @@ void clearQueue(Queue *queue) {
         free(tmp);
     }
 
-    pthread_mutex_destroy(&queue->checkSizeMutex);
+    pthread_mutex_destroy(&queue->queueMutex);
     pthread_cond_destroy(&queue->condVar);
 }
 
