@@ -6,6 +6,7 @@ CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.h
 
 CMakeFiles/Lab31.dir/main.c.o: ../argschecker/argsChecker.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
+CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
