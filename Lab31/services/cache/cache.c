@@ -85,6 +85,8 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
                                               Connection *connection,
                                               int cacheSize,
                                               int threadId) {
+
+    //TODO::whts different between this method and searchFreeCacheAndSetDownloadingState method
     for (int j = 0; j < cacheSize; j++) {
 
         pthread_mutex_lock(&cache[j].mutex);
@@ -94,14 +96,15 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
             cache[j].readers = 1;
             cache[j].status = DOWNLOADING;
             cache[j].writerId = threadId;
+            cache[j].data = NULL;
+            cache[j].dataChunksSize = NULL;
             cache[j].numChunks = 0;
             cache[j].allSize = 0;
             cache[j].recvSize = 0;
 
             freeDataChunks(cache[j].data, cache[j].numChunks);
             free(cache[j].dataChunksSize);
-            cache[j].data = NULL;
-            cache[j].dataChunksSize = NULL;
+
             setWriteToServerState(connection, j);///!!!
             free(cache[j].url);
             cache[j].url = (char *) malloc(sizeof(char) * sizeof(url));

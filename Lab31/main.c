@@ -23,6 +23,9 @@
 #define MAX_CACHE_SIZE 3*1024
 #define BUFFER_SIZE 16 * 1024
 #define MAX_NUM_TRANSLATION_CONNECTIONS 100
+#define MAX_CONNECTIONS_PER_THREAD allConnectionsCount / poolSize
+#define CLIENT_SOCKET i*2
+#define SERVER_SOCKET i*2+1
 
 //3 = CRLF EOF
 
@@ -33,6 +36,9 @@ int poolSize;
 CacheInfo cache[MAX_CACHE_SIZE];
 
 pthread_mutex_t connectionsMutex;
+
+void handleGetMethod();
+
 //----------------------------------------------------------------------------------SOCKET
 int getProxySocket(int port) {
 
@@ -62,7 +68,7 @@ int getProxySocket(int port) {
     return proxySocket;
 }
 
-int getServerSocket(char *url) {
+int getServerSocketBy(char *url) {
 
     char *host = getHostFromUrl(url);
 
@@ -81,7 +87,7 @@ int getServerSocket(char *url) {
 
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (-1 == serverSocket) {
+    if (serverSocket == -1) {
         perror("Cannot create socket");
         return -1;
     }
@@ -94,7 +100,7 @@ int getServerSocket(char *url) {
     return serverSocket;
 }
 
-void wrongMethod(struct Connection *connection) {
+void handleNotGetMethod(struct Connection *connection) {
     char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
     write(connection->clientSocket, wrong, 23);
 }
@@ -134,11 +140,11 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
 
 int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
-    printf("want to lock %d\n", threadId);
+    //printf("want to lock %d\n", threadId);
     pthread_mutex_lock(&socketsQueue->queueMutex);
-    printf(" locked %d\n", threadId);
+    // printf(" locked %d\n", threadId);
     pthread_mutex_lock(&connectionsMutex);
-    if (allConnectionsCount / poolSize >= *localConnectionsCount && socketsQueue->size > 0) {
+    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && socketsQueue->size > 0) {
 
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
@@ -146,11 +152,11 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
         }
     }
     pthread_mutex_unlock(&connectionsMutex);
-    printf("unlocked\n");
+    // printf("unlocked\n");
     while (*localConnectionsCount == 0 && socketsQueue->size == 0) {
-        printf(" unlock and wait\n");
+        //printf(" unlock and wait\n");
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
-        printf(" locked\n");
+        // printf(" locked\n");
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
@@ -162,33 +168,27 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
 
 void dropConnectionWrapper(int id,
                            const char *reason,
-                           int server,
+                           int needToCloseServer,
                            Connection *connections,
                            int *connectionsCount,
                            int threadId) {
     dropConnection(id, reason, connections, connectionsCount, threadId);
-    if (server) {
+    if (needToCloseServer) {
         close(connections[id].serverSocket);
     }
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
-
-void searchingProccess(){
-
-}
-
-void handleGettingRequest(Connection *connections,
-                          struct pollfd *fds,
-                          int *localConnectionsCount,
-                          char *buf,
-                          int threadId,
-                          int i) {
-    if (fds[i * 2].revents & POLLHUP) {
+void handleGettingRequestState(Connection *connections,
+                               struct pollfd *fds,
+                               int *localConnectionsCount,
+                               char *buf,
+                               int threadId,
+                               int i) {
+    if (fds[CLIENT_SOCKET].revents & POLLHUP) {
         dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
                               connections, localConnectionsCount, threadId);
-    } else if (fds[i * 2].revents & POLLIN) {
-
+    } else if (fds[CLIENT_SOCKET].revents & POLLIN) {
         ssize_t readCount = recv(connections[i].clientSocket, buf, BUFFER_SIZE, 0);
 
         if (readCount <= 0) {
@@ -196,15 +196,14 @@ void handleGettingRequest(Connection *connections,
                                   localConnectionsCount, threadId);
             return;
         }
-        //TODO::refract
-        int bufferErr = 0;
+        int bufferErr;
         if (isConnectionBufferEmpty(&connections[i])) {
             bufferErr = allocateConnectionBufferMemory(&connections[i], readCount);
         } else {
             bufferErr = reallocateConnectionBufferMemory(&connections[i], readCount);
         }
 
-        if (bufferErr) {
+        if (bufferErr == -1) {
             dropConnectionWrapper(i, "buffer error",
                                   0, connections, localConnectionsCount, threadId);
             return;
@@ -217,34 +216,12 @@ void handleGettingRequest(Connection *connections,
 
             if (url != NULL) {
                 if (!isMethodGet(connections[i].buffer)) {
-                    wrongMethod(&connections[i]);
+                    handleNotGetMethod(&connections[i]);
                     dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
                                           connections, localConnectionsCount, threadId);
                     free(url);
                 } else {
-
-                    if (searchUrlInCache(url, cache, &connections[i], MAX_CACHE_SIZE) != -1
-                        || searchFreeCacheAndSetDownloadingState(url, cache, &connections[i],
-                                                                 MAX_CACHE_SIZE, threadId) != -1
-                        || searchNotUsingCacheAndSetDownloadingState(url, cache, &connections[i],
-                                                                     MAX_CACHE_SIZE, threadId) != -1) {
-
-                        connections[i].serverSocket = getServerSocket(url);
-                        free(connections[i].buffer);
-
-                        connections[i].buffer = createGet(url, &connections[i].buffer_size);
-
-                        if (connections[i].serverSocket == -1) {
-                            cannotResolve(&connections[i]);
-                            dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
-                                                  connections, localConnectionsCount, threadId);
-                            free(url);
-                            return;
-                        }
-                    } else {
-                        connections[i].status = WRITE_TO_SERVER;
-                        connections[i].cacheIndex = -1;
-                    }
+                    handleGetMethod(url, connections, i, localConnectionsCount, threadId);
                 }
             } else {
                 dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
@@ -254,7 +231,33 @@ void handleGettingRequest(Connection *connections,
     }
 }
 
-void *work(void *param) {
+void handleGetMethod(char *url, Connection *connections, int i, int localConnectionsCount, int threadId) {
+    if (searchUrlInCache(url, cache, &connections[i], MAX_CACHE_SIZE) == -1) {
+        if (searchFreeCacheAndSetDownloadingState(url, cache, &connections[i],
+                                                  MAX_CACHE_SIZE, threadId) != -1
+            || searchNotUsingCacheAndSetDownloadingState(url, cache, &connections[i],
+                                                         MAX_CACHE_SIZE, threadId) != -1) {
+
+            connections[i].serverSocket = getServerSocketBy(url);
+            free(connections[i].buffer);
+
+            connections[i].buffer = createGet(url, &connections[i].buffer_size);
+
+            if (connections[i].serverSocket == -1) {
+                cannotResolve(&connections[i]);
+                dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
+                                      connections, localConnectionsCount, threadId);
+                free(url);
+                return;
+            }
+        } else {
+            connections[i].status = WRITE_TO_SERVER;
+            connections[i].cacheIndex = -1;
+        }
+    }
+}
+
+_Noreturn void *work(void *param) {
 
     int threadId = *((int *) param);
     printf("START:id: %d\n", threadId);
@@ -268,7 +271,6 @@ void *work(void *param) {
 
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
-            printf("salam");
         }
 
         updatePoll(fds, localConnectionsCount, connections);
@@ -284,7 +286,7 @@ void *work(void *param) {
         for (int i = 0; i < localConnectionsCount; i++) {
             switch (connections[i].status) {
                 case GETTING_REQUEST_FROM_CLIENT: {
-                    handleGettingRequest(connections, fds, &localConnectionsCount, buf, threadId, i);
+                    handleGettingRequestState(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
                 case WRITE_TO_SERVER: {
@@ -292,7 +294,7 @@ void *work(void *param) {
 
                         if (send(connections[i].serverSocket, connections[i].buffer, connections[i].buffer_size, 0) <=
                             0) {
-                            makeCacheInvalid(connections[i].cacheIndex);
+                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
                                                   connections, &localConnectionsCount, threadId);
                             break;
@@ -313,7 +315,7 @@ void *work(void *param) {
                         if (readCount < 0) {
                             printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:recv fron server err\n", threadId,
                                    connections[i].id);
-                            makeCacheInvalid(connections[i].cacheIndex);
+                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:recv fron server err", 1,
                                                   connections, &localConnectionsCount, threadId);
                             break;
@@ -323,7 +325,7 @@ void *work(void *param) {
                             if (connections[i].cacheIndex != -1) {
                                 printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:INVALID CACHE\n", threadId,
                                        connections[i].id);
-                                makeCacheInvalid(connections[i].cacheIndex);
+                                makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             }
                             dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:server closed", 1, connections,
                                                   &localConnectionsCount, threadId);
@@ -357,7 +359,7 @@ void *work(void *param) {
                             long contentLength = getContentLengthFromAnswer(dest);
 
                             if (statusCode != 200 || contentLength == -1) {
-                                makeCacheInvalid(connections[i].cacheIndex);
+                                makeCacheInvalid(&cache[connections[i].cacheIndex]);
                                 dropConnectionWrapper(i, "DO NOT NEED TO BE CACHED", 1, connections,
                                                       &localConnectionsCount, threadId);
                                 break;
@@ -373,7 +375,7 @@ void *work(void *param) {
                         if (tempPtr == NULL) {
                             //free old data
                             printf("CACHE malloc failed\n");
-                            makeCacheInvalid(connections[i].cacheIndex);
+                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             break;
                         }
                         cache[connections[i].cacheIndex].data = tempPtr;
@@ -384,7 +386,7 @@ void *work(void *param) {
                         if (tempPtr1 == NULL) {
                             //free old data
                             printf("CACHE malloc failed\n");
-                            makeCacheInvalid(connections[i].cacheIndex);
+                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             break;
                         }
                         cache[connections[i].cacheIndex].dataChunksSize = tempPtr1;
@@ -400,7 +402,7 @@ void *work(void *param) {
 
                         if (cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] == NULL) {
                             printf("CACHE malloc failed\n");
-                            makeCacheInvalid(connections[i].cacheIndex);
+                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
                             break;
                         }
 
@@ -501,6 +503,8 @@ void *work(void *param) {
                     }//fds
                     break;
                 }//read
+                case NOT_ACTIVE:
+                    break;
             }//switch
         }//for
     }//while
@@ -534,14 +538,15 @@ int main(int argc, const char *argv[]) {
 
     int *threadsId = NULL;
     pthread_t *poolThreads = NULL;
-    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
-        pthread_exit(NULL);
-    }
 
     socketsQueue = createQueue();
 
     int proxySocket = getProxySocket(proxySocketPort);
     signal(SIGPIPE, SIG_IGN);
+
+    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
+        pthread_exit(NULL);
+    }
 
     while (true) {
         int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
@@ -554,7 +559,8 @@ int main(int argc, const char *argv[]) {
 
             pthread_mutex_lock(&connectionsMutex);
             allConnectionsCount++;
-            pthread_cond_broadcast(&socketsQueue->condVar);//?
+            // pthread_cond_broadcast(&socketsQueue->condVar);//?
+            pthread_cond_signal(&socketsQueue->condVar);//?
             pthread_mutex_unlock(&connectionsMutex);
         }
     }

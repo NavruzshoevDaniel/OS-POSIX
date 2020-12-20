@@ -43,18 +43,29 @@ void makeCacheInvalid(CacheInfo *cache);
 
 void freeDataChunks(char **data, size_t numChunks);
 
+/**
+ * If not using cache exits set WRITE_TO_SERVER state connection and return index cache
+ * or else return -1
+ * */
 int searchNotUsingCacheAndSetDownloadingState(char *url,
                                               CacheInfo *cache,
                                               Connection *connection,
                                               int cacheSize,
                                               int threadId);
-
+/**
+ * If free cache exits set WRITE_TO_SERVER state connection and return index cache
+ * or else return -1
+ * */
 int searchFreeCacheAndSetDownloadingState(char *url,
                                           CacheInfo *cache,
                                           Connection *connection,
                                           int cacheSize,
                                           int threadId);
 
+/**
+ * If url exits set READ_FROM_CACHE_WRITE_CLIENT state connection and return index cache
+ * or else return -1
+ * */
 int searchUrlInCache(char *url, CacheInfo *cache, Connection *connection, int cacheSize);
 
 

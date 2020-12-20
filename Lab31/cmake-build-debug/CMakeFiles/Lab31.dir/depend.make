@@ -28,6 +28,8 @@ CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/
 CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: ../services/http/httpService.h
 CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: ../services/http/httpSrvice.c
 
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o: ../services/proxyhandlers/getRequestHandler.c
+
 CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o: ../services/pthread/pthreadService.c
 CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o: ../services/pthread/pthreadService.h
 
