@@ -227,13 +227,17 @@ void handleGettingRequestState(Connection *connections,
     }
 }
 
-void handleGetMethod(char *url, Connection *connections, int i, int localConnectionsCount, int threadId) {
-    if (searchUrlInCache(url, cache, &connections[i], MAX_CACHE_SIZE) == -1) {
-        if (searchFreeCacheAndSetDownloadingState(url, cache, &connections[i],
-                                                  MAX_CACHE_SIZE, threadId) != -1
-            || searchNotUsingCacheAndSetDownloadingState(url, cache, &connections[i],
-                                                         MAX_CACHE_SIZE, threadId) != -1) {
+void handleGetMethod(char *url, Connection *connections, int i, int *localConnectionsCount, int threadId) {
+    int urlInCacheResult = searchUrlInCache(url, cache, MAX_CACHE_SIZE);
+    if (urlInCacheResult >= 0) {
+        setReadFromCacheState(&connections[i], urlInCacheResult);
+    } else {
+        int freeCacheIndex = searchFreeCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId);
+        if ((-1 != freeCacheIndex) ||
+            (-1 != (freeCacheIndex =
+                            searchNotUsingCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId)))) {
 
+            setWriteToServerState(&connections[i], freeCacheIndex);
             connections[i].serverSocket = getServerSocketBy(url);
             free(connections[i].buffer);
 
@@ -247,11 +251,11 @@ void handleGetMethod(char *url, Connection *connections, int i, int localConnect
                 return;
             }
         } else {
-            connections[i].status = WRITE_TO_SERVER;
-            connections[i].cacheIndex = -1;
+            setWriteToServerState(&connections[i], -1);
         }
     }
 }
+
 
 _Noreturn void *work(void *param) {
 
@@ -287,7 +291,6 @@ _Noreturn void *work(void *param) {
                 }
                 case WRITE_TO_SERVER: {
                     if (fds[i * 2 + 1].revents & POLLOUT) {
-
                         if (send(connections[i].serverSocket, connections[i].buffer, connections[i].buffer_size, 0) <=
                             0) {
                             makeCacheInvalid(&cache[connections[i].cacheIndex]);
@@ -549,15 +552,13 @@ int main(int argc, const char *argv[]) {
 
         if (newClientSocket != -1) {
             printf("ACCEPTED NEW CONNECTION\n");
+
             pthread_mutex_lock(&socketsQueue->queueMutex);
             putSocketInQueue(socketsQueue, newClientSocket);
             pthread_mutex_unlock(&socketsQueue->queueMutex);
 
-            pthread_mutex_lock(&connectionsMutex);
-            allConnectionsCount++;
-            // pthread_cond_broadcast(&socketsQueue->condVar);//?
-            pthread_cond_signal(&socketsQueue->condVar);//?//TODO:: what to use
-            pthread_mutex_unlock(&connectionsMutex);
+            atomicIncrement(&allConnectionsCount, &connectionsMutex);
+            pthread_cond_signal(&socketsQueue->condVar);
         }
     }
 

@@ -17,7 +17,7 @@ void freeDataChunks(char **data, size_t numChunks) {
  * if url exits set READ_FROM_CACHE_WRITE_CLIENT state connection and return index cache
  * or else return -1
  * */
-int searchUrlInCache(char *url, CacheInfo *cache, Connection *connection, int cacheSize) {
+int searchUrlInCache(char *url, CacheInfo *cache, int cacheSize) {
     for (int j = 0; j < cacheSize; j++) {
 
         pthread_mutex_lock(&cache[j].mutex);
@@ -31,7 +31,6 @@ int searchUrlInCache(char *url, CacheInfo *cache, Connection *connection, int ca
             if (cache[j].status == VALID || cache[j].status == DOWNLOADING) {
                 //printf("valid download\n");
                 cache[j].readers++;
-                setReadFromCacheState(connection, j);///!!!
                 pthread_mutex_unlock(&cache[j].mutex);
                 return j;
             }
@@ -48,7 +47,6 @@ int searchUrlInCache(char *url, CacheInfo *cache, Connection *connection, int ca
  * */
 int searchFreeCacheAndSetDownloadingState(char *url,
                                           CacheInfo *cache,
-                                          Connection *connection,
                                           int cacheSize,
                                           int threadId) {
     for (int j = 0; j < cacheSize; j++) {
@@ -56,7 +54,7 @@ int searchFreeCacheAndSetDownloadingState(char *url,
         pthread_mutex_lock(&cache[j].mutex);
 
         if (cache[j].url == NULL) {
-            //printf("(%d)SEARCH_CACHE: found free cache id=%d\n", threadId, j);
+            printf("(%d)SEARCH_CACHE: found free cache id=%d\n", threadId, j);
             cache[j].readers = 1;
             cache[j].status = DOWNLOADING;
             cache[j].writerId = threadId;
@@ -65,7 +63,6 @@ int searchFreeCacheAndSetDownloadingState(char *url,
             cache[j].numChunks = 0;
             cache[j].allSize = 0;
             cache[j].recvSize = 0;
-            setWriteToServerState(connection, j);///!!!
             cache[j].url = (char *) malloc(sizeof(char) * strlen(url) + 1);
             memcpy(cache[j].url, url, sizeof(char) * strlen(url) + 1);
 
@@ -82,7 +79,6 @@ int searchFreeCacheAndSetDownloadingState(char *url,
  * */
 int searchNotUsingCacheAndSetDownloadingState(char *url,
                                               CacheInfo *cache,
-                                              Connection *connection,
                                               int cacheSize,
                                               int threadId) {
 
@@ -92,7 +88,7 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
         pthread_mutex_lock(&cache[j].mutex);
 
         if (cache[j].readers == 0 || cache[j].status == INVALID) {
-            //printf("(%d)SEARCH_CACHE: found not using cache id=%d\n", threadId, j);
+            printf("(%d)SEARCH_CACHE: found not using cache id=%d\n", threadId, j);
             cache[j].readers = 1;
             cache[j].status = DOWNLOADING;
             cache[j].writerId = threadId;
@@ -104,8 +100,6 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
 
             freeDataChunks(cache[j].data, cache[j].numChunks);
             free(cache[j].dataChunksSize);
-
-            setWriteToServerState(connection, j);///!!!
             free(cache[j].url);
             cache[j].url = (char *) malloc(sizeof(char) * sizeof(url));
             memcpy(cache[j].url, url, sizeof(char) * sizeof(url));
