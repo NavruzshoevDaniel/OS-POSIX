@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
-#include <errno.h>
 #include <string.h>
 #include <time.h>
 #include <sys/socket.h>
@@ -17,6 +16,8 @@
 #include "services/threadpool/threadPool.h"
 #include "argschecker/argsChecker.h"
 #include "services/concurrent/atomicInt.h"
+#include "services/cache/cache.h"
+#include "services/http/httpService.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
@@ -25,173 +26,13 @@
 
 //3 = CRLF EOF
 
-//----------------------------------------------TYPES
-enum cacheStatus {
-    DOWNLOADING,
-    VALID,
-    INVALID
-};
-
-struct cacheInfo {
-    size_t allSize;
-    size_t recvSize;
-    pthread_mutex_t mutex;
-    size_t readers;
-
-    char **data;
-    int *dataChunksSize;
-    size_t numChunks;
-    pthread_cond_t numChunksCondVar;
-    pthread_mutex_t numChunksMutex;
-
-    int writerId;
-    char *url;
-    enum cacheStatus status;
-};
-
 Queue *socketsQueue;
 static int allConnectionsCount = 0;
 int poolSize;
 
-struct cacheInfo cache[MAX_CACHE_SIZE];
+CacheInfo cache[MAX_CACHE_SIZE];
 
 pthread_mutex_t connectionsMutex;
-
-//----------------------------------------------------------------------------------PARSE
-char *createGet(char *url, size_t *len) {
-
-    //printf("URL=%s\n",url);
-    //protocol
-    char *afterProtocol = strstr(url, "://");
-    if (NULL == afterProtocol) {
-        fprintf(stderr, "Incorrect input.\n");
-    }
-
-    //host
-    int hostLength;
-
-    char *afterHost = strchr(afterProtocol + 3, '/');
-    if (NULL == afterHost) {
-        hostLength = strlen(afterProtocol + 3);
-    } else {
-        hostLength = afterHost - (afterProtocol + 3);
-    }
-
-    char hostName[hostLength + 1];
-    strncpy(hostName, afterProtocol + 3, hostLength);
-    hostName[hostLength] = 0;
-    //---------------------------------------------Send request
-
-    char format[] = "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n\0";
-    //printf("format size = %d",sizeof(format));
-
-    char *buffer;
-    if (NULL == afterHost) {
-        buffer = (char *) malloc(sizeof(char) * (27 + 1 + sizeof(hostName)));
-        *len = 27 + 1 + sizeof(hostName);
-        sprintf(buffer, format, "/", hostName);
-    } else {
-        buffer = (char *) malloc(sizeof(char) * (27 + strlen(afterHost) + sizeof(hostName)));
-        *len = 27 + strlen(afterHost) + sizeof(hostName);
-        //printf("LEN=%d",*len);
-        sprintf(buffer, format, afterHost, hostName);
-    }
-
-    //printf("newGetMethod = (%s)\n", buffer);
-    return buffer;
-}
-
-
-int isMethodGet(const char *httpData) {
-    return httpData[0] == 'G' &&
-           httpData[1] == 'E' &&
-           httpData[2] == 'T' &&
-           httpData[3] == ' ';
-}
-
-char *getUrlFromData(char *httpData) {
-
-    char *smth = httpData + 4;
-    char *endSmth = strchr(smth, ' ');
-
-    char *result = (char *) malloc(sizeof(char) * (endSmth - smth + 1));
-    if (NULL == result) {
-        printf("ERROR WHILE MALLOC getUrlFromData");
-    }
-
-    memcpy(result, smth, (size_t) (endSmth - smth));
-    result[endSmth - smth] = '\0';
-
-    //printf("URL:%s\n", result);
-    char *KASPSHIT = strstr(httpData, "kis.v2.scr.kaspersky");
-    if (KASPSHIT != NULL) {
-        return NULL;
-    }
-    return result;
-}
-
-char *getHostFromUrl(char *sH) {
-
-    char *startHost = sH + 7;
-    char *endHost = strchr(startHost, '/');
-
-    char *result = (char *) malloc(sizeof(char) * (endHost - startHost + 1));
-    if (NULL == result) {
-        printf("ERROR WHILE MALLOC getHostFromUrl");
-        //return 1;
-
-    }
-
-    memcpy(result, startHost, (size_t) (endHost - startHost));
-    result[endHost - startHost] = '\0';
-
-    //printf("Host:%s\n", result);
-    return result;
-}
-
-int getStatusCodeAnswer(char *httpData) {
-    char *afterHTTP = httpData + 9;// ignore "HTTP/1.1 "
-
-    char *StrAfterCode;
-    int statusCode = (int) strtol(afterHTTP, &StrAfterCode, 10);
-    if (StrAfterCode == afterHTTP || statusCode <= 0) {
-        return -1;
-    }
-    return statusCode;
-}
-
-long getContentLengthFromAnswer(char *httpData) {
-
-    char header[] = "Content-Length:";
-
-    char *startLength = strstr(httpData, header);
-
-    if (startLength == NULL) {
-        return -1;
-    }
-
-    startLength += strlen(header) + 1;
-    char *StrAfterLength;
-    long contentLength = strtol(startLength, &StrAfterLength, 10);
-    if (StrAfterLength == startLength || contentLength <= 0) {
-        return -1;
-    }
-    //printf("ContLength = %d\n", contentLength);
-    return contentLength;
-}
-
-int getIndexOfBody(char *buff, size_t len) {
-    for (size_t j = 0; j < len - 3; ++j) {
-        if (buff[j] == '\r' && buff[j + 1] == '\n' &&
-            buff[j + 2] == '\r' && buff[j + 3] == '\n') {
-
-            return (int) j + 4;
-        }
-    }
-
-    return -1;
-}
-
 //----------------------------------------------------------------------------------SOCKET
 int getProxySocket(int port) {
 
@@ -262,161 +103,6 @@ void cannotResolve(struct Connection *connection) {
     char errorstr[] = "HTTP: 523\r\n";
     write(connection->clientSocket, errorstr, 11);
 }
-//----------------------------------------------------------------------------------CACHE
-
-void freeData(char **data, size_t numChunks) {
-
-    for (size_t i = 0; i < numChunks; i++) {
-        free(data[i]);
-    }
-    printf("free data\n");
-    free(data);
-}
-
-int searchCache(char *url, Connection *connection, int threadId) {
-
-    //----------------------------------------------try find url in cache ( 0 1)
-    for (int j = 0; j < MAX_CACHE_SIZE; j++) {
-
-        pthread_mutex_lock(&cache[j].mutex);
-
-        if (cache[j].url != NULL) {
-            //printf("(%s)\n(%s)\n", cache[j].url,url);
-            //printf("%d\n", strcmp(cache[j].url, url));
-        }
-
-        if (cache[j].url != NULL && strcmp(cache[j].url, url) == 0) {
-
-            if (cache[j].status == VALID || cache[j].status == DOWNLOADING) {
-                //printf("valid download\n");
-                cache[j].readers++;
-                freeConnectionBuffer(connection);
-                connection->buffer_size = 0;
-                connection->cacheIndex = j;
-                connection->numChunksWritten = 0;
-                connection->status = READ_FROM_CACHE_WRITE_CLIENT;
-                pthread_mutex_unlock(&cache[j].mutex);
-                return 0;
-            }
-
-            pthread_mutex_unlock(&cache[j].mutex);
-        } else { pthread_mutex_unlock(&cache[j].mutex); }
-    }
-
-    //----------------------------------------------no url in cache, try find free cache (2)
-
-    for (int j = 1; j < MAX_CACHE_SIZE; j++) {
-
-        pthread_mutex_lock(&cache[j].mutex);
-
-        if (cache[j].url == NULL) {
-            //printf("(%d)SEARCH_CACHE: found free cache id=%d\n", threadId, j);
-            cache[j].readers = 1;
-            cache[j].status = DOWNLOADING;
-            connection->cacheIndex = j;
-            cache[j].writerId = threadId;
-            cache[j].data = NULL;
-            cache[j].dataChunksSize = NULL;
-            cache[j].numChunks = 0;
-            cache[j].allSize = 0;
-            cache[j].recvSize = 0;
-            connection->status = WRITE_TO_SERVER;
-
-            cache[j].url = (char *) malloc(sizeof(char) * strlen(url) + 1);
-            memcpy(cache[j].url, url, sizeof(char) * strlen(url) + 1);
-
-            pthread_mutex_unlock(&cache[j].mutex);
-            return 1;
-        } else { pthread_mutex_unlock(&cache[j].mutex); }
-    }
-
-    //----------------------------------------------no url in cache, try find not using cache (2)
-
-    for (int j = 0; j < MAX_CACHE_SIZE; j++) {
-
-        pthread_mutex_lock(&cache[j].mutex);
-
-        if (cache[j].readers == 0 || cache[j].status == INVALID) {
-            //printf("(%d)SEARCH_CACHE: found not using cache id=%d\n", threadId, j);
-            cache[j].readers = 1;
-            cache[j].status = DOWNLOADING;
-            connection->cacheIndex = j;
-            cache[j].writerId = threadId;
-            cache[j].numChunks = 0;
-            cache[j].allSize = 0;
-            cache[j].recvSize = 0;
-
-            freeData(cache[j].data, cache[j].numChunks);
-            free(cache[j].dataChunksSize);
-            cache[j].data = NULL;
-            cache[j].dataChunksSize = NULL;
-
-            connection->status = WRITE_TO_SERVER;
-
-            free(cache[j].url);
-            cache[j].url = (char *) malloc(sizeof(char) * sizeof(url));
-            memcpy(cache[j].url, url, sizeof(char) * sizeof(url));
-
-            pthread_mutex_unlock(&cache[j].mutex);
-            return 2;
-        } else { pthread_mutex_unlock(&cache[j].mutex); }
-    }
-
-    //----------------------------------------------no cache (3)
-
-    connection->status = WRITE_TO_SERVER;
-    connection->cacheIndex = -1;
-    //printf("no cache\n");
-    return 3;
-
-}
-
-void makeCacheInvalid(int id) {
-    pthread_mutex_lock(&cache[id].mutex);
-    cache[id].status = INVALID;
-    cache[id].writerId = -1;
-    pthread_mutex_unlock(&cache[id].mutex);
-    pthread_cond_broadcast(&cache[id].numChunksCondVar);
-}
-
-int initCache() {
-
-    bool erMS, erCVC, erMC;
-    for (int i = 0; i < MAX_CACHE_SIZE; i++) {
-
-        cache[i].allSize = 0;
-        cache[i].recvSize = 0;
-        erMS = initMutex(&cache[i].mutex);
-
-        cache[i].readers = 0;
-        cache[i].data = NULL;
-        cache[i].dataChunksSize = NULL;
-        cache[i].numChunks = 0;
-        erCVC = initCondVariable(&cache[i].numChunksCondVar);
-        erMC = initMutex(&cache[i].numChunksMutex);
-
-        cache[i].writerId = -1;
-        cache[i].url = NULL;
-
-    }
-    return erMS && erCVC && erMC;
-}
-
-void destroyCache() {
-
-    for (int i = 0; i < MAX_CACHE_SIZE; i++) {
-
-        pthread_mutex_destroy(&cache[i].mutex);
-
-        freeData(cache[i].data, cache[i].numChunks);
-        pthread_cond_destroy(&cache[i].numChunksCondVar);
-        pthread_mutex_destroy(&cache[i].numChunksMutex);
-
-        free(cache[i].url);
-    }
-    printf("destroy cache\n");
-}
-
 
 //----------------------------------------------------------------------------------ATTR
 void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
@@ -446,30 +132,11 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
     }
 }
 
-char *allocateMemory(char *buf, size_t *length, size_t additionalCount) {
-    if (*length == 0) {
-        *length = additionalCount;
-        buf = (char *) malloc(*length * sizeof(char));
-
-        if (NULL == buf) {
-            perror("ERROR WHILE MALLOC allocateMemory");
-        }
-    } else {
-        *length += (size_t) additionalCount;
-        buf = (char *) realloc(buf, *length);
-    }
-    if (buf == NULL) {
-        printf("allocation memory failed in method allocateMemory() %s\n", strerror(errno));
-    }
-    //printf("END malloc %d\n\n", *length);
-    return buf;
-}
-
 int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
-    printf("want to lock %d\n",threadId);
+    printf("want to lock %d\n", threadId);
     pthread_mutex_lock(&socketsQueue->queueMutex);
-    printf(" locked %d\n",threadId);
+    printf(" locked %d\n", threadId);
     pthread_mutex_lock(&connectionsMutex);
     if (allConnectionsCount / poolSize >= *localConnectionsCount && socketsQueue->size > 0) {
 
@@ -504,6 +171,11 @@ void dropConnectionWrapper(int id,
         close(connections[id].serverSocket);
     }
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
+}
+
+
+void searchingProccess(){
+
 }
 
 void handleGettingRequest(Connection *connections,
@@ -550,8 +222,12 @@ void handleGettingRequest(Connection *connections,
                                           connections, localConnectionsCount, threadId);
                     free(url);
                 } else {
-                    int foundInCache = searchCache(url, &connections[i], threadId);
-                    if (1 == foundInCache || 2 == foundInCache) {
+
+                    if (searchUrlInCache(url, cache, &connections[i], MAX_CACHE_SIZE) != -1
+                        || searchFreeCacheAndSetDownloadingState(url, cache, &connections[i],
+                                                                 MAX_CACHE_SIZE, threadId) != -1
+                        || searchNotUsingCacheAndSetDownloadingState(url, cache, &connections[i],
+                                                                     MAX_CACHE_SIZE, threadId) != -1) {
 
                         connections[i].serverSocket = getServerSocket(url);
                         free(connections[i].buffer);
@@ -565,6 +241,9 @@ void handleGettingRequest(Connection *connections,
                             free(url);
                             return;
                         }
+                    } else {
+                        connections[i].status = WRITE_TO_SERVER;
+                        connections[i].cacheIndex = -1;
                     }
                 }
             } else {
@@ -585,7 +264,7 @@ void *work(void *param) {
     Connection connections[MAX_CONNECTIONS];
 
     while (true) {
-        int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount,threadId);
+        int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
 
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
@@ -847,9 +526,9 @@ int main(int argc, const char *argv[]) {
         pthread_exit(NULL);
     }
 
-    if (initCache() == -1) {
+    if (initCache(cache, MAX_CACHE_SIZE) == -1) {
         printf("ERROR in initCACHE");
-        destroyCache();
+        destroyCache(cache, MAX_CACHE_SIZE);
         pthread_exit(NULL);
     }
 
@@ -864,7 +543,6 @@ int main(int argc, const char *argv[]) {
     int proxySocket = getProxySocket(proxySocketPort);
     signal(SIGPIPE, SIG_IGN);
 
-    //---------------------------------work
     while (true) {
         int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
 

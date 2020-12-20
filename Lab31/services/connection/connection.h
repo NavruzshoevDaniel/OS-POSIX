@@ -40,6 +40,10 @@ void dropConnection(int id,
 
 void setNotActiveState(int i, struct Connection *connections, int *connectionsCount);
 
+void setReadFromCacheState(Connection *connection, int cacheIndex);
+
+void setWriteToServerState(Connection *connection, int cacheIndex);
+
 void freeConnectionBuffer(Connection *connection);
 
 bool isConnectionBufferEmpty(const Connection *connection);

@@ -87,6 +87,12 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/main.c">
 			<Option target="Lab31"/>
 		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.h">
+			<Option target="Lab31"/>
+		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c">
 			<Option target="Lab31"/>
 		</Unit>
@@ -97,6 +103,12 @@
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpService.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/pthread/pthreadService.c">

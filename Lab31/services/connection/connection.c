@@ -41,6 +41,19 @@ void setNotActiveState(int i, Connection *connections, int *connectionsCount) {
     (*connectionsCount)--;
 }
 
+void setReadFromCacheState(Connection *connection, const int cacheIndex) {
+    freeConnectionBuffer(connection);
+    connection->buffer_size = 0;
+    connection->cacheIndex = cacheIndex;
+    connection->numChunksWritten = 0;
+    connection->status = READ_FROM_CACHE_WRITE_CLIENT;
+}
+
+void setWriteToServerState(Connection *connection, const int cacheIndex) {
+    connection->status = WRITE_TO_SERVER;
+    connection->cacheIndex = cacheIndex;
+}
+
 void initNewConnection(Connection *connection, const int newClientSocket) {
     (*connection).clientSocket = newClientSocket;
     (*connection).buffer_size = 0;

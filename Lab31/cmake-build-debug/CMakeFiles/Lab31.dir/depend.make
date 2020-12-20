@@ -6,17 +6,27 @@ CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.h
 
 CMakeFiles/Lab31.dir/main.c.o: ../argschecker/argsChecker.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
+CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/http/httpService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/threadpool/threadPool.h
+
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cache.c
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/connection/connection.h
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.c
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.h
 
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.c
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.h
+
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: ../services/http/httpService.h
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: ../services/http/httpSrvice.c
 
 CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o: ../services/pthread/pthreadService.c
 CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o: ../services/pthread/pthreadService.h

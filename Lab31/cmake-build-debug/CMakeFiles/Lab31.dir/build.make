@@ -148,6 +148,32 @@ CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c" -o CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s
 
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cache.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/Lab31.dir/services/cache/cache.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/cache/cache.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.c"
+
+CMakeFiles/Lab31.dir/services/cache/cache.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/cache/cache.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.c" > CMakeFiles/Lab31.dir/services/cache/cache.c.i
+
+CMakeFiles/Lab31.dir/services/cache/cache.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/cache/cache.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.c" -o CMakeFiles/Lab31.dir/services/cache/cache.c.s
+
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o: ../services/http/httpSrvice.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c"
+
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/http/httpSrvice.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c" > CMakeFiles/Lab31.dir/services/http/httpSrvice.c.i
+
+CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c" -o CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s
+
 # Object files for target Lab31
 Lab31_OBJECTS = \
 "CMakeFiles/Lab31.dir/main.c.o" \
@@ -156,7 +182,9 @@ Lab31_OBJECTS = \
 "CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.o" \
 "CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o" \
 "CMakeFiles/Lab31.dir/services/connection/connection.c.o" \
-"CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o"
+"CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o" \
+"CMakeFiles/Lab31.dir/services/cache/cache.c.o" \
+"CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o"
 
 # External object files for target Lab31
 Lab31_EXTERNAL_OBJECTS =
@@ -168,9 +196,11 @@ Lab31: CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.o
 Lab31: CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o
 Lab31: CMakeFiles/Lab31.dir/services/connection/connection.c.o
 Lab31: CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o
+Lab31: CMakeFiles/Lab31.dir/services/cache/cache.c.o
+Lab31: CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o
 Lab31: CMakeFiles/Lab31.dir/build.make
 Lab31: CMakeFiles/Lab31.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable Lab31"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Linking C executable Lab31"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Lab31.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

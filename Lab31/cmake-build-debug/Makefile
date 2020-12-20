@@ -177,6 +177,33 @@ main.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/main.c.s
 .PHONY : main.c.s
 
+services/cache/cache.o: services/cache/cache.c.o
+
+.PHONY : services/cache/cache.o
+
+# target to build an object file
+services/cache/cache.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cache.c.o
+.PHONY : services/cache/cache.c.o
+
+services/cache/cache.i: services/cache/cache.c.i
+
+.PHONY : services/cache/cache.i
+
+# target to preprocess a source file
+services/cache/cache.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cache.c.i
+.PHONY : services/cache/cache.c.i
+
+services/cache/cache.s: services/cache/cache.c.s
+
+.PHONY : services/cache/cache.s
+
+# target to generate assembly for a file
+services/cache/cache.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cache.c.s
+.PHONY : services/cache/cache.c.s
+
 services/concurrent/atomicInt.o: services/concurrent/atomicInt.c.o
 
 .PHONY : services/concurrent/atomicInt.o
@@ -230,6 +257,33 @@ services/connection/connection.s: services/connection/connection.c.s
 services/connection/connection.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
 .PHONY : services/connection/connection.c.s
+
+services/http/httpSrvice.o: services/http/httpSrvice.c.o
+
+.PHONY : services/http/httpSrvice.o
+
+# target to build an object file
+services/http/httpSrvice.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o
+.PHONY : services/http/httpSrvice.c.o
+
+services/http/httpSrvice.i: services/http/httpSrvice.c.i
+
+.PHONY : services/http/httpSrvice.i
+
+# target to preprocess a source file
+services/http/httpSrvice.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.i
+.PHONY : services/http/httpSrvice.c.i
+
+services/http/httpSrvice.s: services/http/httpSrvice.c.s
+
+.PHONY : services/http/httpSrvice.s
+
+# target to generate assembly for a file
+services/http/httpSrvice.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s
+.PHONY : services/http/httpSrvice.c.s
 
 services/pthread/pthreadService.o: services/pthread/pthreadService.c.o
 
@@ -327,12 +381,18 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... services/cache/cache.o"
+	@echo "... services/cache/cache.i"
+	@echo "... services/cache/cache.s"
 	@echo "... services/concurrent/atomicInt.o"
 	@echo "... services/concurrent/atomicInt.i"
 	@echo "... services/concurrent/atomicInt.s"
 	@echo "... services/connection/connection.o"
 	@echo "... services/connection/connection.i"
 	@echo "... services/connection/connection.s"
+	@echo "... services/http/httpSrvice.o"
+	@echo "... services/http/httpSrvice.i"
+	@echo "... services/http/httpSrvice.s"
 	@echo "... services/pthread/pthreadService.o"
 	@echo "... services/pthread/pthreadService.i"
 	@echo "... services/pthread/pthreadService.s"
