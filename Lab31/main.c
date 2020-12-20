@@ -180,42 +180,6 @@ long getContentLengthFromAnswer(char *httpData) {
     return contentLength;
 }
 
-int needResend(int statusCode) {
-    if (statusCode == 204) {//No Content
-        return 0;
-    }
-
-    if (statusCode == 304) {//Not Modified
-        return 0;
-    }
-
-    if (statusCode >= 100 && statusCode < 200) {
-        return 0;
-    }
-
-    return 1;
-}
-
-void editRequestToSendToServer(struct Connection *attrSocket) {///////////////////////////////////////////////////////
-
-    char *protocol_1_1 = strstr(attrSocket->buffer, "HTTP/1.1");/////////////->HTTP/1.0
-
-    if (protocol_1_1 != NULL) {
-        protocol_1_1[7] = '0';
-    }
-
-}
-
-void cutBody(char *buff, size_t *len, size_t newLength) {
-    buff = (char *) realloc(buff, newLength);
-    if (buff == NULL) {
-        fprintf(stderr, "realloc failed at method cutBody()\n");
-        exit(EXIT_FAILURE);
-    }
-    buff[newLength - 1] = '\0';
-    *len = newLength;
-}
-
 int getIndexOfBody(char *buff, size_t len) {
     for (size_t j = 0; j < len - 3; ++j) {
         if (buff[j] == '\r' && buff[j + 1] == '\n' &&
@@ -289,14 +253,14 @@ int getServerSocket(char *url) {
     return serverSocket;
 }
 
-void wrongMethod(struct Connection *attrSocket) {
+void wrongMethod(struct Connection *connection) {
     char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
-    write(attrSocket->clientSocket, wrong, 23);
+    write(connection->clientSocket, wrong, 23);
 }
 
-void cannotResolve(struct Connection *attrSocket) {
+void cannotResolve(struct Connection *connection) {
     char errorstr[] = "HTTP: 523\r\n";
-    write(attrSocket->clientSocket, errorstr, 11);
+    write(connection->clientSocket, errorstr, 11);
 }
 //----------------------------------------------------------------------------------CACHE
 
@@ -476,6 +440,8 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
                 fds[i * 2].events = POLLOUT;
                 fds[i * 2 + 1].events = 0;
                 break;
+            case NOT_ACTIVE:
+                break;
         }
     }
 }
@@ -548,8 +514,72 @@ void dropConnectionWrapper(int id,
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
+void handleGettingRequest(Connection *connections,
+                          const struct pollfd *fds,
+                          int *localConnectionsCount,
+                          char *buf,
+                          int threadId,
+                          int i) {
+    if (fds[i * 2].revents & POLLHUP) {
+        dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
+                              connections, localConnectionsCount, threadId);
+    } else if (fds[i * 2].revents & POLLIN) {
+
+        ssize_t readCount = recv(connections[i].clientSocket, buf, BUFFER_SIZE, 0);
+
+        if (readCount <= 0) {
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connections,
+                                  localConnectionsCount, threadId);
+            return;
+        }
+        //TODO::refract
+        char *newBuffer = allocateMemory(connections[i].buffer, &connections[i].buffer_size,
+                                         (size_t) readCount);
+        if (newBuffer == NULL) {
+            dropConnectionWrapper(i, "buffer error",
+                                  0, connections, localConnectionsCount, threadId);
+            return;
+        } else { connections[i].buffer = newBuffer; }
+
+        memcpy(connections[i].buffer, buf, (size_t) readCount);
+
+        if (connections[i].buffer_size > 3) {
+            char *url = getUrlFromData(connections[i].buffer);
+
+            if (url != NULL) {
+                if (!isMethodGet(connections[i].buffer)) {
+                    wrongMethod(&connections[i]);
+                    dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
+                                          connections, localConnectionsCount, threadId);
+                    free(url);
+                } else {
+                    int foundInCache = searchCache(url, &connections[i], threadId);
+                    if (1 == foundInCache || 2 == foundInCache) {
+
+                        connections[i].serverSocket = getServerSocket(url);
+                        free(connections[i].buffer);
+
+                        connections[i].buffer = createGet(url, &connections[i].buffer_size);
+
+                        if (connections[i].serverSocket == -1) {
+                            cannotResolve(&connections[i]);
+                            dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
+                                                  connections, localConnectionsCount, threadId);
+                            free(url);
+                            return;
+                        }
+                    }
+                }
+            } else {
+                dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
+                                      localConnectionsCount, threadId);
+            }
+        }
+    }
+}
+
 void *work(void *param) {
-    //---------------------------------------------prepare
+
     int threadId = *((int *) param);
     printf("START:id: %d\n", threadId);
 
@@ -557,7 +587,6 @@ void *work(void *param) {
     struct pollfd fds[2 * MAX_CONNECTIONS];
     Connection connections[MAX_CONNECTIONS];
 
-    //---------------------------------------------work
     while (true) {
         int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount);
 
@@ -578,64 +607,7 @@ void *work(void *param) {
         for (int i = 0; i < localConnectionsCount; i++) {
             switch (connections[i].status) {
                 case GETTING_REQUEST_FROM_CLIENT: {
-                    if (fds[i * 2].revents & POLLHUP) {
-                        dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
-                                              connections, &localConnectionsCount, threadId);
-                    } else if (fds[i * 2].revents & POLLIN) {
-
-                        ssize_t readCount = recv(connections[i].clientSocket, buf, BUFFER_SIZE, 0);
-
-                        if (readCount <= 0) {
-                            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connections,
-                                                  &localConnectionsCount, threadId);
-                            break;
-                        }
-
-                        char *newBuffer = allocateMemory(connections[i].buffer, &connections[i].buffer_size,
-                                                         (size_t) readCount);
-                        if (newBuffer == NULL) {
-                            dropConnectionWrapper(i, "buffer error",
-                                                  0, connections, &localConnectionsCount, threadId);
-                            break;
-                        } else { connections[i].buffer = newBuffer; }
-
-
-                        memcpy(connections[i].buffer, buf, (size_t) readCount);
-
-                        if (connections[i].buffer_size > 3) {
-                            char *url = getUrlFromData(connections[i].buffer);
-
-                            if (url != NULL) {
-                                if (!isMethodGet(connections[i].buffer)) {
-                                    wrongMethod(&connections[i]);
-                                    dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
-                                                          connections, &localConnectionsCount, threadId);
-                                    free(url);
-                                } else {
-                                    int foundInCache = searchCache(url, &connections[i], threadId);
-                                    if (1 == foundInCache || 2 == foundInCache) {
-
-                                        connections[i].serverSocket = getServerSocket(url);
-                                        free(connections[i].buffer);
-
-                                        connections[i].buffer = createGet(url, &connections[i].buffer_size);
-
-                                        if (connections[i].serverSocket == -1) {
-                                            cannotResolve(&connections[i]);
-                                            dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
-                                                                  connections, &localConnectionsCount, threadId);
-                                            free(url);
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                printf("(%d) (%d)| CLIENT_MESSAGE:not good url\n", threadId, connections[i].id);
-                                dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
-                                                      &localConnectionsCount, threadId);
-                            }
-                        }
-                    }
+                    handleGettingRequest(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
                 case WRITE_TO_SERVER: {

@@ -25,6 +25,10 @@ void freeConnectionBuffer(Connection *connection) {
     connection->buffer_size = 0;
 }
 
+bool isConnectionBufferEmpty(const Connection *connection) {
+    return connection->buffer_size == 0;
+}
+
 void setNotActiveState(int i, Connection *connections, int *connectionsCount) {
     connections[i] = connections[*connectionsCount - 1];
     connections[*connectionsCount - 1].buffer = NULL;

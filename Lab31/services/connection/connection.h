@@ -8,10 +8,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum connectionState {
     GETTING_REQUEST_FROM_CLIENT = 0,
-    CONNECTING_TO_SERVER,
     WRITE_TO_SERVER,
     READ_FROM_SERVER_WRITE_CLIENT,
     READ_FROM_CACHE_WRITE_CLIENT,
@@ -41,6 +41,8 @@ void dropConnection(int id,
 void setNotActiveState(int i, struct Connection *connections, int *connectionsCount);
 
 void freeConnectionBuffer(Connection *connection);
+
+bool isConnectionBufferEmpty(const Connection *connection) ;
 
 
 #endif //LAB31_CONNECTION_H
