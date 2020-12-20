@@ -40,3 +40,34 @@ void setNotActiveState(int i, Connection *connections, int *connectionsCount) {
     connections[*connectionsCount - 1].status = NOT_ACTIVE;
     (*connectionsCount)--;
 }
+
+void initNewConnection(Connection *connection, const int newClientSocket) {
+    (*connection).clientSocket = newClientSocket;
+    (*connection).buffer_size = 0;
+    (*connection).buffer = NULL;
+    (*connection).cacheIndex = -1;
+    (*connection).serverSocket = -1;
+    (*connection).status = GETTING_REQUEST_FROM_CLIENT;
+    (*connection).id = rand() % 9000 + 1000;
+}
+
+int allocateConnectionBufferMemory(Connection *connection, size_t length) {
+    connection->buffer_size = length;
+    connection->buffer = (char *) malloc(length * sizeof(char));
+
+    if (NULL == connection->buffer) {
+        perror("ERROR WHILE MALLOC allocateConnectionBufferMemory");
+        return -1;
+    }
+    return 0;
+}
+
+int reallocateConnectionBufferMemory(Connection *connection, size_t additionalLength) {
+    connection->buffer_size += additionalLength;
+    connection->buffer = (char *) realloc(connection->buffer, additionalLength);
+    if (NULL == connection->buffer) {
+        perror("ERROR WHILE MALLOC reallocateConnectionBufferMemory");
+        return -1;
+    }
+    return 0;
+}

@@ -102,7 +102,7 @@ char *createGet(char *url, size_t *len) {
 }
 
 
-int isMethodGet(char *httpData) {
+int isMethodGet(const char *httpData) {
     return httpData[0] == 'G' &&
            httpData[1] == 'E' &&
            httpData[2] == 'T' &&
@@ -465,19 +465,11 @@ char *allocateMemory(char *buf, size_t *length, size_t additionalCount) {
     return buf;
 }
 
-void initNewConnection(Connection *connection, const int newClientSocket) {
-    (*connection).clientSocket = newClientSocket;
-    (*connection).buffer_size = 0;
-    (*connection).buffer = NULL;
-    (*connection).cacheIndex = -1;
-    (*connection).serverSocket = -1;
-    (*connection).status = GETTING_REQUEST_FROM_CLIENT;
-    (*connection).id = rand() % 9000 + 1000;
-}
-
-int getNewClientSocketOrWait(int *localConnectionsCount) {
+int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
+    printf("want to lock %d\n",threadId);
     pthread_mutex_lock(&socketsQueue->queueMutex);
+    printf(" locked %d\n",threadId);
     pthread_mutex_lock(&connectionsMutex);
     if (allConnectionsCount / poolSize >= *localConnectionsCount && socketsQueue->size > 0) {
 
@@ -487,11 +479,11 @@ int getNewClientSocketOrWait(int *localConnectionsCount) {
         }
     }
     pthread_mutex_unlock(&connectionsMutex);
-
+    printf("unlocked\n");
     while (*localConnectionsCount == 0 && socketsQueue->size == 0) {
-
+        printf(" unlock and wait\n");
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
-
+        printf(" locked\n");
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
@@ -515,7 +507,7 @@ void dropConnectionWrapper(int id,
 }
 
 void handleGettingRequest(Connection *connections,
-                          const struct pollfd *fds,
+                          struct pollfd *fds,
                           int *localConnectionsCount,
                           char *buf,
                           int threadId,
@@ -533,13 +525,18 @@ void handleGettingRequest(Connection *connections,
             return;
         }
         //TODO::refract
-        char *newBuffer = allocateMemory(connections[i].buffer, &connections[i].buffer_size,
-                                         (size_t) readCount);
-        if (newBuffer == NULL) {
+        int bufferErr = 0;
+        if (isConnectionBufferEmpty(&connections[i])) {
+            bufferErr = allocateConnectionBufferMemory(&connections[i], readCount);
+        } else {
+            bufferErr = reallocateConnectionBufferMemory(&connections[i], readCount);
+        }
+
+        if (bufferErr) {
             dropConnectionWrapper(i, "buffer error",
                                   0, connections, localConnectionsCount, threadId);
             return;
-        } else { connections[i].buffer = newBuffer; }
+        }
 
         memcpy(connections[i].buffer, buf, (size_t) readCount);
 
@@ -588,10 +585,11 @@ void *work(void *param) {
     Connection connections[MAX_CONNECTIONS];
 
     while (true) {
-        int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount);
+        int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount,threadId);
 
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
+            printf("salam");
         }
 
         updatePoll(fds, localConnectionsCount, connections);

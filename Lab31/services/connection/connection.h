@@ -42,7 +42,13 @@ void setNotActiveState(int i, struct Connection *connections, int *connectionsCo
 
 void freeConnectionBuffer(Connection *connection);
 
-bool isConnectionBufferEmpty(const Connection *connection) ;
+bool isConnectionBufferEmpty(const Connection *connection);
+
+void initNewConnection(Connection *connection, int newClientSocket);
+
+int allocateConnectionBufferMemory(Connection *connection, size_t length);
+
+int reallocateConnectionBufferMemory(Connection *connection, size_t additionalLength);
 
 
 #endif //LAB31_CONNECTION_H
