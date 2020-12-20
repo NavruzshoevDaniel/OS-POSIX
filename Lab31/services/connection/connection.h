@@ -44,7 +44,7 @@ void setReadFromCacheState(Connection *connection, int cacheIndex);
 
 void setWriteToServerState(Connection *connection, int cacheIndex);
 
-void freeConnectionBuffer(Connection *connection);
+void freeConnectionComponents(Connection *connection);
 
 bool isConnectionBufferEmpty(const Connection *connection);
 

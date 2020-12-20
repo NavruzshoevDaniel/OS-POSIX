@@ -51,7 +51,7 @@ int searchFreeCacheAndSetDownloadingState(char *url,
                                           Connection *connection,
                                           int cacheSize,
                                           int threadId) {
-    for (int j = 1; j < cacheSize; j++) {
+    for (int j = 0; j < cacheSize; j++) {
 
         pthread_mutex_lock(&cache[j].mutex);
 

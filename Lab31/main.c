@@ -110,7 +110,6 @@ void cannotResolve(struct Connection *connection) {
     write(connection->clientSocket, errorstr, 11);
 }
 
-//----------------------------------------------------------------------------------ATTR
 void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
     for (int i = 0; i < localCount; ++i) {
         fds[i * 2].fd = connections[i].clientSocket;
@@ -140,9 +139,7 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
 
 int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
-    //printf("want to lock %d\n", threadId);
     pthread_mutex_lock(&socketsQueue->queueMutex);
-    // printf(" locked %d\n", threadId);
     pthread_mutex_lock(&connectionsMutex);
     if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && socketsQueue->size > 0) {
 
@@ -152,11 +149,8 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
         }
     }
     pthread_mutex_unlock(&connectionsMutex);
-    // printf("unlocked\n");
     while (*localConnectionsCount == 0 && socketsQueue->size == 0) {
-        //printf(" unlock and wait\n");
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
-        // printf(" locked\n");
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
@@ -200,6 +194,8 @@ void handleGettingRequestState(Connection *connections,
         if (isConnectionBufferEmpty(&connections[i])) {
             bufferErr = allocateConnectionBufferMemory(&connections[i], readCount);
         } else {
+            printf("REALLOCATE CACHE");
+            //TODO::this is really need?
             bufferErr = reallocateConnectionBufferMemory(&connections[i], readCount);
         }
 
@@ -299,7 +295,7 @@ _Noreturn void *work(void *param) {
                                                   connections, &localConnectionsCount, threadId);
                             break;
                         }
-                        freeConnectionBuffer(&connections[i]);
+                        freeConnectionComponents(&connections[i]);
                         connections[i].status = READ_FROM_SERVER_WRITE_CLIENT;
                     }
                     break;
@@ -560,7 +556,7 @@ int main(int argc, const char *argv[]) {
             pthread_mutex_lock(&connectionsMutex);
             allConnectionsCount++;
             // pthread_cond_broadcast(&socketsQueue->condVar);//?
-            pthread_cond_signal(&socketsQueue->condVar);//?
+            pthread_cond_signal(&socketsQueue->condVar);//?//TODO:: what to use
             pthread_mutex_unlock(&connectionsMutex);
         }
     }

@@ -10,14 +10,14 @@ void dropConnection(int id,
                     int threadId) {
     printf("Thread: %d, Connection %d, %s\n", threadId, connections[id].id, reason);
     if (connections[id].buffer_size > 0) {
-        freeConnectionBuffer(&connections[id]);
+        freeConnectionComponents(&connections[id]);
     }
     close(connections[id].clientSocket);
 
     setNotActiveState(id, connections, connectionsCount);
 }
 
-void freeConnectionBuffer(Connection *connection) {
+void freeConnectionComponents(Connection *connection) {
     free(connection->buffer);
     free(connection->url);
     connection->buffer = NULL;
@@ -43,7 +43,7 @@ void setNotActiveState(int i, Connection *connections, int *connectionsCount) {
 }
 
 void setReadFromCacheState(Connection *connection, const int cacheIndex) {
-    freeConnectionBuffer(connection);
+    freeConnectionComponents(connection);
     connection->buffer_size = 0;
     connection->cacheIndex = cacheIndex;
     connection->numChunksWritten = 0;
