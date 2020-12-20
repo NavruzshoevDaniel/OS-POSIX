@@ -10,7 +10,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/connection/connection.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o"
-  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o"
+  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/pthread/pthreadService.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/queue/queueService.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/queue/queueService.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/threadpool/threadPool.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.o"

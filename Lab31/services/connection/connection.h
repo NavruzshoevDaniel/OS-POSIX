@@ -34,6 +34,7 @@ struct Connection {
 
 void dropConnection(int id,
                     const char *reason,
+                    int needToCloseServer,
                     Connection *connections,
                     int *connectionsCount,
                     int threadId);
@@ -44,7 +45,7 @@ void setReadFromCacheState(Connection *connection, int cacheIndex);
 
 void setWriteToServerState(Connection *connection, int cacheIndex);
 
-void freeConnectionComponents(Connection *connection);
+void setReadFromServerWriteToClientState(Connection *connection);
 
 bool isConnectionBufferEmpty(const Connection *connection);
 
@@ -54,5 +55,8 @@ int allocateConnectionBufferMemory(Connection *connection, size_t length);
 
 int reallocateConnectionBufferMemory(Connection *connection, size_t additionalLength);
 
+void freeConnectionBuffer(Connection *connection);
+
+void freeConnectionUrl(Connection *connection);
 
 #endif //LAB31_CONNECTION_H

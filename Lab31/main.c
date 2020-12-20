@@ -37,7 +37,13 @@ CacheInfo cache[MAX_CACHE_SIZE];
 
 pthread_mutex_t connectionsMutex;
 
-void handleGetMethod();
+void handleWriteToServerState(Connection *connections,
+                              struct pollfd *fds,
+                              int *localConnectionsCount,
+                              int threadId,
+                              int i);
+
+void handleGetMethod(char *url, Connection *connections, int i, int *localConnectionsCount, int threadId);
 
 //----------------------------------------------------------------------------------SOCKET
 int getProxySocket(int port) {
@@ -166,10 +172,7 @@ void dropConnectionWrapper(int id,
                            Connection *connections,
                            int *connectionsCount,
                            int threadId) {
-    dropConnection(id, reason, connections, connectionsCount, threadId);
-    if (needToCloseServer) {
-        close(connections[id].serverSocket);
-    }
+    dropConnection(id, reason, needToCloseServer, connections, connectionsCount, threadId);
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
@@ -290,17 +293,7 @@ _Noreturn void *work(void *param) {
                     break;
                 }
                 case WRITE_TO_SERVER: {
-                    if (fds[i * 2 + 1].revents & POLLOUT) {
-                        if (send(connections[i].serverSocket, connections[i].buffer, connections[i].buffer_size, 0) <=
-                            0) {
-                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
-                                                  connections, &localConnectionsCount, threadId);
-                            break;
-                        }
-                        freeConnectionComponents(&connections[i]);
-                        connections[i].status = READ_FROM_SERVER_WRITE_CLIENT;
-                    }
+                    handleWriteToServerState(connections, fds, &localConnectionsCount, threadId, i);
                     break;
                 }
                 case READ_FROM_SERVER_WRITE_CLIENT: {
@@ -509,7 +502,25 @@ _Noreturn void *work(void *param) {
     }//while
 
     return NULL;
-}//end
+}
+
+void handleWriteToServerState(Connection *connections,
+                              struct pollfd *fds,
+                              int *localConnectionsCount,
+                              int threadId,
+                              int i) {
+    if (fds[i * 2 + 1].revents & POLLOUT) {
+        if (send(connections[i].serverSocket, connections[i].buffer, connections[i].buffer_size, 0) <=
+            0) {
+            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
+                                  connections, localConnectionsCount, threadId);
+            return;
+        }
+        setReadFromServerWriteToClientState(&connections[i]);
+    }
+}
+//end
 
 void checkArgs(int argcc, const char *argv[]) {
     checkCountArguments(argcc);

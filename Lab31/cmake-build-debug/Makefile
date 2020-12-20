@@ -285,32 +285,32 @@ services/http/httpSrvice.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s
 .PHONY : services/http/httpSrvice.c.s
 
-services/proxyhandlers/getRequestHandler.o: services/proxyhandlers/getRequestHandler.c.o
+services/proxyhandlers/getRequest/getRequestHandler.o: services/proxyhandlers/getRequest/getRequestHandler.c.o
 
-.PHONY : services/proxyhandlers/getRequestHandler.o
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.o
 
 # target to build an object file
-services/proxyhandlers/getRequestHandler.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o
-.PHONY : services/proxyhandlers/getRequestHandler.c.o
+services/proxyhandlers/getRequest/getRequestHandler.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.o
 
-services/proxyhandlers/getRequestHandler.i: services/proxyhandlers/getRequestHandler.c.i
+services/proxyhandlers/getRequest/getRequestHandler.i: services/proxyhandlers/getRequest/getRequestHandler.c.i
 
-.PHONY : services/proxyhandlers/getRequestHandler.i
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.i
 
 # target to preprocess a source file
-services/proxyhandlers/getRequestHandler.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.i
-.PHONY : services/proxyhandlers/getRequestHandler.c.i
+services/proxyhandlers/getRequest/getRequestHandler.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.i
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.i
 
-services/proxyhandlers/getRequestHandler.s: services/proxyhandlers/getRequestHandler.c.s
+services/proxyhandlers/getRequest/getRequestHandler.s: services/proxyhandlers/getRequest/getRequestHandler.c.s
 
-.PHONY : services/proxyhandlers/getRequestHandler.s
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.s
 
 # target to generate assembly for a file
-services/proxyhandlers/getRequestHandler.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.s
-.PHONY : services/proxyhandlers/getRequestHandler.c.s
+services/proxyhandlers/getRequest/getRequestHandler.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
+.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.s
 
 services/pthread/pthreadService.o: services/pthread/pthreadService.c.o
 
@@ -420,9 +420,9 @@ help:
 	@echo "... services/http/httpSrvice.o"
 	@echo "... services/http/httpSrvice.i"
 	@echo "... services/http/httpSrvice.s"
-	@echo "... services/proxyhandlers/getRequestHandler.o"
-	@echo "... services/proxyhandlers/getRequestHandler.i"
-	@echo "... services/proxyhandlers/getRequestHandler.s"
+	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
+	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
+	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"
 	@echo "... services/pthread/pthreadService.o"
 	@echo "... services/pthread/pthreadService.i"
 	@echo "... services/pthread/pthreadService.s"

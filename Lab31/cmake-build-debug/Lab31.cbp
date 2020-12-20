@@ -111,10 +111,10 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.c">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.h">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/pthread/pthreadService.c">

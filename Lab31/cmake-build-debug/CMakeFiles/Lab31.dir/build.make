@@ -174,18 +174,18 @@ CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c" -o CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o: CMakeFiles/Lab31.dir/flags.make
-CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o: ../services/proxyhandlers/getRequestHandler.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.c"
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c"
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.c" > CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.i
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c" > CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.i
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequestHandler.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.s
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
 
 # Object files for target Lab31
 Lab31_OBJECTS = \
@@ -198,7 +198,7 @@ Lab31_OBJECTS = \
 "CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o" \
 "CMakeFiles/Lab31.dir/services/cache/cache.c.o" \
 "CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o" \
-"CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o"
+"CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o"
 
 # External object files for target Lab31
 Lab31_EXTERNAL_OBJECTS =
@@ -212,7 +212,7 @@ Lab31: CMakeFiles/Lab31.dir/services/connection/connection.c.o
 Lab31: CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o
 Lab31: CMakeFiles/Lab31.dir/services/cache/cache.c.o
 Lab31: CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o
-Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/getRequestHandler.c.o
+Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o
 Lab31: CMakeFiles/Lab31.dir/build.make
 Lab31: CMakeFiles/Lab31.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Linking C executable Lab31"
