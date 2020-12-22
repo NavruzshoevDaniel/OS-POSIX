@@ -155,3 +155,50 @@ void destroyCache(CacheInfo *cache, const int maxCacheSize) {
     }
     printf("destroy cache\n");
 }
+
+void putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
+
+    char **reallocatedCacheData = (char **) realloc(cacheChunk->data,
+                                                    (cacheChunk->numChunks + 1) * sizeof(char *));
+    if (reallocatedCacheData == NULL) {
+        printf("CACHE malloc failed\n");
+        makeCacheInvalid(cacheChunk);
+        return;
+    }
+    cacheChunk->data = reallocatedCacheData;
+
+    int *realocatedDataChunksSize = (int *) realloc(cacheChunk->dataChunksSize,
+                                                    (cacheChunk->numChunks + 1) * sizeof(int));
+    if (realocatedDataChunksSize == NULL) {
+        //free old data
+        printf("CACHE malloc failed\n");
+        makeCacheInvalid(cacheChunk);
+        return;
+    }
+    cacheChunk->dataChunksSize = realocatedDataChunksSize;
+    cacheChunk->dataChunksSize[cacheChunk->numChunks] = sizeof(char) * lengthNewData;
+
+    cacheChunk->data[cacheChunk->numChunks] = (char *) malloc(sizeof(char) * lengthNewData);
+
+    if (cacheChunk->data[cacheChunk->numChunks] == NULL) {
+        printf("CACHE malloc failed\n");
+        makeCacheInvalid(cacheChunk);
+        return;
+    }
+
+    pthread_mutex_lock(&cacheChunk->mutex);
+    cacheChunk->recvSize += lengthNewData;
+
+    memcpy(cacheChunk->data[cacheChunk->numChunks], newData, sizeof(char) * lengthNewData);
+
+    pthread_mutex_unlock(&cacheChunk->mutex);
+
+    pthread_mutex_lock(&cacheChunk->numChunksMutex);
+    cacheChunk->numChunks++;
+    pthread_mutex_unlock(&cacheChunk->numChunksMutex);
+}
+
+
+int broadcastWaitingCacheClients(CacheInfo *cacheChunk) {
+    pthread_cond_broadcast(&cacheChunk->numChunksCondVar);
+}

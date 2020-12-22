@@ -35,6 +35,8 @@ struct CacheInfo {
     enum CacheStatus status;
 } typedef CacheInfo;
 
+void putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
+
 void destroyCache(CacheInfo *cache, int maxCacheSize);
 
 int initCache(CacheInfo *cache, int maxCacheSize);
@@ -57,6 +59,8 @@ int searchFreeCacheAndSetDownloadingState(char *url, CacheInfo *cache, int cache
  * If url exits return index cache or else return -1
  * */
 int searchUrlInCache(char *url, CacheInfo *cache, int cacheSize);
+
+int broadcastWaitingCacheClients(CacheInfo *cacheChunk);
 
 
 #endif //LAB31_CACHE_H

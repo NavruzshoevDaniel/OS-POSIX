@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <stdint.h>
 #include <netinet/in.h>
-#include <netdb.h>
 #include <pthread.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -399,7 +398,7 @@ void handleReadFromServerWriteToClientState(Connection *connections,
             printf("READ_FROM_SERVER_WRITE_CLIENT:i dont have cache");
             return;
         }
-        //---------------------------------------------------------------------------put to cache
+
         if (isFirstCacheChunk(&cache[connections[i].cacheIndex])) {
             //printf("%d first time\n", connections[i].id);
             char *dest = buf;
@@ -419,62 +418,9 @@ void handleReadFromServerWriteToClientState(Connection *connections,
         }
 
         //printf("%d before realloc\n", connections[i].id);
+        putDataToCache(&cache[connections[i].cacheIndex], buf, readCount);
 
-
-        char **tempPtr = (char **) realloc(cache[connections[i].cacheIndex].data,
-                                           (cache[connections[i].cacheIndex].numChunks + 1) *
-                                           sizeof(char *));
-        if (tempPtr == NULL) {
-            //free old data
-            printf("CACHE malloc failed\n");
-            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-            return;
-        }
-        cache[connections[i].cacheIndex].data = tempPtr;
-
-        int *tempPtr1 = (int *) realloc(cache[connections[i].cacheIndex].dataChunksSize,
-                                        (cache[connections[i].cacheIndex].numChunks
-                                         + 1) * sizeof(int));
-        if (tempPtr1 == NULL) {
-            //free old data
-            printf("CACHE malloc failed\n");
-            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-            return;
-        }
-        cache[connections[i].cacheIndex].dataChunksSize = tempPtr1;
-        cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks] =
-                sizeof(char) * readCount;
-
-        //printf("SIZE = %d\n", cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks]);
-
-        cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] = (char *) malloc(
-                sizeof(char) * readCount);
-
-        //printf("%d malloc size = %d\n", connections[i].id, sizeof(char)*readCount);
-
-        if (cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] == NULL) {
-            printf("CACHE malloc failed\n");
-            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-            return;
-        }
-
-        pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
-        //printf("%d 18\n", connections[i].id);
-        cache[connections[i].cacheIndex].recvSize += readCount;
-
-        memcpy(cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks], buf,
-               sizeof(char) * readCount);
-
-        //printf("%d readCount = %d\n", connections[i].id, readCount);
-
-        pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
-
-        pthread_mutex_lock(&cache[connections[i].cacheIndex].numChunksMutex);
-        cache[connections[i].cacheIndex].numChunks++;
-        //printf("%d numCH = %d\n", connections[i].id, cache[connections[i].cacheIndex].numChunks);
-        pthread_mutex_unlock(&cache[connections[i].cacheIndex].numChunksMutex);
-
-        pthread_cond_broadcast(&cache[connections[i].cacheIndex].numChunksCondVar);
+        broadcastWaitingCacheClients(&cache[connections[i].cacheIndex]);
 
         if (cache[connections[i].cacheIndex].recvSize == cache[connections[i].cacheIndex].allSize) {
             pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
