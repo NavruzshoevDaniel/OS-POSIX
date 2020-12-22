@@ -43,7 +43,16 @@ void handleWriteToServerState(Connection *connections,
                               int threadId,
                               int i);
 
-void handleGetMethod(char *url, Connection *connections, int i, int *localConnectionsCount, int threadId);
+void handleGetMethod(char *url, Connection *connection, int i, int *localConnectionsCount, int threadId);
+
+void handleReadFromServerWriteToClientState(Connection *connections,
+                                            struct pollfd *fds,
+                                            int *localConnectionsCount,
+                                            char *buf,
+                                            int threadId,
+                                            int i);
+
+bool isFirstCacheChunk(const CacheInfo *cache);
 
 //----------------------------------------------------------------------------------SOCKET
 int getProxySocket(int port) {
@@ -74,44 +83,12 @@ int getProxySocket(int port) {
     return proxySocket;
 }
 
-int getServerSocketBy(char *url) {
-
-    char *host = getHostFromUrl(url);
-
-    struct hostent *hostInfo = gethostbyname(host);
-
-    if (NULL == hostInfo) {
-        fprintf(stderr, "Cannot get host by name\n");
-        return -1;
-    }
-
-    struct sockaddr_in destinationAddress;
-
-    destinationAddress.sin_family = AF_INET;
-    destinationAddress.sin_port = htons(80);
-    memcpy(&destinationAddress.sin_addr, hostInfo->h_addr, hostInfo->h_length);
-
-    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (serverSocket == -1) {
-        perror("Cannot create socket");
-        return -1;
-    }
-
-    if (-1 == connect(serverSocket, (struct sockaddr *) &destinationAddress, sizeof(destinationAddress))) {
-        perror("Cannot connect");
-        return -1;
-    }
-
-    return serverSocket;
-}
-
 void handleNotGetMethod(struct Connection *connection) {
     char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
     write(connection->clientSocket, wrong, 23);
 }
 
-void cannotResolve(struct Connection *connection) {
+void handleNotResolvingUrl(struct Connection *connection) {
     char errorstr[] = "HTTP: 523\r\n";
     write(connection->clientSocket, errorstr, 11);
 }
@@ -247,7 +224,7 @@ void handleGetMethod(char *url, Connection *connections, int i, int *localConnec
             connections[i].buffer = createGet(url, &connections[i].buffer_size);
 
             if (connections[i].serverSocket == -1) {
-                cannotResolve(&connections[i]);
+                handleNotResolvingUrl(&connections[i]);
                 dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
                                       connections, localConnectionsCount, threadId);
                 free(url);
@@ -297,135 +274,7 @@ _Noreturn void *work(void *param) {
                     break;
                 }
                 case READ_FROM_SERVER_WRITE_CLIENT: {
-                    if ((fds[i * 2].revents & POLLOUT && fds[i * 2 + 1].revents & POLLIN) ||
-                        (connections[i].clientSocket == -1 && fds[i * 2 +
-                                                                  1].revents & POLLIN)) {
-
-                        ssize_t readCount = recv(connections[i].serverSocket, buf, BUFFER_SIZE, 0);
-                        //printf("(%d) (%d)| %d\n", threadId, connections[i].id, readCount);
-
-                        if (readCount < 0) {
-                            printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:recv fron server err\n", threadId,
-                                   connections[i].id);
-                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:recv fron server err", 1,
-                                                  connections, &localConnectionsCount, threadId);
-                            break;
-                        }
-
-                        if (readCount == 0) {
-                            if (connections[i].cacheIndex != -1) {
-                                printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:INVALID CACHE\n", threadId,
-                                       connections[i].id);
-                                makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            }
-                            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:server closed", 1, connections,
-                                                  &localConnectionsCount, threadId);
-                            break;
-                        }
-
-                        //-------------------------------------------------------------------------send client  = 0?
-                        if (connections[i].clientSocket != -1) {
-                            if (send(connections[i].clientSocket, buf, (size_t) readCount, 0) <= 0) {
-                                printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT: CLIENT ERROR\n", threadId,
-                                       connections[i].id);
-                                connections[i].clientSocket = -1;
-                            }
-                        }
-
-
-                        if (connections[i].cacheIndex == -1) {
-                            printf("READ_FROM_SERVER_WRITE_CLIENT:i dont have cache");
-                            break;
-                        }
-                        //---------------------------------------------------------------------------put to cache
-                        if (DOWNLOADING == cache[connections[i].cacheIndex].status &&
-                            cache[connections[i].cacheIndex].recvSize == 0) {
-
-                            //printf("%d first time\n", connections[i].id);
-                            char *dest = buf;
-                            int body = getIndexOfBody(dest, readCount);
-                            if (body == -1) { break; }
-
-                            int statusCode = getStatusCodeAnswer(dest);
-                            long contentLength = getContentLengthFromAnswer(dest);
-
-                            if (statusCode != 200 || contentLength == -1) {
-                                makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                                dropConnectionWrapper(i, "DO NOT NEED TO BE CACHED", 1, connections,
-                                                      &localConnectionsCount, threadId);
-                                break;
-                            }
-                            cache[connections[i].cacheIndex].allSize = (size_t) (contentLength + body);
-                        }
-
-                        //printf("%d before realloc\n", connections[i].id);
-
-                        char **tempPtr = (char **) realloc(cache[connections[i].cacheIndex].data,
-                                                           (cache[connections[i].cacheIndex].numChunks + 1) *
-                                                           sizeof(char *));
-                        if (tempPtr == NULL) {
-                            //free old data
-                            printf("CACHE malloc failed\n");
-                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            break;
-                        }
-                        cache[connections[i].cacheIndex].data = tempPtr;
-
-                        int *tempPtr1 = (int *) realloc(cache[connections[i].cacheIndex].dataChunksSize,
-                                                        (cache[connections[i].cacheIndex].numChunks
-                                                         + 1) * sizeof(int));
-                        if (tempPtr1 == NULL) {
-                            //free old data
-                            printf("CACHE malloc failed\n");
-                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            break;
-                        }
-                        cache[connections[i].cacheIndex].dataChunksSize = tempPtr1;
-                        cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks] =
-                                sizeof(char) * readCount;
-
-                        //printf("SIZE = %d\n", cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks]);
-
-                        cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] = (char *) malloc(
-                                sizeof(char) * readCount);
-
-                        //printf("%d malloc size = %d\n", connections[i].id, sizeof(char)*readCount);
-
-                        if (cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] == NULL) {
-                            printf("CACHE malloc failed\n");
-                            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-                            break;
-                        }
-
-                        pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
-                        //printf("%d 18\n", connections[i].id);
-                        cache[connections[i].cacheIndex].recvSize += readCount;
-
-                        memcpy(cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks], buf,
-                               sizeof(char) * readCount);
-
-                        //printf("%d readCount = %d\n", connections[i].id, readCount);
-
-                        pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
-
-                        pthread_mutex_lock(&cache[connections[i].cacheIndex].numChunksMutex);
-                        cache[connections[i].cacheIndex].numChunks++;
-                        //printf("%d numCH = %d\n", connections[i].id, cache[connections[i].cacheIndex].numChunks);
-                        pthread_mutex_unlock(&cache[connections[i].cacheIndex].numChunksMutex);
-
-                        pthread_cond_broadcast(&cache[connections[i].cacheIndex].numChunksCondVar);
-
-                        if (cache[connections[i].cacheIndex].recvSize == cache[connections[i].cacheIndex].allSize) {
-                            pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
-                            cache[connections[i].cacheIndex].status = VALID;
-                            pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
-                            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:SUCCESS", 1, connections,
-                                                  &localConnectionsCount, threadId);
-                        }
-
-                        break;
-                    }
+                    handleReadFromServerWriteToClientState(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
                 case READ_FROM_CACHE_WRITE_CLIENT: {
@@ -502,6 +351,143 @@ _Noreturn void *work(void *param) {
     }//while
 
     return NULL;
+}
+
+void handleReadFromServerWriteToClientState(Connection *connections,
+                                            struct pollfd *fds,
+                                            int *localConnectionsCount,
+                                            char *buf,
+                                            int threadId,
+                                            int i) {
+    if ((fds[i * 2].revents & POLLOUT && fds[i * 2 + 1].revents & POLLIN) ||
+        (connections[i].clientSocket == -1 && fds[i * 2 + 1].revents & POLLIN)) {
+
+        ssize_t readCount = recv(connections[i].serverSocket, buf, BUFFER_SIZE, 0);
+        //printf("(%d) (%d)| %d\n", threadId, connections[i].id, readCount);
+
+        if (readCount < 0) {
+            printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:recv fron server err\n", threadId,
+                   connections[i].id);
+            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:recv fron server err", 1,
+                                  connections, localConnectionsCount, threadId);
+            return;
+        }
+
+        if (readCount == 0) {
+            if (connections[i].cacheIndex != -1) {
+                printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:INVALID CACHE\n", threadId,
+                       connections[i].id);
+                makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            }
+            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:server closed", 1, connections,
+                                  localConnectionsCount, threadId);
+            return;
+        }
+
+        //-------------------------------------------------------------------------send client  = 0?
+        if (connections[i].clientSocket != -1) {
+            if (send(connections[i].clientSocket, buf, (size_t) readCount, 0) <= 0) {
+                printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT: CLIENT ERROR\n", threadId,
+                       connections[i].id);
+                connections[i].clientSocket = -1;
+            }
+        }
+
+
+        if (connections[i].cacheIndex == -1) {
+            printf("READ_FROM_SERVER_WRITE_CLIENT:i dont have cache");
+            return;
+        }
+        //---------------------------------------------------------------------------put to cache
+        if (isFirstCacheChunk(&cache[connections[i].cacheIndex])) {
+            //printf("%d first time\n", connections[i].id);
+            char *dest = buf;
+            int body = getIndexOfBody(dest, readCount);
+            if (body == -1) { return; }
+
+            int statusCode = getStatusCodeAnswer(dest);
+            long contentLength = getContentLengthFromAnswer(dest);
+
+            if (statusCode != 200 || contentLength == -1) {
+                makeCacheInvalid(&cache[connections[i].cacheIndex]);
+                dropConnectionWrapper(i, "DO NOT NEED TO BE CACHED", 1, connections,
+                                      localConnectionsCount, threadId);
+                return;
+            }
+            cache[connections[i].cacheIndex].allSize = (size_t) (contentLength + body);
+        }
+
+        //printf("%d before realloc\n", connections[i].id);
+
+
+        char **tempPtr = (char **) realloc(cache[connections[i].cacheIndex].data,
+                                           (cache[connections[i].cacheIndex].numChunks + 1) *
+                                           sizeof(char *));
+        if (tempPtr == NULL) {
+            //free old data
+            printf("CACHE malloc failed\n");
+            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            return;
+        }
+        cache[connections[i].cacheIndex].data = tempPtr;
+
+        int *tempPtr1 = (int *) realloc(cache[connections[i].cacheIndex].dataChunksSize,
+                                        (cache[connections[i].cacheIndex].numChunks
+                                         + 1) * sizeof(int));
+        if (tempPtr1 == NULL) {
+            //free old data
+            printf("CACHE malloc failed\n");
+            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            return;
+        }
+        cache[connections[i].cacheIndex].dataChunksSize = tempPtr1;
+        cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks] =
+                sizeof(char) * readCount;
+
+        //printf("SIZE = %d\n", cache[connections[i].cacheIndex].dataChunksSize[cache[connections[i].cacheIndex].numChunks]);
+
+        cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] = (char *) malloc(
+                sizeof(char) * readCount);
+
+        //printf("%d malloc size = %d\n", connections[i].id, sizeof(char)*readCount);
+
+        if (cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks] == NULL) {
+            printf("CACHE malloc failed\n");
+            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+            return;
+        }
+
+        pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
+        //printf("%d 18\n", connections[i].id);
+        cache[connections[i].cacheIndex].recvSize += readCount;
+
+        memcpy(cache[connections[i].cacheIndex].data[cache[connections[i].cacheIndex].numChunks], buf,
+               sizeof(char) * readCount);
+
+        //printf("%d readCount = %d\n", connections[i].id, readCount);
+
+        pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
+
+        pthread_mutex_lock(&cache[connections[i].cacheIndex].numChunksMutex);
+        cache[connections[i].cacheIndex].numChunks++;
+        //printf("%d numCH = %d\n", connections[i].id, cache[connections[i].cacheIndex].numChunks);
+        pthread_mutex_unlock(&cache[connections[i].cacheIndex].numChunksMutex);
+
+        pthread_cond_broadcast(&cache[connections[i].cacheIndex].numChunksCondVar);
+
+        if (cache[connections[i].cacheIndex].recvSize == cache[connections[i].cacheIndex].allSize) {
+            pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
+            cache[connections[i].cacheIndex].status = VALID;
+            pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
+            dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:SUCCESS", 1, connections,
+                                  localConnectionsCount, threadId);
+        }
+    }
+}
+
+bool isFirstCacheChunk(const CacheInfo *cache) {
+    return DOWNLOADING == cache->status && cache->recvSize == 0;
 }
 
 void handleWriteToServerState(Connection *connections,

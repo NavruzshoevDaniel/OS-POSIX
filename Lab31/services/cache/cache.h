@@ -54,7 +54,7 @@ int searchNotUsingCacheAndSetDownloadingState(char *url, CacheInfo *cache, int c
 int searchFreeCacheAndSetDownloadingState(char *url, CacheInfo *cache, int cacheSize, int threadId);
 
 /**
- * If url exits  and return index cache or else return -1
+ * If url exits return index cache or else return -1
  * */
 int searchUrlInCache(char *url, CacheInfo *cache, int cacheSize);
 

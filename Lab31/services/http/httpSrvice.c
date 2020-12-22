@@ -1,7 +1,6 @@
 //
 // Created by Daniel on 20.12.2020.
 //
-
 #include "httpService.h"
 
 
@@ -137,4 +136,35 @@ int getIndexOfBody(char *buff, size_t len) {
     }
 
     return -1;
+}
+
+int getServerSocketBy(char *url) {
+
+    char *host = getHostFromUrl(url);
+
+    struct hostent *hostInfo = gethostbyname(host);
+
+    if (NULL == hostInfo) {
+        fprintf(stderr, "Cannot get host by name\n");
+        return -1;
+    }
+
+    struct sockaddr_in destinationAddress;
+
+    destinationAddress.sin_family = AF_INET;
+    destinationAddress.sin_port = htons(80);
+    memcpy(&destinationAddress.sin_addr, hostInfo->h_addr, hostInfo->h_length);
+
+    int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (serverSocket == -1) {
+        perror("Cannot create socket");
+        return -1;
+    }
+
+    if (-1 == connect(serverSocket, (struct sockaddr *) &destinationAddress, sizeof(destinationAddress))) {
+        perror("Cannot connect");
+        return -1;
+    }
+    return serverSocket;
 }
