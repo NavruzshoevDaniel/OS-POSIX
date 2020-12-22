@@ -18,6 +18,7 @@
 #include "services/cache/cache.h"
 #include "services/http/httpService.h"
 #include "services/proxyhandlers/getRequest/getRequestHandler.h"
+#include "services/proxyhandlers/writeToServer/writeToServerHandler.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
@@ -37,12 +38,6 @@ CacheInfo cache[MAX_CACHE_SIZE];
 
 pthread_mutex_t connectionsMutex;
 
-void handleWriteToServerState(Connection *connections,
-                              struct pollfd *fds,
-                              int *localConnectionsCount,
-                              int threadId,
-                              int i);
-
 void handleReadFromServerWriteToClientState(Connection *connections,
                                             struct pollfd *fds,
                                             int *localConnectionsCount,
@@ -57,11 +52,18 @@ void handleReadFromCacheWriteToClientState();
 int sendNewChunksToClient(Connection connection, size_t newSize);
 
 void handleGettingRequestStateWrapper(Connection *connections,
-                                 struct pollfd *fds,
-                                 int *localConnectionsCount,
-                                 char *buf,
-                                 int threadId,
-                                 int i);
+                                      struct pollfd *fds,
+                                      int *localConnectionsCount,
+                                      char *buf,
+                                      int threadId,
+                                      int i);
+
+void handleWriteToServerStateWrapper(Connection *connections,
+                                     struct pollfd *fds,
+                                     int *localConnectionsCount,
+                                     int threadId,
+                                     int i);
+
 int getProxySocket(int port) {
 
     struct sockaddr_in listenAddress;
@@ -183,7 +185,7 @@ _Noreturn void *work(void *param) {
                     break;
                 }
                 case WRITE_TO_SERVER: {
-                    handleWriteToServerState(connections, fds, &localConnectionsCount, threadId, i);
+                    handleWriteToServerStateWrapper(connections, fds, &localConnectionsCount, threadId, i);
                     break;
                 }
                 case READ_FROM_SERVER_WRITE_CLIENT: {
@@ -200,6 +202,18 @@ _Noreturn void *work(void *param) {
         }
     }
     return NULL;
+}
+
+void handleWriteToServerStateWrapper(Connection *connections,
+                                     struct pollfd *fds,
+                                     int *localConnectionsCount,
+                                     int threadId,
+                                     int i) {
+    if (SEND_TO_SERVER_EXCEPTION == handleWriteToServerState(&connections[i], fds[i * 2 + 1])) {
+        makeCacheInvalid(&cache[connections[i].cacheIndex]);
+        dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
+                              connections, localConnectionsCount, threadId);
+    }
 }
 
 void handleGettingRequestStateWrapper(Connection *connections,
@@ -234,7 +248,7 @@ void handleGettingRequestStateWrapper(Connection *connections,
                                   localConnectionsCount, threadId);
             break;
         }
-        case RESOLVING_SOCKET_FROM_URL_EXCEPTION :{
+        case RESOLVING_SOCKET_FROM_URL_EXCEPTION : {
             dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0, connections, localConnectionsCount,
                                   threadId);
         }
@@ -393,24 +407,6 @@ void handleReadFromServerWriteToClientState(Connection *connections,
 bool isFirstCacheChunk(const CacheInfo *cache) {
     return DOWNLOADING == cache->status && cache->recvSize == 0;
 }
-
-void handleWriteToServerState(Connection *connections,
-                              struct pollfd *fds,
-                              int *localConnectionsCount,
-                              int threadId,
-                              int i) {
-    if (fds[i * 2 + 1].revents & POLLOUT) {
-        if (send(connections[i].serverSocket, connections[i].buffer, connections[i].buffer_size, 0) <=
-            0) {
-            makeCacheInvalid(&cache[connections[i].cacheIndex]);
-            dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
-                                  connections, localConnectionsCount, threadId);
-            return;
-        }
-        setReadFromServerWriteToClientState(&connections[i]);
-    }
-}
-//end
 
 void checkArgs(int argcc, const char *argv[]) {
     checkCountArguments(argcc);

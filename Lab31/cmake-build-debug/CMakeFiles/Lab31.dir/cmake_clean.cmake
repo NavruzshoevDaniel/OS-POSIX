@@ -6,6 +6,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Lab31.dir/services/connection/connection.c.o"
   "CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o"
   "CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o"
+  "CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o"
   "CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o"
   "CMakeFiles/Lab31.dir/services/queue/queueService.c.o"
   "CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.o"

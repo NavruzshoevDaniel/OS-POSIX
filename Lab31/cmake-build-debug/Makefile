@@ -312,6 +312,33 @@ services/proxyhandlers/getRequest/getRequestHandler.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
 .PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.s
 
+services/proxyhandlers/writeToServer/writeToServerHandler.o: services/proxyhandlers/writeToServer/writeToServerHandler.c.o
+
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.o
+
+# target to build an object file
+services/proxyhandlers/writeToServer/writeToServerHandler.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.o
+
+services/proxyhandlers/writeToServer/writeToServerHandler.i: services/proxyhandlers/writeToServer/writeToServerHandler.c.i
+
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.i
+
+# target to preprocess a source file
+services/proxyhandlers/writeToServer/writeToServerHandler.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.i
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.i
+
+services/proxyhandlers/writeToServer/writeToServerHandler.s: services/proxyhandlers/writeToServer/writeToServerHandler.c.s
+
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.s
+
+# target to generate assembly for a file
+services/proxyhandlers/writeToServer/writeToServerHandler.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.s
+.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.s
+
 services/pthread/pthreadService.o: services/pthread/pthreadService.c.o
 
 .PHONY : services/pthread/pthreadService.o
@@ -423,6 +450,9 @@ help:
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"
+	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.o"
+	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.i"
+	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.s"
 	@echo "... services/pthread/pthreadService.o"
 	@echo "... services/pthread/pthreadService.i"
 	@echo "... services/pthread/pthreadService.s"
