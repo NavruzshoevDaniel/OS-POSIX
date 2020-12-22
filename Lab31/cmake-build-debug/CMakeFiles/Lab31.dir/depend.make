@@ -11,6 +11,7 @@ CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/http/httpService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/writeToServer/writeToServerHandler.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
@@ -36,6 +37,13 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ..
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.c
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/pthread/pthreadService.h
+
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/connection/connection.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/http/httpService.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/connection/connection.h

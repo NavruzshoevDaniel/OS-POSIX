@@ -312,6 +312,33 @@ services/proxyhandlers/getRequest/getRequestHandler.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
 .PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.s
 
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o
+
+# target to build an object file
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i
+
+# target to preprocess a source file
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s
+
+# target to generate assembly for a file
+services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+
 services/proxyhandlers/writeToServer/writeToServerHandler.o: services/proxyhandlers/writeToServer/writeToServerHandler.c.o
 
 .PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.o
@@ -450,6 +477,9 @@ help:
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"
+	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o"
+	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i"
+	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.o"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.i"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.s"

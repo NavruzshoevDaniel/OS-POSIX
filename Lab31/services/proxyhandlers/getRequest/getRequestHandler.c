@@ -70,9 +70,7 @@ int handleGettingRequestState(Connection *connection,
     } else if (clientFds.revents & POLLIN) {
         ssize_t readCount = recv(connection->clientSocket, buf, bufferSize, 0);
 
-        if (readCount <= 0) {
-            return RECV_CLIENT_EXCEPTION;
-        }
+        if (readCount <= 0) { return RECV_CLIENT_EXCEPTION; }
         int bufferErr;
         if (isConnectionBufferEmpty(connection)) {
             bufferErr = allocateConnectionBufferMemory(connection, readCount);
@@ -80,9 +78,7 @@ int handleGettingRequestState(Connection *connection,
             bufferErr = reallocateConnectionBufferMemory(connection, readCount);
         }
 
-        if (bufferErr == -1) {
-            return ALLOCATING_BUFFER_MEMORY_EXCEPTION;
-        }
+        if (bufferErr == -1) { return ALLOCATING_BUFFER_MEMORY_EXCEPTION; }
 
         memcpy(connection->buffer, buf, (size_t) readCount);
 

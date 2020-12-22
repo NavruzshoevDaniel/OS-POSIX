@@ -3,6 +3,10 @@
 //
 #include "writeToServerHandler.h"
 
+/**
+ * @return 0 - success
+ *         SEND_TO_SERVER_EXCEPTION -2
+ * */
 int handleWriteToServerState(Connection *connection,
                              struct pollfd serverFd) {
     if (serverFd.revents & POLLOUT) {
