@@ -2,11 +2,8 @@
 // Created by Daniel on 20.12.2020.
 //
 
-#include <poll.h>
-#include "../../connection/connection.h"
-#include "../../http/httpService.h"
-#include "../../cache/cache.h"
-/*
+#include "getRequestHandler.h"
+
 
 void handleNotGetMethod(struct Connection *connection) {
     char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
@@ -18,15 +15,23 @@ void handleNotResolvingUrl(struct Connection *connection) {
     write(connection->clientSocket, errorstr, 11);
 }
 
-void handleGetMethod(char *url, Connection *connection, int *localConnectionsCount, int threadId) {
-    int urlInCacheResult = searchUrlInCache(url, cache, MAX_CACHE_SIZE);
+/**
+ * @return 0 - SUCCESS
+ *         RESOLVING_SOCKET_FROM_URL_EXCEPTION -6
+ * */
+int handleGetMethod(char *url,
+                    Connection *connection,
+                    CacheInfo *cache,
+                    const int maxCacheSize,
+                    int threadId) {
+    int urlInCacheResult = searchUrlInCache(url, cache, maxCacheSize);
     if (urlInCacheResult >= 0) {
         setReadFromCacheState(connection, urlInCacheResult);
     } else {
-        int freeCacheIndex = searchFreeCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId);
+        int freeCacheIndex = searchFreeCacheAndSetDownloadingState(url, cache, maxCacheSize, threadId);
         if ((-1 != freeCacheIndex) ||
             (-1 != (freeCacheIndex =
-                            searchNotUsingCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId)))) {
+                            searchNotUsingCacheAndSetDownloadingState(url, cache, maxCacheSize, threadId)))) {
 
             setWriteToServerState(connection, freeCacheIndex);
             connection->serverSocket = getServerSocketBy(url);
@@ -36,10 +41,8 @@ void handleGetMethod(char *url, Connection *connection, int *localConnectionsCou
 
             if (connection->serverSocket == -1) {
                 handleNotResolvingUrl(connection);
-                dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
-                                      connection, localConnectionsCount, threadId);
                 free(url);
-                return;
+                return RESOLVING_SOCKET_FROM_URL_EXCEPTION;
             }
         } else {
             setWriteToServerState(connection, -1);
@@ -47,34 +50,38 @@ void handleGetMethod(char *url, Connection *connection, int *localConnectionsCou
     }
 }
 
-void handleGettingRequestState(Connection *connection,
-                               char *buf,
-                               int threadId,
-                               struct pollfd clientFds) {
+/**
+ * @return 0 - success
+ *          DEAD_CLIENT_EXCEPTION -2
+ *          RECV_CLIENT_EXCEPTION -3
+ *          ALLOCATING_BUFFER_MEMORY_EXCEPTION -4
+ *          NOT_GET_EXCEPTION -5
+ *          URL_EXCEPTION -6
+ * */
+int handleGettingRequestState(Connection *connection,
+                              char *buf,
+                              const int bufferSize,
+                              int threadId,
+                              struct pollfd clientFds,
+                              CacheInfo *cache,
+                              const int maxCacheSize) {
     if (clientFds.revents & POLLHUP) {
-        dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
-                              connection, localConnectionsCount, threadId);
+        return DEAD_CLIENT_EXCEPTION;
     } else if (clientFds.revents & POLLIN) {
-        ssize_t readCount = recv(connection->clientSocket, buf, BUFFER_SIZE, 0);
+        ssize_t readCount = recv(connection->clientSocket, buf, bufferSize, 0);
 
         if (readCount <= 0) {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connection,
-                                  localConnectionsCount, threadId);
-            return;
+            return RECV_CLIENT_EXCEPTION;
         }
         int bufferErr;
         if (isConnectionBufferEmpty(connection)) {
             bufferErr = allocateConnectionBufferMemory(connection, readCount);
         } else {
-            printf("REALLOCATE CACHE");
-            //TODO::this is really need?
             bufferErr = reallocateConnectionBufferMemory(connection, readCount);
         }
 
         if (bufferErr == -1) {
-            dropConnectionWrapper(i, "buffer error",
-                                  0, connection, localConnectionsCount, threadId);
-            return;
+            return ALLOCATING_BUFFER_MEMORY_EXCEPTION;
         }
 
         memcpy(connection->buffer, buf, (size_t) readCount);
@@ -85,18 +92,19 @@ void handleGettingRequestState(Connection *connection,
             if (url != NULL) {
                 if (!isMethodGet(connection->buffer)) {
                     handleNotGetMethod(connection);
-                    dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
-                                          connection, localConnectionsCount, threadId);
                     free(url);
+                    return NOT_GET_EXCEPTION;
                 } else {
-                    handleGetMethod(url, connection, i, localConnectionsCount, threadId);
+                    int result = handleGetMethod(url, connection, cache, maxCacheSize, threadId);
+                    if (result == RESOLVING_SOCKET_FROM_URL_EXCEPTION) {
+                        return RESOLVING_SOCKET_FROM_URL_EXCEPTION;
+                    }
                 }
             } else {
-                dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connection,
-                                      localConnectionsCount, threadId);
+                return URL_EXCEPTION;
             }
         }
     }
 }
-*/
+
 

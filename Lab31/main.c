@@ -17,6 +17,7 @@
 #include "services/concurrent/atomicInt.h"
 #include "services/cache/cache.h"
 #include "services/http/httpService.h"
+#include "services/proxyhandlers/getRequest/getRequestHandler.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
@@ -42,8 +43,6 @@ void handleWriteToServerState(Connection *connections,
                               int threadId,
                               int i);
 
-void handleGetMethod(char *url, Connection *connection, int i, int *localConnectionsCount, int threadId);
-
 void handleReadFromServerWriteToClientState(Connection *connections,
                                             struct pollfd *fds,
                                             int *localConnectionsCount,
@@ -57,7 +56,12 @@ void handleReadFromCacheWriteToClientState();
 
 int sendNewChunksToClient(Connection connection, size_t newSize);
 
-//----------------------------------------------------------------------------------SOCKET
+void handleGettingRequestStateWrapper(Connection *connections,
+                                 struct pollfd *fds,
+                                 int *localConnectionsCount,
+                                 char *buf,
+                                 int threadId,
+                                 int i);
 int getProxySocket(int port) {
 
     struct sockaddr_in listenAddress;
@@ -84,16 +88,6 @@ int getProxySocket(int port) {
     }
 
     return proxySocket;
-}
-
-void handleNotGetMethod(struct Connection *connection) {
-    char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
-    write(connection->clientSocket, wrong, 23);
-}
-
-void handleNotResolvingUrl(struct Connection *connection) {
-    char errorstr[] = "HTTP: 523\r\n";
-    write(connection->clientSocket, errorstr, 11);
 }
 
 void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
@@ -156,90 +150,6 @@ void dropConnectionWrapper(int id,
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
-void handleGettingRequestState(Connection *connections,
-                               struct pollfd *fds,
-                               int *localConnectionsCount,
-                               char *buf,
-                               int threadId,
-                               int i) {
-    if (fds[CLIENT_SOCKET].revents & POLLHUP) {
-        dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
-                              connections, localConnectionsCount, threadId);
-    } else if (fds[CLIENT_SOCKET].revents & POLLIN) {
-        ssize_t readCount = recv(connections[i].clientSocket, buf, BUFFER_SIZE, 0);
-
-        if (readCount <= 0) {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connections,
-                                  localConnectionsCount, threadId);
-            return;
-        }
-        int bufferErr;
-        if (isConnectionBufferEmpty(&connections[i])) {
-            bufferErr = allocateConnectionBufferMemory(&connections[i], readCount);
-        } else {
-            printf("REALLOCATE CACHE");
-            //TODO::this is really need?
-            bufferErr = reallocateConnectionBufferMemory(&connections[i], readCount);
-        }
-
-        if (bufferErr == -1) {
-            dropConnectionWrapper(i, "buffer error",
-                                  0, connections, localConnectionsCount, threadId);
-            return;
-        }
-
-        memcpy(connections[i].buffer, buf, (size_t) readCount);
-
-        if (connections[i].buffer_size > 3) {
-            char *url = getUrlFromData(connections[i].buffer);
-
-            if (url != NULL) {
-                if (!isMethodGet(connections[i].buffer)) {
-                    handleNotGetMethod(&connections[i]);
-                    dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
-                                          connections, localConnectionsCount, threadId);
-                    free(url);
-                } else {
-                    handleGetMethod(url, connections, i, localConnectionsCount, threadId);
-                }
-            } else {
-                dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
-                                      localConnectionsCount, threadId);
-            }
-        }
-    }
-}
-
-void handleGetMethod(char *url, Connection *connections, int i, int *localConnectionsCount, int threadId) {
-    int urlInCacheResult = searchUrlInCache(url, cache, MAX_CACHE_SIZE);
-    if (urlInCacheResult >= 0) {
-        setReadFromCacheState(&connections[i], urlInCacheResult);
-    } else {
-        int freeCacheIndex = searchFreeCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId);
-        if ((-1 != freeCacheIndex) ||
-            (-1 != (freeCacheIndex =
-                            searchNotUsingCacheAndSetDownloadingState(url, cache, MAX_CACHE_SIZE, threadId)))) {
-
-            setWriteToServerState(&connections[i], freeCacheIndex);
-            connections[i].serverSocket = getServerSocketBy(url);
-            free(connections[i].buffer);
-
-            connections[i].buffer = createGet(url, &connections[i].buffer_size);
-
-            if (connections[i].serverSocket == -1) {
-                handleNotResolvingUrl(&connections[i]);
-                dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0,
-                                      connections, localConnectionsCount, threadId);
-                free(url);
-                return;
-            }
-        } else {
-            setWriteToServerState(&connections[i], -1);
-        }
-    }
-}
-
-
 _Noreturn void *work(void *param) {
 
     int threadId = *((int *) param);
@@ -269,7 +179,7 @@ _Noreturn void *work(void *param) {
         for (int i = 0; i < localConnectionsCount; i++) {
             switch (connections[i].status) {
                 case GETTING_REQUEST_FROM_CLIENT: {
-                    handleGettingRequestState(connections, fds, &localConnectionsCount, buf, threadId, i);
+                    handleGettingRequestStateWrapper(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
                 case WRITE_TO_SERVER: {
@@ -290,6 +200,45 @@ _Noreturn void *work(void *param) {
         }
     }
     return NULL;
+}
+
+void handleGettingRequestStateWrapper(Connection *connections,
+                                      struct pollfd *fds,
+                                      int *localConnectionsCount,
+                                      char *buf,
+                                      int threadId,
+                                      int i) {
+    switch (handleGettingRequestState(&connections[i], buf, BUFFER_SIZE, threadId, fds[i * 2], cache, MAX_CACHE_SIZE)) {
+        case DEAD_CLIENT_EXCEPTION: {
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
+                                  connections, localConnectionsCount, threadId);
+            break;
+        }
+        case RECV_CLIENT_EXCEPTION : {
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connections,
+                                  localConnectionsCount, threadId);
+            break;
+        }
+        case ALLOCATING_BUFFER_MEMORY_EXCEPTION: {
+            dropConnectionWrapper(i, "buffer error",
+                                  0, connections, localConnectionsCount, threadId);
+            break;
+        }
+        case NOT_GET_EXCEPTION: {
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
+                                  connections, localConnectionsCount, threadId);
+            break;
+        }
+        case URL_EXCEPTION: {
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
+                                  localConnectionsCount, threadId);
+            break;
+        }
+        case RESOLVING_SOCKET_FROM_URL_EXCEPTION :{
+            dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0, connections, localConnectionsCount,
+                                  threadId);
+        }
+    }
 }
 
 void handleReadFromCacheWriteToClientState(Connection *connections,

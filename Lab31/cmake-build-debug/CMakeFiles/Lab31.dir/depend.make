@@ -10,6 +10,7 @@ CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/http/httpService.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/threadpool/threadPool.h
@@ -32,6 +33,7 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ..
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/http/httpService.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.c
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/pthread/pthreadService.c.o: ../services/pthread/pthreadService.c
