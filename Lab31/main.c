@@ -367,6 +367,8 @@ void handleReadFromServerWriteToClientState(Connection *connections,
                                             char *buf,
                                             int threadId,
                                             int i) {
+    if (!(fds[i * 2].revents & POLLOUT)) {connections[i].clientSocket = -1;}
+
     if ((fds[i * 2].revents & POLLOUT && fds[i * 2 + 1].revents & POLLIN) ||
         (connections[i].clientSocket == -1 && fds[i * 2 + 1].revents & POLLIN)) {
 
@@ -412,12 +414,12 @@ void handleReadFromServerWriteToClientState(Connection *connections,
             //printf("%d first time\n", connections[i].id);
             char *dest = buf;
             int body = getIndexOfBody(dest, readCount);
-            if (body == -1) { return; }
+            //if (body == -1) { return; }
 
             int statusCode = getStatusCodeAnswer(dest);
             long contentLength = getContentLengthFromAnswer(dest);
 
-            if (statusCode != 200 || contentLength == -1) {
+            if (statusCode != 200 || (contentLength == -1 && body == -1)) {
                 makeCacheInvalid(&cache[connections[i].cacheIndex]);
                 dropConnectionWrapper(i, "DO NOT NEED TO BE CACHED", 1, connections,
                                       localConnectionsCount, threadId);
