@@ -2,6 +2,7 @@
 // Created by Daniel on 19.12.2020.
 //
 #include "connection.h"
+#include "../pthread/pthreadService.h"
 
 void dropConnection(int id,
                     const char *reason,
@@ -18,13 +19,14 @@ void dropConnection(int id,
         close(connections[id].serverSocket);
     }
     close(connections[id].clientSocket);
+    printf("socket: %d closed", connections[id].clientSocket);
     setNotActiveState(id, connections, connectionsCount);
 }
 
 
 void freeConnectionUrl(Connection *connection) {
-    free(connection->url);
-    connection->url = NULL;
+    //free(connection->url);
+    //connection->url = NULL;
 }
 
 void freeConnectionBuffer(Connection *connection) {
@@ -73,6 +75,7 @@ void setWriteToServerState(Connection *connection, const int cacheIndex) {
 
 void initNewConnection(Connection *connection, const int newClientSocket) {
     (*connection).clientSocket = newClientSocket;
+    printf("(*connection).clientSocket = %d\n", (*connection).clientSocket);
     (*connection).buffer_size = 0;
     (*connection).buffer = NULL;
     (*connection).cacheIndex = -1;

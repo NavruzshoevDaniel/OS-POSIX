@@ -157,7 +157,6 @@ void destroyCache(CacheInfo *cache, const int maxCacheSize) {
 }
 
 void putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
-
     char **reallocatedCacheData = (char **) realloc(cacheChunk->data,
                                                     (cacheChunk->numChunks + 1) * sizeof(char *));
     if (reallocatedCacheData == NULL) {

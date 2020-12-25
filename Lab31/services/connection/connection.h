@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+
+
 enum connectionState {
     GETTING_REQUEST_FROM_CLIENT = 0,
     WRITE_TO_SERVER,
@@ -29,7 +31,7 @@ struct Connection {
     int cacheIndex;
     size_t numChunksWritten;
     int id;
-    char *url;
+    //char *url;
 } typedef Connection;
 
 void dropConnection(int id,
