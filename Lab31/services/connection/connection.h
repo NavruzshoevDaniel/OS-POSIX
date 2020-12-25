@@ -29,7 +29,6 @@ struct Connection {
     int cacheIndex;
     size_t numChunksWritten;
     int id;
-    char *url;
 } typedef Connection;
 
 void dropConnection(int id,
@@ -57,6 +56,6 @@ int reallocateConnectionBufferMemory(Connection *connection, size_t additionalLe
 
 void freeConnectionBuffer(Connection *connection);
 
-void freeConnectionUrl(Connection *connection);
+
 
 #endif //LAB31_CONNECTION_H

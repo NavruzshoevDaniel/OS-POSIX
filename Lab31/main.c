@@ -235,6 +235,9 @@ void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
     } else if (result == END_READING_PROCCESS) {
         dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:SUCCESS",
                               1, connections, localConnectionsCount, threadId);
+    } else if (result==PUT_CACHE_DATA_EXCEPTION){
+        dropConnectionWrapper(i, "PUT_CACHE_DATA_EXCEPTION",
+                              1, connections, localConnectionsCount, threadId);
     }
 }
 
@@ -408,4 +411,5 @@ int main(int argc, const char *argv[]) {
             pthread_cond_signal(&socketsQueue->condVar);
         }
     }
+    pthread_exit(NULL);
 }

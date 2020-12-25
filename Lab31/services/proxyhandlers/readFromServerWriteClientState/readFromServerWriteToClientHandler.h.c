@@ -4,6 +4,8 @@
 #include "readFromServerWriteToClientHandler.h"
 
 
+bool isClientDead(struct pollfd pollfd);
+
 bool isFirstCacheChunk(const CacheInfo *cache) {
     return DOWNLOADING == cache->status && cache->recvSize == 0;
 }
@@ -26,6 +28,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                                            char *buf,
                                            int bufferSize,
                                            int threadId) {
+    if (isClientDead(clientFd)) { connection->clientSocket = -1; }
     if ((clientFd.revents & POLLOUT && serverFd.revents & POLLIN) ||
         (connection->clientSocket == -1 && serverFd.revents & POLLIN)) {
 
@@ -56,7 +59,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
             cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
         }
 
-        putDataToCache(&cache[connection->cacheIndex], buf, readCount);
+        if (putDataToCache(&cache[connection->cacheIndex], buf, readCount) == -1) { return PUT_CACHE_DATA_EXCEPTION; };
 
         broadcastWaitingCacheClients(&cache[connection->cacheIndex]);
 
@@ -69,4 +72,8 @@ int handleReadFromServerWriteToClientState(Connection *connection,
         return 0;
     }
     return -1;
+}
+
+bool isClientDead(struct pollfd clientFd) {
+    return !(clientFd.revents & POLLOUT);
 }

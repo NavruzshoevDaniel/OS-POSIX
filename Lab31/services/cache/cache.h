@@ -35,7 +35,7 @@ struct CacheInfo {
     enum CacheStatus status;
 } typedef CacheInfo;
 
-void putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
+int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
 
 void destroyCache(CacheInfo *cache, int maxCacheSize);
 
