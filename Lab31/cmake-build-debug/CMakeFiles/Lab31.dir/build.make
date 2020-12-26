@@ -200,18 +200,31 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/writeToServer/writeToServerHandler.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.s
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: CMakeFiles/Lab31.dir/flags.make
-CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o: ../services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c"
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c"
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c" > CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c" > CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
 
-CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
+
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c"
+
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c" > CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
+
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c" -o CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
 
 # Object files for target Lab31
 Lab31_OBJECTS = \
@@ -226,7 +239,8 @@ Lab31_OBJECTS = \
 "CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o" \
 "CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o" \
 "CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o" \
-"CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o"
+"CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o" \
+"CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o"
 
 # External object files for target Lab31
 Lab31_EXTERNAL_OBJECTS =
@@ -242,10 +256,11 @@ Lab31: CMakeFiles/Lab31.dir/services/cache/cache.c.o
 Lab31: CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o
 Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o
 Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o
-Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
+Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
 Lab31: CMakeFiles/Lab31.dir/build.make
 Lab31: CMakeFiles/Lab31.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Linking C executable Lab31"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_14) "Linking C executable Lab31"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Lab31.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

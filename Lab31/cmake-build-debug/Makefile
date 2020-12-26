@@ -312,32 +312,59 @@ services/proxyhandlers/getRequest/getRequestHandler.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
 .PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.s
 
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
 
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o
 
 # target to build an object file
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.o
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
 
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
 
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i
 
 # target to preprocess a source file
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.i
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
 
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s: services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
 
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s
 
 # target to generate assembly for a file
-services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
-.PHONY : services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.c.s
+services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
+.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
+
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
+
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o
+
+# target to build an object file
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
+
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
+
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i
+
+# target to preprocess a source file
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
+
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
+
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s
+
+# target to generate assembly for a file
+services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
+.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
 
 services/proxyhandlers/writeToServer/writeToServerHandler.o: services/proxyhandlers/writeToServer/writeToServerHandler.c.o
 
@@ -477,9 +504,12 @@ help:
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"
-	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.o"
-	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.i"
-	@echo "... services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h.s"
+	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o"
+	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i"
+	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s"
+	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o"
+	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i"
+	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.o"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.i"
 	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.s"

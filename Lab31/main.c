@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <poll.h>
-#include <string.h>
 #include <time.h>
 #include <sys/socket.h>
 #include <stdint.h>
@@ -18,7 +16,8 @@
 #include "services/cache/cache.h"
 #include "services/proxyhandlers/getRequest/getRequestHandler.h"
 #include "services/proxyhandlers/writeToServer/writeToServerHandler.h"
-#include "services/proxyhandlers/readFromServerWriteClientState/readFromServerWriteToClientHandler.h"
+#include "services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h"
+#include "services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
@@ -35,11 +34,11 @@ int poolSize;
 CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
 
-void handleReadFromCacheWriteToClientState(Connection *connections,
-                                           struct pollfd *fds,
-                                           int *localConnectionsCount,
-                                           int threadId,
-                                           int i);
+void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
+                                                  struct pollfd *fds,
+                                                  int *localConnectionsCount,
+                                                  int threadId,
+                                                  int i);
 
 void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
                                                    struct pollfd *fds,
@@ -47,9 +46,6 @@ void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
                                                    char *buf,
                                                    int threadId,
                                                    int i);
-
-
-int sendNewChunksToClient(Connection connection, size_t newSize);
 
 void handleGettingRequestStateWrapper(Connection *connections,
                                       struct pollfd *fds,
@@ -123,7 +119,7 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
     pthread_mutex_lock(&socketsQueue->queueMutex);
     pthread_mutex_lock(&connectionsMutex);
-    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && socketsQueue->size > 0) {
+    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && !isEmpty(socketsQueue)) {
 
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
@@ -131,7 +127,7 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
         }
     }
     pthread_mutex_unlock(&connectionsMutex);
-    while (*localConnectionsCount == 0 && socketsQueue->size == 0) {
+    while (*localConnectionsCount == 0 && isEmpty(socketsQueue)) {
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
@@ -194,7 +190,7 @@ _Noreturn void *work(void *param) {
                     break;
                 }
                 case READ_FROM_CACHE_WRITE_CLIENT: {
-                    handleReadFromCacheWriteToClientState(connections, fds, &localConnectionsCount, threadId, i);
+                    handleReadFromCacheWriteToClientStateWrapper(connections, fds, &localConnectionsCount, threadId, i);
                     break;
                 }
                 case NOT_ACTIVE:
@@ -203,6 +199,35 @@ _Noreturn void *work(void *param) {
         }
     }
     return NULL;
+}
+
+void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
+                                                  struct pollfd *fds,
+                                                  int *localConnectionsCount,
+                                                  int threadId,
+                                                  int i) {
+    switch (handleReadFromCacheWriteToClientState(&connections[i], fds[i * 2], cache, localConnectionsCount)) {
+        case WRITER_CACHE_INVALID_EXCEPTION: {
+            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache",
+                                  0, connections, localConnectionsCount, threadId);
+            break;
+        }
+        case SEND_TO_CLIENT_EXCEPTION: {
+            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:client err",
+                                  0, connections, localConnectionsCount, threadId);
+            break;
+        }
+        case SUCCESS_WITH_END: {
+            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:SUCCESS",
+                    0, connections,localConnectionsCount, threadId);
+            break;
+        }
+        case CACHE_INVALID_EXCEPTION: {
+            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache",
+                                  0, connections, localConnectionsCount, threadId);
+            break;
+        }
+    }
 }
 
 void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
@@ -235,7 +260,7 @@ void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
     } else if (result == END_READING_PROCCESS) {
         dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:SUCCESS",
                               1, connections, localConnectionsCount, threadId);
-    } else if (result==PUT_CACHE_DATA_EXCEPTION){
+    } else if (result == PUT_CACHE_DATA_EXCEPTION) {
         dropConnectionWrapper(i, "PUT_CACHE_DATA_EXCEPTION",
                               1, connections, localConnectionsCount, threadId);
     }
@@ -292,74 +317,6 @@ void handleGettingRequestStateWrapper(Connection *connections,
     }
 }
 
-void handleReadFromCacheWriteToClientState(Connection *connections,
-                                           struct pollfd *fds,
-                                           int *localConnectionsCount,
-                                           int threadId,
-                                           int i) {
-    if (fds[i * 2].revents & POLLOUT) {
-        int localCacheStatus;
-        size_t localNumChunks;
-
-        pthread_mutex_lock(&cache[connections[i].cacheIndex].mutex);
-        localCacheStatus = cache[connections[i].cacheIndex].status;
-        pthread_mutex_unlock(&cache[connections[i].cacheIndex].mutex);
-
-        if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
-
-            pthread_mutex_lock(&cache[connections[i].cacheIndex].numChunksMutex);
-
-            localNumChunks = cache[connections[i].cacheIndex].numChunks;
-
-            while (localCacheStatus == DOWNLOADING && connections[i].numChunksWritten == localNumChunks &&
-                   *localConnectionsCount == 1) {
-
-                pthread_cond_wait(&cache[connections[i].cacheIndex].numChunksCondVar,
-                                  &cache[connections[i].cacheIndex].numChunksMutex);
-                if (cache[connections[i].cacheIndex].status == INVALID) {
-                    dropConnectionWrapper(i,
-                                          "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache",
-                                          0, connections, localConnectionsCount, threadId);
-                    pthread_mutex_unlock(&cache[connections[i].cacheIndex].numChunksMutex);
-                    return;
-                }
-                localNumChunks = cache[connections[i].cacheIndex].numChunks;
-            }
-
-            pthread_mutex_unlock(&cache[connections[i].cacheIndex].numChunksMutex);
-
-            if (sendNewChunksToClient(connections[i], localNumChunks) == -1) {
-                dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:client err", 0, connections,
-                                      localConnectionsCount, threadId);
-                return;
-            }
-            connections[i].numChunksWritten = localNumChunks;
-
-            if (localCacheStatus == VALID) {
-                dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:SUCCESS", 0, connections,
-                                      localConnectionsCount, threadId);
-            }
-            return;
-        } else if (localCacheStatus == INVALID) {
-            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache", 0,
-                                  connections, localConnectionsCount, threadId);
-            return;
-        }
-    }
-}
-
-int sendNewChunksToClient(Connection connection, size_t newSize) {
-
-    for (size_t k = connection.numChunksWritten; k < newSize; k++) {
-        ssize_t bytesWritten = send(connection.clientSocket,
-                                    cache[connection.cacheIndex].data[k],
-                                    cache[connection.cacheIndex].dataChunksSize[k], 0);
-        if (bytesWritten <= 0) {
-            return -1;
-        }
-    }
-    return 0;
-}
 
 void checkArgs(int argcc, const char *argv[]) {
     checkCountArguments(argcc);
