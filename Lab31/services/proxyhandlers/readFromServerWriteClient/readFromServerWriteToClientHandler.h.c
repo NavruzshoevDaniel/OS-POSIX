@@ -50,12 +50,12 @@ int handleReadFromServerWriteToClientState(Connection *connection,
         if (isFirstCacheChunk(&cache[connection->cacheIndex])) {
             char *dest = buf;
             int body = getIndexOfBody(dest, readCount);
-            if (body == -1) { return BODY_HTTP_EXCEPTION; }
+
 
             int statusCode = getStatusCodeAnswer(dest);
             long contentLength = getContentLengthFromAnswer(dest);
 
-            if (statusCode != 200 || contentLength == -1) { return STATUS_OR_CONTENT_LENGTH_EXCEPTION; }
+            if (statusCode != 200 || (contentLength == -1 && body==-1)) { return STATUS_OR_CONTENT_LENGTH_EXCEPTION; }
             cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
         }
 
