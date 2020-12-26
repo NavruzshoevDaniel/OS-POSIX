@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <poll.h>
-#include <sys/socket.h>
 #include <pthread.h>
 #include <signal.h>
 #include "services/queue/queueService.h"
@@ -15,12 +14,14 @@
 #include "services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h"
 #include "services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h"
 #include "services/net/serverSockerService.h"
+#include "config.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
 #define BUFFER_SIZE 16 * 1024
 #define MAX_NUM_TRANSLATION_CONNECTIONS 100
 #define MAX_CONNECTIONS_PER_THREAD allConnectionsCount / poolSize
+
 
 //3 = CRLF EOF
 
@@ -31,6 +32,7 @@ int isRun = 1;
 
 CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
+int proxySocket;
 
 void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
                                                   struct pollfd *fds,
@@ -89,7 +91,7 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
     pthread_mutex_lock(&socketsQueue->queueMutex);
     pthread_mutex_lock(&connectionsMutex);
-    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && !isEmpty(socketsQueue)) {
+    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && !isEmpty(socketsQueue) && isRun == 1) {
 
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
@@ -97,7 +99,7 @@ int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
         }
     }
     pthread_mutex_unlock(&connectionsMutex);
-    while (*localConnectionsCount == 0 && isEmpty(socketsQueue)) {
+    while (*localConnectionsCount == 0 && isEmpty(socketsQueue) && isRun == 1) {
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
@@ -124,29 +126,64 @@ _Noreturn void *work(void *param) {
     printf("START:id: %d\n", threadId);
 
     int localConnectionsCount = 0;
+
+#ifdef _MULTITHREAD
     struct pollfd fds[2 * MAX_CONNECTIONS];
+#else
+    struct pollfd fds[2 * MAX_CONNECTIONS+1];
+#endif
+
     Connection connections[MAX_CONNECTIONS];
 
     while (isRun == 1) {
+#ifdef _MULTITHREAD
         int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
 
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
         }
-
+#else
+        int newClientSocket =-1;
+        fds[localConnectionsCount * 2].fd = proxySocket;
+        fds[localConnectionsCount * 2].events = POLLIN;
+#endif
         updatePoll(fds, localConnectionsCount, connections);
+#ifdef _MULTITHREAD
+        int polled = 0;
+        if (isRun == 1) {
+            polled = poll(fds, localConnectionsCount * 2, -1);
+        } else { break; }
+#else
+        int polled = poll(fds, localConnectionsCount * 2+1, -1);
+#endif
 
-        int polled = poll(fds, localConnectionsCount * 2, -1);
         if (polled < 0) {
             perror("poll error");
         } else if (polled == 0) {
             continue;
         }
+#ifdef _MULTITHREAD
+#else
+        if (0 != (fds[localConnectionsCount*2].revents & POLLIN)) {
+
+            if (localConnectionsCount < MAX_CONNECTIONS) {
+                int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
+                if (newClientSocket != -1) {
+                    initNewConnection(&connections[localConnectionsCount], newClientSocket);
+                    printf("ACCEPTED NEW CONNECTION %d\n", localConnectionsCount);
+                    localConnectionsCount++;
+                }
+            }
+
+        }
+
+#endif
 
         char buf[BUFFER_SIZE];
         for (int i = 0; i < localConnectionsCount; i++) {
             switch (connections[i].status) {
                 case GETTING_REQUEST_FROM_CLIENT: {
+                    printf("GETTING_REQUEST_FROM_CLIENT");
                     handleGettingRequestStateWrapper(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
@@ -168,6 +205,16 @@ _Noreturn void *work(void *param) {
             }
         }
     }
+
+    for (int i = 0; i < MAX_NUM_TRANSLATION_CONNECTIONS; ++i) {
+        if (connections[i].clientSocket != -1) {
+            close(connections[i].clientSocket);
+        }
+        if (connections[i].serverSocket != -1) {
+            close(connections[i].serverSocket);
+        }
+    }
+    printf("End thread-%d", threadId);
     return NULL;
 }
 
@@ -289,17 +336,25 @@ void handleGettingRequestStateWrapper(Connection *connections,
 
 
 void checkArgs(int argcc, const char *argv[]) {
+#ifdef _MULTITHREAD
     checkCountArguments(argcc);
     poolSize = atoi(argv[1]);
     checkIfValidParsedInt(poolSize);
+#endif
     int proxySocketPort = atoi(argv[2]);
     checkIfValidParsedInt(proxySocketPort);
 }
 
 void signalHandler(int sig) {
-    printf("Signal!\n");
+    if (sig == SIGTERM) {
+        write(0, "SIGTERM", 8);
+        close(proxySocket);
+    }
+    if (sig == SIGINT) {
+        write(0, "SIGINT", 6);
+    }
     isRun = 0;
-    pthread_exit(NULL);
+    pthread_cond_broadcast(&socketsQueue->condVar);
 }
 
 int main(int argc, const char *argv[]) {
@@ -321,23 +376,22 @@ int main(int argc, const char *argv[]) {
     int *threadsId = NULL;
     pthread_t *poolThreads = NULL;
 
-    socketsQueue = createQueue();
-
-    int proxySocket = getProxySocket(proxySocketPort, MAX_NUM_TRANSLATION_CONNECTIONS);
+    proxySocket = getProxySocket(proxySocketPort, MAX_NUM_TRANSLATION_CONNECTIONS);
     if (proxySocket < 0) { exit(NULL); }
     signal(SIGTERM, signalHandler);
     signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);
 
-    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
-        pthread_exit(NULL);
-    }
 
     struct pollfd proxyFds[1];
     proxyFds[0].fd = proxySocket;
     proxyFds[0].events = POLLIN;
 
-
+#ifdef _MULTITHREAD
+    socketsQueue = createQueue();
+    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
+        pthread_exit(NULL);
+    }
     while (isRun == 1) {
 
         int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
@@ -354,6 +408,12 @@ int main(int argc, const char *argv[]) {
         } else { break; }
     }
 
+#else
+    int param=0;
+    work(&param);
+#endif
     close(proxySocket);
+
+    printf("close socket");
     pthread_exit(NULL);
 }

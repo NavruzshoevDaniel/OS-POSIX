@@ -84,6 +84,9 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/argschecker/argsChecker.h">
 			<Option target="Lab31"/>
 		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/config.h">
+			<Option target="Lab31"/>
+		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/main.c">
 			<Option target="Lab31"/>
 		</Unit>

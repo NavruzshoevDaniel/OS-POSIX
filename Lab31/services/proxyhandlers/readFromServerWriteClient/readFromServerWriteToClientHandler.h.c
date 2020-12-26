@@ -55,11 +55,15 @@ int handleReadFromServerWriteToClientState(Connection *connection,
             int statusCode = getStatusCodeAnswer(dest);
             long contentLength = getContentLengthFromAnswer(dest);
 
-            if (statusCode != 200 || (contentLength == -1 && body==-1)) { return STATUS_OR_CONTENT_LENGTH_EXCEPTION; }
+            if (statusCode != 200 || (contentLength == -1 && body==-1)) {
+                return STATUS_OR_CONTENT_LENGTH_EXCEPTION;
+            }
             cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
         }
 
-        if (putDataToCache(&cache[connection->cacheIndex], buf, readCount) == -1) { return PUT_CACHE_DATA_EXCEPTION; };
+        if (putDataToCache(&cache[connection->cacheIndex], buf, readCount) == -1) {
+            return PUT_CACHE_DATA_EXCEPTION;
+        };
 
         broadcastWaitingCacheClients(&cache[connection->cacheIndex]);
 

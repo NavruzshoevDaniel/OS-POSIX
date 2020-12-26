@@ -5,6 +5,7 @@ CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.c
 CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.h
 
 CMakeFiles/Lab31.dir/main.c.o: ../argschecker/argsChecker.h
+CMakeFiles/Lab31.dir/main.c.o: ../config.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
 CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
@@ -43,6 +44,7 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ..
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/pthread/pthreadService.h
 
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../config.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c

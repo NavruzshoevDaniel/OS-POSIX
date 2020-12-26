@@ -9,11 +9,12 @@
 #include <sys/socket.h>
 #include "../../connection/connection.h"
 #include "../../cache/cache.h"
+#include "../../../config.h"
 
-#define SEND_TO_CLIENT_EXCEPTION -2
-#define WRITER_CACHE_INVALID_EXCEPTION -3
-#define CACHE_INVALID_EXCEPTION -4
-#define SUCCESS_WITH_END 1
+#define SEND_TO_CLIENT_EXCEPTION -22
+#define WRITER_CACHE_INVALID_EXCEPTION -33
+#define CACHE_INVALID_EXCEPTION -44
+#define SUCCESS_WITH_END 11
 
 int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSize);
 

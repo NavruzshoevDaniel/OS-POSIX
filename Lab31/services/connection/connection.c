@@ -34,7 +34,7 @@ bool isConnectionBufferEmpty(const Connection *connection) {
 }
 
 void setNotActiveState(int i, Connection *connections, int *connectionsCount) {
-    //TODO::wht?
+
     connections[i] = connections[*connectionsCount - 1];
     connections[*connectionsCount - 1].buffer = NULL;
     connections[*connectionsCount - 1].buffer_size = 0;

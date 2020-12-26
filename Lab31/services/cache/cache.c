@@ -81,8 +81,6 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
                                               CacheInfo *cache,
                                               int cacheSize,
                                               int threadId) {
-
-    //TODO::whts different between this method and searchFreeCacheAndSetDownloadingState method
     for (int j = 0; j < cacheSize; j++) {
 
         pthread_mutex_lock(&cache[j].mutex);
