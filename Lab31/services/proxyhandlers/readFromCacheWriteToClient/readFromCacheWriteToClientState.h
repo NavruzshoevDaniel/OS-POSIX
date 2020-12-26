@@ -19,7 +19,7 @@
 int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSize);
 
 /**
- * @return EXIT_SUCCES 0
+ * @return EXIT_SUCCESS 0
  *         SEND_TO_CLIENT_EXCEPTION -2
  *         WRITER_CACHE_INVALID_EXCEPTION -3
  *         CACHE_INVALID_EXCEPTION -4

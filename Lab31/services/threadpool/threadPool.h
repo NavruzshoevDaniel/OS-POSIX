@@ -9,6 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int createThreadPool(int count, void *runnable, int *threadsId, pthread_t *poolThreads);
+int createThreadPool(int count, void *runnable, int *threadsId, pthread_t **poolThreads);
 
 #endif //LAB31_THREADPOOL_H

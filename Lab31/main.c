@@ -22,13 +22,13 @@
 #define MAX_NUM_TRANSLATION_CONNECTIONS 100
 #define MAX_CONNECTIONS_PER_THREAD allConnectionsCount / poolSize
 
-
 //3 = CRLF EOF
 
 Queue *socketsQueue;
 static int allConnectionsCount = 0;
 int poolSize;
 int isRun = 1;
+bool sigCaptured = false;
 
 CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
@@ -120,7 +120,7 @@ void dropConnectionWrapper(int id,
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
-_Noreturn void *work(void *param) {
+void *work(void *param) {
 
     int threadId = *((int *) param);
     printf("START:id: %d\n", threadId);
@@ -138,7 +138,7 @@ _Noreturn void *work(void *param) {
     while (isRun == 1) {
 #ifdef _MULTITHREAD
         int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
-
+        //printf("getNewClientSocketOrWait()\n");
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
         }
@@ -147,7 +147,9 @@ _Noreturn void *work(void *param) {
         fds[localConnectionsCount * 2].fd = proxySocket;
         fds[localConnectionsCount * 2].events = POLLIN;
 #endif
-        updatePoll(fds, localConnectionsCount, connections);
+        if (isRun == 1) {
+            updatePoll(fds, localConnectionsCount, connections);
+        } else { break; }
 #ifdef _MULTITHREAD
         int polled = 0;
         if (isRun == 1) {
@@ -205,8 +207,8 @@ _Noreturn void *work(void *param) {
             }
         }
     }
-
-    for (int i = 0; i < MAX_NUM_TRANSLATION_CONNECTIONS; ++i) {
+    printf("while skipped. localConnectionsCount = %d\n", localConnectionsCount);
+    for (int i = 0; i < localConnectionsCount; ++i) {
         if (connections[i].clientSocket != -1) {
             close(connections[i].clientSocket);
         }
@@ -214,8 +216,8 @@ _Noreturn void *work(void *param) {
             close(connections[i].serverSocket);
         }
     }
-    printf("End thread-%d", threadId);
-    return NULL;
+    printf("End thread-%d\n", threadId);
+    pthread_exit(NULL);
 }
 
 void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
@@ -347,13 +349,14 @@ void checkArgs(int argcc, const char *argv[]) {
 
 void signalHandler(int sig) {
     if (sig == SIGTERM) {
-        write(0, "SIGTERM", 8);
-        close(proxySocket);
+        write(0, "SIGTERM\n", 8);
+        //close(proxySocket);
     }
     if (sig == SIGINT) {
-        write(0, "SIGINT", 6);
+        write(0, "SIGINT\n", 7);
     }
     isRun = 0;
+    sigCaptured = true;
     pthread_cond_broadcast(&socketsQueue->condVar);
 }
 
@@ -389,12 +392,29 @@ int main(int argc, const char *argv[]) {
 
 #ifdef _MULTITHREAD
     socketsQueue = createQueue();
-    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
+    if (createThreadPool(poolSize, work, threadsId, &poolThreads) == -1) {
         pthread_exit(NULL);
     }
-    while (isRun == 1) {
+    if (poolThreads == NULL) {printf("pidor suka\n");}
+    while (true) {
 
         int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
+        printf("acceptPoolWrapper()\n");
+        if (sigCaptured) {
+            printf("if ili ne if\n");
+            for (int i = 0; i < 5; i++) {
+                printf("joining...");
+                //printf("cancel = %d\n", pthread_cancel(poolThreads[i]));
+                int rv = pthread_join(poolThreads[i], NULL);
+                if (rv != 0) {
+                    printf("some problems\n");
+                }
+                printf("done!\n");
+            }
+            break;
+        }
+
+        write(0, "?\n", 2);
 
         if (newClientSocket != -1) {
             printf("ACCEPTED NEW CONNECTION\n");
@@ -406,12 +426,14 @@ int main(int argc, const char *argv[]) {
             atomicIncrement(&allConnectionsCount, &connectionsMutex);
             pthread_cond_signal(&socketsQueue->condVar);
         } else { break; }
+
     }
 
 #else
     int param=0;
     work(&param);
 #endif
+
     close(proxySocket);
 
     printf("close socket");
