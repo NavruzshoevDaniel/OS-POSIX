@@ -2,6 +2,7 @@
 // Created by Daniel on 26.12.2020.
 //
 #include <stdio.h>
+#include <poll.h>
 #include "serverSockerService.h"
 
 /**
@@ -36,4 +37,13 @@ int getProxySocket(int port, int maxConnections) {
     }
 
     return proxySocket;
+}
+
+int acceptPollWrapper(struct pollfd *fds,int listenSocket, int amountFds) {
+    int polled = poll(fds, amountFds, -1);
+    if (fds->revents & POLLIN) {
+        return accept(listenSocket, (struct sockaddr *) NULL, NULL);
+    } else {
+        return -1;
+    }
 }

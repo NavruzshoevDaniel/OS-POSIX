@@ -324,6 +324,7 @@ int main(int argc, const char *argv[]) {
     socketsQueue = createQueue();
 
     int proxySocket = getProxySocket(proxySocketPort, MAX_NUM_TRANSLATION_CONNECTIONS);
+    if (proxySocket < 0) { exit(NULL); }
     signal(SIGTERM, signalHandler);
     signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);
@@ -338,23 +339,21 @@ int main(int argc, const char *argv[]) {
 
 
     while (isRun == 1) {
-        int polled = poll(proxyFds, 1, -1);
 
-        if (proxyFds[0].revents & POLLIN) {
-            int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
+        int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
 
-            if (newClientSocket != -1) {
-                printf("ACCEPTED NEW CONNECTION\n");
+        if (newClientSocket != -1) {
+            printf("ACCEPTED NEW CONNECTION\n");
 
-                pthread_mutex_lock(&socketsQueue->queueMutex);
-                putSocketInQueue(socketsQueue, newClientSocket);
-                pthread_mutex_unlock(&socketsQueue->queueMutex);
+            pthread_mutex_lock(&socketsQueue->queueMutex);
+            putSocketInQueue(socketsQueue, newClientSocket);
+            pthread_mutex_unlock(&socketsQueue->queueMutex);
 
-                atomicIncrement(&allConnectionsCount, &connectionsMutex);
-                pthread_cond_signal(&socketsQueue->condVar);
-            }
+            atomicIncrement(&allConnectionsCount, &connectionsMutex);
+            pthread_cond_signal(&socketsQueue->condVar);
         } else { break; }
     }
+
     close(proxySocket);
     pthread_exit(NULL);
 }
