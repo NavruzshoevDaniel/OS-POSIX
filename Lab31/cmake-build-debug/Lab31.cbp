@@ -105,10 +105,16 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.h">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpService.h">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/httpService.c">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/http/httpSrvice.c">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/httpService.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/serverSockerService.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/serverSockerService.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c">

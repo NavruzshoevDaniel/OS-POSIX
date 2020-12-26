@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 #include "../../connection/connection.h"
 #include "../../cache/cache.h"
-#include "../../http/httpService.h"
+#include "../../net/httpService.h"
 
 #define RECV_FROM_SERVER_EXCEPTION -2
 #define SERVER_CLOSED_EXCEPTION -3

@@ -258,32 +258,59 @@ services/connection/connection.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
 .PHONY : services/connection/connection.c.s
 
-services/http/httpSrvice.o: services/http/httpSrvice.c.o
+services/net/httpService.o: services/net/httpService.c.o
 
-.PHONY : services/http/httpSrvice.o
+.PHONY : services/net/httpService.o
 
 # target to build an object file
-services/http/httpSrvice.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.o
-.PHONY : services/http/httpSrvice.c.o
+services/net/httpService.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/httpService.c.o
+.PHONY : services/net/httpService.c.o
 
-services/http/httpSrvice.i: services/http/httpSrvice.c.i
+services/net/httpService.i: services/net/httpService.c.i
 
-.PHONY : services/http/httpSrvice.i
+.PHONY : services/net/httpService.i
 
 # target to preprocess a source file
-services/http/httpSrvice.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.i
-.PHONY : services/http/httpSrvice.c.i
+services/net/httpService.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/httpService.c.i
+.PHONY : services/net/httpService.c.i
 
-services/http/httpSrvice.s: services/http/httpSrvice.c.s
+services/net/httpService.s: services/net/httpService.c.s
 
-.PHONY : services/http/httpSrvice.s
+.PHONY : services/net/httpService.s
 
 # target to generate assembly for a file
-services/http/httpSrvice.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/http/httpSrvice.c.s
-.PHONY : services/http/httpSrvice.c.s
+services/net/httpService.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/httpService.c.s
+.PHONY : services/net/httpService.c.s
+
+services/net/serverSockerService.o: services/net/serverSockerService.c.o
+
+.PHONY : services/net/serverSockerService.o
+
+# target to build an object file
+services/net/serverSockerService.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o
+.PHONY : services/net/serverSockerService.c.o
+
+services/net/serverSockerService.i: services/net/serverSockerService.c.i
+
+.PHONY : services/net/serverSockerService.i
+
+# target to preprocess a source file
+services/net/serverSockerService.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/serverSockerService.c.i
+.PHONY : services/net/serverSockerService.c.i
+
+services/net/serverSockerService.s: services/net/serverSockerService.c.s
+
+.PHONY : services/net/serverSockerService.s
+
+# target to generate assembly for a file
+services/net/serverSockerService.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/serverSockerService.c.s
+.PHONY : services/net/serverSockerService.c.s
 
 services/proxyhandlers/getRequest/getRequestHandler.o: services/proxyhandlers/getRequest/getRequestHandler.c.o
 
@@ -498,9 +525,12 @@ help:
 	@echo "... services/connection/connection.o"
 	@echo "... services/connection/connection.i"
 	@echo "... services/connection/connection.s"
-	@echo "... services/http/httpSrvice.o"
-	@echo "... services/http/httpSrvice.i"
-	@echo "... services/http/httpSrvice.s"
+	@echo "... services/net/httpService.o"
+	@echo "... services/net/httpService.i"
+	@echo "... services/net/httpService.s"
+	@echo "... services/net/serverSockerService.o"
+	@echo "... services/net/serverSockerService.i"
+	@echo "... services/net/serverSockerService.s"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
 	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"

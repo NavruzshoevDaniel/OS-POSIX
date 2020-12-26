@@ -7,7 +7,7 @@
 
 #include <poll.h>
 #include "../../connection/connection.h"
-#include "../../http/httpService.h"
+#include "../../net/httpService.h"
 #include "../../cache/cache.h"
 
 

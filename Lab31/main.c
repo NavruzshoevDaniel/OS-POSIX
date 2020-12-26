@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <poll.h>
-#include <time.h>
 #include <sys/socket.h>
-#include <stdint.h>
-#include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
 #include "services/queue/queueService.h"
@@ -17,6 +14,7 @@
 #include "services/proxyhandlers/writeToServer/writeToServerHandler.h"
 #include "services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h"
 #include "services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h"
+#include "services/net/serverSockerService.h"
 
 #define MAX_CONNECTIONS 100
 #define MAX_CACHE_SIZE 3*1024
@@ -59,34 +57,6 @@ void handleWriteToServerStateWrapper(Connection *connections,
                                      int *localConnectionsCount,
                                      int threadId,
                                      int i);
-
-int getProxySocket(int port) {
-
-    struct sockaddr_in listenAddress;
-
-    listenAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    listenAddress.sin_family = AF_INET;
-    listenAddress.sin_port = htons(port);
-
-    int proxySocket = socket(AF_INET, SOCK_STREAM, 0);
-
-    if (proxySocket < 0) {
-        perror("Cannot create proxySocket");
-        exit(EXIT_FAILURE);
-    }
-
-    if (bind(proxySocket, (struct sockaddr *) &listenAddress, sizeof(listenAddress))) {
-        perror("Cannot bind proxySocket");
-        exit(EXIT_FAILURE);
-    }
-
-    if (listen(proxySocket, MAX_NUM_TRANSLATION_CONNECTIONS)) {
-        perror("listen error");
-        exit(EXIT_FAILURE);
-    }
-
-    return proxySocket;
-}
 
 void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
     for (int i = 0; i < localCount; ++i) {
@@ -353,7 +323,7 @@ int main(int argc, const char *argv[]) {
 
     socketsQueue = createQueue();
 
-    int proxySocket = getProxySocket(proxySocketPort);
+    int proxySocket = getProxySocket(proxySocketPort, MAX_NUM_TRANSLATION_CONNECTIONS);
     signal(SIGTERM, signalHandler);
     signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);
