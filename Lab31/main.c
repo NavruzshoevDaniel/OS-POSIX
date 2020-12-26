@@ -33,6 +33,7 @@ int isRun = 1;
 CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
 int proxySocket;
+bool sigCaptured = false;
 
 void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
                                                   struct pollfd *fds,
@@ -120,7 +121,7 @@ void dropConnectionWrapper(int id,
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
-_Noreturn void *work(void *param) {
+void *work(void *param) {
 
     int threadId = *((int *) param);
     printf("START:id: %d\n", threadId);
@@ -183,7 +184,6 @@ _Noreturn void *work(void *param) {
         for (int i = 0; i < localConnectionsCount; i++) {
             switch (connections[i].status) {
                 case GETTING_REQUEST_FROM_CLIENT: {
-                    printf("GETTING_REQUEST_FROM_CLIENT");
                     handleGettingRequestStateWrapper(connections, fds, &localConnectionsCount, buf, threadId, i);
                     break;
                 }
@@ -206,7 +206,7 @@ _Noreturn void *work(void *param) {
         }
     }
 
-    for (int i = 0; i < MAX_NUM_TRANSLATION_CONNECTIONS; ++i) {
+    for (int i = 0; i < localConnectionsCount; ++i) {
         if (connections[i].clientSocket != -1) {
             close(connections[i].clientSocket);
         }
@@ -214,8 +214,8 @@ _Noreturn void *work(void *param) {
             close(connections[i].serverSocket);
         }
     }
-    printf("End thread-%d", threadId);
-    return NULL;
+    printf("End thread-%d\n", threadId);
+    pthread_exit(NULL);
 }
 
 void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
@@ -347,13 +347,13 @@ void checkArgs(int argcc, const char *argv[]) {
 
 void signalHandler(int sig) {
     if (sig == SIGTERM) {
-        write(0, "SIGTERM", 8);
-        close(proxySocket);
+        write(0, "SIGTERM\n", 8);
     }
     if (sig == SIGINT) {
-        write(0, "SIGINT", 6);
+        write(0, "SIGINT\n", 7);
     }
     isRun = 0;
+    sigCaptured = true;
     pthread_cond_broadcast(&socketsQueue->condVar);
 }
 
@@ -389,12 +389,16 @@ int main(int argc, const char *argv[]) {
 
 #ifdef _MULTITHREAD
     socketsQueue = createQueue();
-    if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
+    if (createThreadPool(poolSize, work, threadsId, &poolThreads) == -1) {
         pthread_exit(NULL);
     }
-    while (isRun == 1) {
+    while (true) {
 
         int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
+        if (sigCaptured) {
+            joinThreadPool(poolThreads);
+            break;
+        }
 
         if (newClientSocket != -1) {
             printf("ACCEPTED NEW CONNECTION\n");
@@ -413,7 +417,6 @@ int main(int argc, const char *argv[]) {
     work(&param);
 #endif
     close(proxySocket);
-
-    printf("close socket");
+    printf("Close proxy socket");
     pthread_exit(NULL);
 }

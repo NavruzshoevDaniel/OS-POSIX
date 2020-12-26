@@ -65,25 +65,25 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
                 return SUCCESS_WITH_END;
             }
 #else
-        if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
+            if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
 
-            int totalNumChunks = cache[connection->cacheIndex].numChunks;
-            size_t nowChunksWritten = connection->numChunksWritten;
-            if (nowChunksWritten < totalNumChunks) {
-                //printf("%s\n\n\n", cache[connections[i].cacheIndex].data[nowChunksWritten]);
-                ssize_t bytesWritten = send(connection->clientSocket,
-                                            cache[connection->cacheIndex].data[nowChunksWritten],
-                                            cache[connection->cacheIndex].dataChunksSize[nowChunksWritten], 0);
-                printf("%d\n", bytesWritten);
-                if (bytesWritten < 0) {
-                    return SEND_TO_CLIENT_EXCEPTION;
+                int totalNumChunks = cache[connection->cacheIndex].numChunks;
+                size_t nowChunksWritten = connection->numChunksWritten;
+                if (nowChunksWritten < totalNumChunks) {
+                    //printf("%s\n\n\n", cache[connections[i].cacheIndex].data[nowChunksWritten]);
+                    ssize_t bytesWritten = send(connection->clientSocket,
+                                                cache[connection->cacheIndex].data[nowChunksWritten],
+                                                cache[connection->cacheIndex].dataChunksSize[nowChunksWritten], 0);
+                    printf("%d\n", bytesWritten);
+                    if (bytesWritten < 0) {
+                        return SEND_TO_CLIENT_EXCEPTION;
+                    }
+                    connection->numChunksWritten++;
                 }
-                connection->numChunksWritten++;
-            }
 
-            if (localCacheStatus == VALID && connection->numChunksWritten == totalNumChunks) {
-                return SUCCESS_WITH_END;
-            }
+                if (localCacheStatus == VALID && connection->numChunksWritten == totalNumChunks) {
+                    return SUCCESS_WITH_END;
+                }
 #endif
             return EXIT_SUCCESS;
         } else if (localCacheStatus == INVALID) {

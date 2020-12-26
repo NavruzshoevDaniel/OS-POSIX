@@ -39,8 +39,13 @@ int getProxySocket(int port, int maxConnections) {
     return proxySocket;
 }
 
-int acceptPollWrapper(struct pollfd *fds,int listenSocket, int amountFds) {
+int acceptPollWrapper(struct pollfd *fds, int listenSocket, int amountFds) {
     int polled = poll(fds, amountFds, -1);
+    if (polled < 0) {
+        return -1;
+    } else if (polled == 0) {
+        return 0;
+    }
     if (fds->revents & POLLIN) {
         return accept(listenSocket, (struct sockaddr *) NULL, NULL);
     } else {

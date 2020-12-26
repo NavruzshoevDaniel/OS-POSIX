@@ -5,10 +5,10 @@
 #include "threadPool.h"
 
 
-int createThreadPool(int count, void *runnable, int *threadsId, pthread_t *poolThreads) {
-
-    poolThreads = (pthread_t *) malloc(sizeof(pthread_t) * count);
-    if (NULL == poolThreads) {
+int createThreadPool(int count, void *runnable, int *threadsId, pthread_t **poolThreads) {
+    pthread_t *newPoolThreads;
+    newPoolThreads = (pthread_t *) malloc(sizeof(pthread_t) * count);
+    if (NULL == newPoolThreads) {
         printf("ERROR WHILE MALLOC createThreadPool\n");
         return -1;
     }
@@ -16,7 +16,7 @@ int createThreadPool(int count, void *runnable, int *threadsId, pthread_t *poolT
     threadsId = (int *) malloc(sizeof(int) * count);
     if (NULL == threadsId) {
         printf("ERROR WHILE MALLOC createThreadPool\n");
-        free(poolThreads);
+        free(newPoolThreads);
         return -1;
     }
 
@@ -24,19 +24,29 @@ int createThreadPool(int count, void *runnable, int *threadsId, pthread_t *poolT
 
         threadsId[i] = i;
 
-        if (pthread_create(&poolThreads[i], NULL, runnable, &threadsId[i]) > 0) {
+        if (pthread_create(&newPoolThreads[i], NULL, runnable, &threadsId[i]) > 0) {
             perror("Cannot create thread");
             for (int j = 0; j < i; j++) {
-                pthread_cancel(poolThreads[j]);
+                pthread_cancel(newPoolThreads[j]);
             }
             for (int j = 0; j < i; j++) {
-                pthread_join(poolThreads[j], NULL);
+                pthread_join(newPoolThreads[j], NULL);
             }
-            free(poolThreads);
+            free(newPoolThreads);
             free(threadsId);
             return -1;
         }
     }
+    *poolThreads = newPoolThreads;
     return 0;
+}
+
+
+int joinThreadPool(pthread_t *poolThreads) {
+    for (int i = 0; i < 5; i++) {
+        if (pthread_join(poolThreads[i], NULL) != 0) {
+            printf("joinThreadPool: error while join pthread i=%d\n", i);
+        }
+    }
 }
 

@@ -21,6 +21,7 @@ bool isFirstCacheChunk(const CacheInfo *cache) {
  *         END_READING_PROCCESS 1
  *
  * */
+
 int handleReadFromServerWriteToClientState(Connection *connection,
                                            struct pollfd clientFd,
                                            struct pollfd serverFd,
@@ -28,7 +29,9 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                                            char *buf,
                                            int bufferSize,
                                            int threadId) {
-    if (isClientDead(clientFd)) { connection->clientSocket = -1; }
+    if (isClientDead(clientFd) && connection->clientSocket != -1) {
+        connection->clientSocket = -1;
+    }
     if ((clientFd.revents & POLLOUT && serverFd.revents & POLLIN) ||
         (connection->clientSocket == -1 && serverFd.revents & POLLIN)) {
 
@@ -55,7 +58,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
             int statusCode = getStatusCodeAnswer(dest);
             long contentLength = getContentLengthFromAnswer(dest);
 
-            if (statusCode != 200 || (contentLength == -1 && body==-1)) {
+            if (statusCode != 200 || (contentLength == -1 && body == -1)) {
                 return STATUS_OR_CONTENT_LENGTH_EXCEPTION;
             }
             cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
