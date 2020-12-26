@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <signal.h>
-#include <stdbool.h>
 #include "services/queue/queueService.h"
 #include "services/connection/connection.h"
 #include "services/threadpool/threadPool.h"
@@ -30,6 +29,7 @@
 Queue *socketsQueue;
 static int allConnectionsCount = 0;
 int poolSize;
+int isRun = 1;
 
 CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
@@ -157,7 +157,7 @@ _Noreturn void *work(void *param) {
     struct pollfd fds[2 * MAX_CONNECTIONS];
     Connection connections[MAX_CONNECTIONS];
 
-    while (true) {
+    while (isRun == 1) {
         int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
 
         if (newClientSocket != -1) {
@@ -219,7 +219,7 @@ void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
         }
         case SUCCESS_WITH_END: {
             dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:SUCCESS",
-                    0, connections,localConnectionsCount, threadId);
+                                  0, connections, localConnectionsCount, threadId);
             break;
         }
         case CACHE_INVALID_EXCEPTION: {
@@ -326,6 +326,12 @@ void checkArgs(int argcc, const char *argv[]) {
     checkIfValidParsedInt(proxySocketPort);
 }
 
+void signalHandler(int sig) {
+    printf("Signal!\n");
+    isRun = 0;
+    pthread_exit(NULL);
+}
+
 int main(int argc, const char *argv[]) {
 
     checkArgs(argc, argv);
@@ -348,25 +354,37 @@ int main(int argc, const char *argv[]) {
     socketsQueue = createQueue();
 
     int proxySocket = getProxySocket(proxySocketPort);
+    signal(SIGTERM, signalHandler);
+    signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);
 
     if (createThreadPool(poolSize, work, threadsId, poolThreads) == -1) {
         pthread_exit(NULL);
     }
 
-    while (true) {
-        int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
+    struct pollfd proxyFds[1];
+    proxyFds[0].fd = proxySocket;
+    proxyFds[0].events = POLLIN;
 
-        if (newClientSocket != -1) {
-            printf("ACCEPTED NEW CONNECTION\n");
 
-            pthread_mutex_lock(&socketsQueue->queueMutex);
-            putSocketInQueue(socketsQueue, newClientSocket);
-            pthread_mutex_unlock(&socketsQueue->queueMutex);
+    while (isRun == 1) {
+        int polled = poll(proxyFds, 1, -1);
 
-            atomicIncrement(&allConnectionsCount, &connectionsMutex);
-            pthread_cond_signal(&socketsQueue->condVar);
-        }
+        if (proxyFds[0].revents & POLLIN) {
+            int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
+
+            if (newClientSocket != -1) {
+                printf("ACCEPTED NEW CONNECTION\n");
+
+                pthread_mutex_lock(&socketsQueue->queueMutex);
+                putSocketInQueue(socketsQueue, newClientSocket);
+                pthread_mutex_unlock(&socketsQueue->queueMutex);
+
+                atomicIncrement(&allConnectionsCount, &connectionsMutex);
+                pthread_cond_signal(&socketsQueue->condVar);
+            }
+        } else { break; }
     }
+    close(proxySocket);
     pthread_exit(NULL);
 }
