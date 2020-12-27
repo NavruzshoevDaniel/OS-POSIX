@@ -25,7 +25,8 @@ int getProxySocket(int port, int maxConnections) {
         perror("Cannot create proxySocket");
         return SOCKET_EXCEPTION;
     }
-
+    int reuse = 1;
+    setsockopt(proxySocket, SOL_SOCKET, SO_REUSEPORT, (const char *) &reuse, sizeof(reuse));
     if (bind(proxySocket, (struct sockaddr *) &listenAddress, sizeof(listenAddress))) {
         perror("Cannot bind proxySocket");
         return BIND_EXCEPTION;

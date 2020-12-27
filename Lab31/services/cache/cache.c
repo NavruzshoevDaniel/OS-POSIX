@@ -22,14 +22,8 @@ int searchUrlInCache(char *url, CacheInfo *cache, int cacheSize) {
 
         pthread_mutex_lock(&cache[j].mutex);
 
-        if (cache[j].url != NULL) {
-            //printf("(%s)\n(%s)\n", cache[j].url,url);
-            //printf("%d\n", strcmp(cache[j].url, url));
-        }
-
         if (cache[j].url != NULL && strcmp(cache[j].url, url) == 0) {
             if (cache[j].status == VALID || cache[j].status == DOWNLOADING) {
-                //printf("valid download\n");
                 cache[j].readers++;
                 pthread_mutex_unlock(&cache[j].mutex);
                 return j;
@@ -110,10 +104,8 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
 }
 
 void makeCacheInvalid(CacheInfo *cache) {
-    pthread_mutex_lock(&cache->mutex);
     cache->status = INVALID;
     cache->writerId = -1;
-    pthread_mutex_unlock(&cache->mutex);
     pthread_cond_broadcast(&cache->numChunksCondVar);
 }
 
@@ -155,12 +147,15 @@ void destroyCache(CacheInfo *cache, const int maxCacheSize) {
 }
 
 int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
-
+    pthread_mutex_lock(&cacheChunk->mutex);
+    pthread_mutex_lock(&cacheChunk->numChunksMutex);
     char **reallocatedCacheData = (char **) realloc(cacheChunk->data,
                                                     (cacheChunk->numChunks + 1) * sizeof(char *));
     if (reallocatedCacheData == NULL) {
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
+        pthread_mutex_unlock(&cacheChunk->mutex);
+        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
     cacheChunk->data = reallocatedCacheData;
@@ -171,6 +166,8 @@ int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
         //free old data
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
+        pthread_mutex_unlock(&cacheChunk->mutex);
+        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
     cacheChunk->dataChunksSize = realocatedDataChunksSize;
@@ -181,17 +178,16 @@ int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
     if (cacheChunk->data[cacheChunk->numChunks] == NULL) {
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
+        pthread_mutex_unlock(&cacheChunk->mutex);
+        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
 
-    pthread_mutex_lock(&cacheChunk->mutex);
     cacheChunk->recvSize += lengthNewData;
 
     memcpy(cacheChunk->data[cacheChunk->numChunks], newData, sizeof(char) * lengthNewData);
 
     pthread_mutex_unlock(&cacheChunk->mutex);
-
-    pthread_mutex_lock(&cacheChunk->numChunksMutex);
     cacheChunk->numChunks++;
     pthread_mutex_unlock(&cacheChunk->numChunksMutex);
     return 0;

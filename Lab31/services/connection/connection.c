@@ -76,7 +76,7 @@ void initNewConnection(Connection *connection, const int newClientSocket) {
 
 int allocateConnectionBufferMemory(Connection *connection, size_t length) {
     connection->buffer_size = length;
-    connection->buffer = (char *) malloc(length * sizeof(char));
+    connection->buffer = (char *) calloc(length, sizeof(char));
 
     if (NULL == connection->buffer) {
         perror("ERROR WHILE MALLOC allocateConnectionBufferMemory");

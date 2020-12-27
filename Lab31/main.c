@@ -1,27 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <poll.h>
-#include <pthread.h>
-#include <signal.h>
-#include "services/queue/queueService.h"
-#include "services/connection/connection.h"
-#include "services/threadpool/threadPool.h"
-#include "argschecker/argsChecker.h"
-#include "services/concurrent/atomicInt.h"
-#include "services/cache/cache.h"
-#include "services/proxyhandlers/getRequest/getRequestHandler.h"
-#include "services/proxyhandlers/writeToServer/writeToServerHandler.h"
-#include "services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h"
-#include "services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h"
-#include "services/net/serverSockerService.h"
-#include "config.h"
-
-#define MAX_CONNECTIONS 100
-#define MAX_CACHE_SIZE 3*1024
-#define BUFFER_SIZE 16 * 1024
-#define MAX_NUM_TRANSLATION_CONNECTIONS 100
-#define MAX_CONNECTIONS_PER_THREAD allConnectionsCount / poolSize
-
+#include "main.h"
 
 //3 = CRLF EOF
 
@@ -34,32 +11,6 @@ CacheInfo cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
 int proxySocket;
 bool sigCaptured = false;
-
-void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
-                                                  struct pollfd *fds,
-                                                  int *localConnectionsCount,
-                                                  int threadId,
-                                                  int i);
-
-void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
-                                                   struct pollfd *fds,
-                                                   int *localConnectionsCount,
-                                                   char *buf,
-                                                   int threadId,
-                                                   int i);
-
-void handleGettingRequestStateWrapper(Connection *connections,
-                                      struct pollfd *fds,
-                                      int *localConnectionsCount,
-                                      char *buf,
-                                      int threadId,
-                                      int i);
-
-void handleWriteToServerStateWrapper(Connection *connections,
-                                     struct pollfd *fds,
-                                     int *localConnectionsCount,
-                                     int threadId,
-                                     int i);
 
 void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
     for (int i = 0; i < localCount; ++i) {
@@ -205,7 +156,7 @@ void *work(void *param) {
             }
         }
     }
-
+    printf("before closing threadid-%d\n", threadId);
     for (int i = 0; i < localConnectionsCount; ++i) {
         if (connections[i].clientSocket != -1) {
             close(connections[i].clientSocket);
@@ -382,7 +333,6 @@ int main(int argc, const char *argv[]) {
     signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);
 
-
     struct pollfd proxyFds[1];
     proxyFds[0].fd = proxySocket;
     proxyFds[0].events = POLLIN;
@@ -396,7 +346,7 @@ int main(int argc, const char *argv[]) {
 
         int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
         if (sigCaptured) {
-            joinThreadPool(poolThreads);
+            joinThreadPool(poolThreads, poolSize);
             break;
         }
 
@@ -409,7 +359,11 @@ int main(int argc, const char *argv[]) {
 
             atomicIncrement(&allConnectionsCount, &connectionsMutex);
             pthread_cond_signal(&socketsQueue->condVar);
-        } else { break; }
+        } else {
+            isRun = 0;
+            joinThreadPool(poolThreads, poolSize);
+            break;
+        }
     }
 
 #else

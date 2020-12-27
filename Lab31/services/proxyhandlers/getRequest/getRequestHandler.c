@@ -73,7 +73,7 @@ int handleGettingRequestState(Connection *connection,
         if (readCount <= 0) { return RECV_CLIENT_EXCEPTION; }
         int bufferErr;
         if (isConnectionBufferEmpty(connection)) {
-            bufferErr = allocateConnectionBufferMemory(connection, readCount);
+            bufferErr = allocateConnectionBufferMemory(connection, readCount + 1);
         } else {
             bufferErr = reallocateConnectionBufferMemory(connection, readCount);
         }
