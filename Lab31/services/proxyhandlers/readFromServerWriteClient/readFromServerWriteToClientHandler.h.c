@@ -6,8 +6,8 @@
 
 bool isClientDead(struct pollfd pollfd);
 
-bool isFirstCacheChunk(const CacheInfo *cache) {
-    return DOWNLOADING == cache->status && cache->recvSize == 0;
+bool isFirstCacheChunk(CacheInfo *cache) {
+    return DOWNLOADING == getCacheStatus(cache) && getCacheRecvSize(cache) == 0;
 }
 
 /**
@@ -31,6 +31,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                                            int threadId) {
     if (isClientDead(clientFd) && connection->clientSocket != -1) {
         connection->clientSocket = -1;
+        printf("[%d] clientSocket is dead  before recv\n",threadId);
     }
     if ((clientFd.revents & POLLOUT && serverFd.revents & POLLIN) ||
         (connection->clientSocket == -1 && serverFd.revents & POLLIN)) {
@@ -45,7 +46,10 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                 printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT: CLIENT ERROR\n", threadId,
                        connection->id);
                 connection->clientSocket = -1;
+                perror("while sending");
+                printf("[%d] clientSocket is dead after recv\n",threadId);
             }
+
         }
 
         if (connection->cacheIndex == -1) { return NOT_FREE_CACHE_EXCEPTION; }
@@ -53,7 +57,6 @@ int handleReadFromServerWriteToClientState(Connection *connection,
         if (isFirstCacheChunk(&cache[connection->cacheIndex])) {
             char *dest = buf;
             int body = getIndexOfBody(dest, readCount);
-
 
             int statusCode = getStatusCodeAnswer(dest);
             long contentLength = getContentLengthFromAnswer(dest);
@@ -63,17 +66,13 @@ int handleReadFromServerWriteToClientState(Connection *connection,
             }
             cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
         }
-
         if (putDataToCache(&cache[connection->cacheIndex], buf, readCount) == -1) {
             return PUT_CACHE_DATA_EXCEPTION;
         };
-
         broadcastWaitingCacheClients(&cache[connection->cacheIndex]);
 
-        if (cache[connection->cacheIndex].recvSize == cache[connection->cacheIndex].allSize) {
-            pthread_mutex_lock(&cache[connection->cacheIndex].mutex);
-            cache[connection->cacheIndex].status = VALID;
-            pthread_mutex_unlock(&cache[connection->cacheIndex].mutex);
+        if (getCacheRecvSize(&cache[connection->cacheIndex]) == cache[connection->cacheIndex].allSize) {
+            setCacheStatus(&cache[connection->cacheIndex], VALID);
             return END_READING_PROCCESS;
         }
         return 0;
@@ -82,5 +81,5 @@ int handleReadFromServerWriteToClientState(Connection *connection,
 }
 
 bool isClientDead(struct pollfd clientFd) {
-    return !(clientFd.revents & POLLOUT);
+    return clientFd.revents & POLLERR || clientFd.revents & POLLHUP || clientFd.revents & POLLNVAL;
 }

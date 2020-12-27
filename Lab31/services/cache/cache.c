@@ -147,15 +147,16 @@ void destroyCache(CacheInfo *cache, const int maxCacheSize) {
 }
 
 int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
+    //printf("putDataToCache mutex before lock...");
     pthread_mutex_lock(&cacheChunk->mutex);
-    pthread_mutex_lock(&cacheChunk->numChunksMutex);
+    //printf("after putDataToCache mutex lock\n");
+
     char **reallocatedCacheData = (char **) realloc(cacheChunk->data,
                                                     (cacheChunk->numChunks + 1) * sizeof(char *));
     if (reallocatedCacheData == NULL) {
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
         pthread_mutex_unlock(&cacheChunk->mutex);
-        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
     cacheChunk->data = reallocatedCacheData;
@@ -167,7 +168,6 @@ int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
         pthread_mutex_unlock(&cacheChunk->mutex);
-        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
     cacheChunk->dataChunksSize = realocatedDataChunksSize;
@@ -179,20 +179,45 @@ int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData) {
         printf("CACHE malloc failed\n");
         makeCacheInvalid(cacheChunk);
         pthread_mutex_unlock(&cacheChunk->mutex);
-        pthread_mutex_unlock(&cacheChunk->numChunksMutex);
         return -1;
     }
 
     cacheChunk->recvSize += lengthNewData;
 
     memcpy(cacheChunk->data[cacheChunk->numChunks], newData, sizeof(char) * lengthNewData);
-
     pthread_mutex_unlock(&cacheChunk->mutex);
+
+    //printf("putDataToCache numChunksMutex before lock...");
+    pthread_mutex_lock(&cacheChunk->numChunksMutex);
+   // printf("putDataToCache numChunksMutex before lock...");
     cacheChunk->numChunks++;
     pthread_mutex_unlock(&cacheChunk->numChunksMutex);
+
+
     return 0;
 }
 
+void setCacheStatus(CacheInfo *cacheInfo, CacheStatus status) {
+    pthread_mutex_lock(&cacheInfo->mutex);
+    cacheInfo->status = status;
+    pthread_mutex_unlock(&cacheInfo->mutex);
+}
+
+CacheStatus getCacheStatus(CacheInfo *cacheInfo) {
+    CacheStatus returnStatus;
+    pthread_mutex_lock(&cacheInfo->mutex);
+    returnStatus = cacheInfo->status;
+    pthread_mutex_unlock(&cacheInfo->mutex);
+    return returnStatus;
+}
+
+int getCacheRecvSize(CacheInfo *cacheInfo) {
+    CacheStatus returnRecvSize;
+    pthread_mutex_lock(&cacheInfo->mutex);
+    returnRecvSize = cacheInfo->recvSize;
+    pthread_mutex_unlock(&cacheInfo->mutex);
+    return returnRecvSize;
+}
 
 int broadcastWaitingCacheClients(CacheInfo *cacheChunk) {
     pthread_cond_broadcast(&cacheChunk->numChunksCondVar);

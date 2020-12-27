@@ -16,13 +16,13 @@ enum CacheStatus {
     DOWNLOADING,
     VALID,
     INVALID
-};
+} typedef CacheStatus;
 
 struct CacheInfo {
     size_t allSize;
-    size_t recvSize;
+    size_t recvSize;//
     pthread_mutex_t mutex;
-    size_t readers;
+    size_t readers;//
 
     char **data;
     int *dataChunksSize;
@@ -34,6 +34,12 @@ struct CacheInfo {
     char *url;
     enum CacheStatus status;
 } typedef CacheInfo;
+
+void setCacheStatus(CacheInfo *cacheInfo, CacheStatus status);
+
+CacheStatus getCacheStatus(CacheInfo *cacheInfo);
+
+int getCacheRecvSize(CacheInfo *cacheInfo);
 
 int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
 
