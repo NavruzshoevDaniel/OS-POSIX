@@ -7,10 +7,14 @@
 int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSize) {
 
     for (size_t k = connection->numChunksWritten; k < newSize; k++) {
+        pthread_mutex_lock(&cache[connection->cacheIndex].mutex);
         ssize_t bytesWritten = send(connection->clientSocket,
                                     cache[connection->cacheIndex].data[k],
                                     cache[connection->cacheIndex].dataChunksSize[k], 0);
+        pthread_mutex_unlock(&cache[connection->cacheIndex].mutex);
         if (bytesWritten <= 0) {
+            perror("Error client from cache sending");
+            printf("wht fuck\n");
             return -1;
         }
     }
@@ -32,22 +36,23 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
         int localCacheStatus;
         size_t localNumChunks;
 
-        pthread_mutex_lock(&cache[connection->cacheIndex].mutex);
-        localCacheStatus = cache[connection->cacheIndex].status;
-        pthread_mutex_unlock(&cache[connection->cacheIndex].mutex);
+
+        localCacheStatus = getCacheStatus(&cache[connection->cacheIndex]);
 #ifdef _MULTITHREAD
         if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
-
+            //printf("lock numChunksMutex...");
             pthread_mutex_lock(&cache[connection->cacheIndex].numChunksMutex);
 
             localNumChunks = cache[connection->cacheIndex].numChunks;
 
             while (localCacheStatus == DOWNLOADING && connection->numChunksWritten == localNumChunks &&
                    *localConnectionsCount == 1) {
-
+               // printf("pthread_cond_wait...");
                 pthread_cond_wait(&cache[connection->cacheIndex].numChunksCondVar,
                                   &cache[connection->cacheIndex].numChunksMutex);
-                if (cache[connection->cacheIndex].status == INVALID) {
+                //printf("after pthread_cond_wait\n");
+                localCacheStatus =  getCacheStatus(&cache[connection->cacheIndex]);
+                if (localCacheStatus == INVALID) {
                     pthread_mutex_unlock(&cache[connection->cacheIndex].numChunksMutex);
                     return WRITER_CACHE_INVALID_EXCEPTION;
                 }
@@ -55,7 +60,7 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
             }
 
             pthread_mutex_unlock(&cache[connection->cacheIndex].numChunksMutex);
-
+           // printf("after numChunksMutex\n");
             if (sendNewChunksToClient(connection, cache, localNumChunks) == -1) {
                 return SEND_TO_CLIENT_EXCEPTION;
             }
