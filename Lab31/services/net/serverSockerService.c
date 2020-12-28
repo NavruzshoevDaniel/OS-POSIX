@@ -49,7 +49,9 @@ int acceptPollWrapper(struct pollfd *fds, int listenSocket, int amountFds) {
     }
     if (fds->revents & POLLIN) {
         return accept(listenSocket, (struct sockaddr *) NULL, NULL);
-    } else {
+    } else if (fds->revents & POLLERR || fds->revents & POLLHUP || fds->revents & POLLNVAL) {
         return -1;
+    } else{
+        return -2;
     }
 }

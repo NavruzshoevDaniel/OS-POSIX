@@ -39,6 +39,13 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
     }
 }
 
+/**
+ * If connections exits in socketsQueue its return newSocket
+ * else if it doesnt exist and socketsQueue is not empty its return -1
+ * else wait
+ * @return socketFd
+ * @return -1 EMPTY_QUEUE
+ * */
 int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
     pthread_mutex_lock(&socketsQueue->queueMutex);
@@ -328,7 +335,7 @@ int main(int argc, const char *argv[]) {
     pthread_t *poolThreads = NULL;
 
     proxySocket = getProxySocket(proxySocketPort, MAX_NUM_TRANSLATION_CONNECTIONS);
-    if (proxySocket < 0) { exit(NULL); }
+    if (proxySocket < 0) { exit(0); }
     signal(SIGTERM, signalHandler);
     signal(SIGINT, signalHandler);
     signal(SIGPIPE, SIG_IGN);

@@ -31,7 +31,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                                            int threadId) {
     if (isClientDead(clientFd) && connection->clientSocket != -1) {
         connection->clientSocket = -1;
-        printf("[%d] clientSocket is dead  before recv\n",threadId);
+        printf("[%d] clientSocket is dead  before recv\n", threadId);
     }
     if ((clientFd.revents & POLLOUT && serverFd.revents & POLLIN) ||
         (connection->clientSocket == -1 && serverFd.revents & POLLIN)) {
@@ -47,9 +47,8 @@ int handleReadFromServerWriteToClientState(Connection *connection,
                        connection->id);
                 connection->clientSocket = -1;
                 perror("while sending");
-                printf("[%d] clientSocket is dead after recv\n",threadId);
+                printf("[%d] clientSocket is dead after recv\n", threadId);
             }
-
         }
 
         if (connection->cacheIndex == -1) { return NOT_FREE_CACHE_EXCEPTION; }
@@ -64,14 +63,14 @@ int handleReadFromServerWriteToClientState(Connection *connection,
             if (statusCode != 200 || (contentLength == -1 && body == -1)) {
                 return STATUS_OR_CONTENT_LENGTH_EXCEPTION;
             }
-            cache[connection->cacheIndex].allSize = (size_t) (contentLength + body);
+            setCacheAllSize(&cache[connection->cacheIndex], (size_t) (contentLength + body));
         }
         if (putDataToCache(&cache[connection->cacheIndex], buf, readCount) == -1) {
             return PUT_CACHE_DATA_EXCEPTION;
         };
         broadcastWaitingCacheClients(&cache[connection->cacheIndex]);
 
-        if (getCacheRecvSize(&cache[connection->cacheIndex]) == cache[connection->cacheIndex].allSize) {
+        if (getCacheRecvSize(&cache[connection->cacheIndex]) == getCacheAllSize(&cache[connection->cacheIndex])) {
             setCacheStatus(&cache[connection->cacheIndex], VALID);
             return END_READING_PROCCESS;
         }

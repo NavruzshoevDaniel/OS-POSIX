@@ -13,7 +13,7 @@ void dropConnection(int id,
     if (connections[id].buffer_size > 0) {
         freeConnectionBuffer(&connections[id]);
     }
-    if (needToCloseServer) {
+    if (needToCloseServer){
         close(connections[id].serverSocket);
     }
     close(connections[id].clientSocket);

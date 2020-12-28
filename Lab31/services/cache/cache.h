@@ -20,7 +20,7 @@ enum CacheStatus {
 
 struct CacheInfo {
     size_t allSize;
-    size_t recvSize;//
+    size_t recvSize;
     pthread_mutex_t mutex;
     size_t readers;//
 
@@ -40,6 +40,12 @@ void setCacheStatus(CacheInfo *cacheInfo, CacheStatus status);
 CacheStatus getCacheStatus(CacheInfo *cacheInfo);
 
 int getCacheRecvSize(CacheInfo *cacheInfo);
+
+int getCacheAllSize(CacheInfo *cacheInfo);
+
+void getDataAndDataChunkSize(CacheInfo *cacheInfo,int index, char **data, int *dataChunksSize);
+
+void setCacheAllSize(CacheInfo *cacheInfo, int allSize);
 
 int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
 
