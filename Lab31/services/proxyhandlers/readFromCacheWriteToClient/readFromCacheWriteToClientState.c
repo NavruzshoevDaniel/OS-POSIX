@@ -10,10 +10,13 @@ int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSi
     for (size_t k = connection->numChunksWritten; k < newSize; k++) {
         infoPrintf("sendNewChunksToClient...");
         pthread_mutex_lock(&cache[connection->cacheIndex].mutex);
+        infoPrintf("\tsendNewChunksToClient lock");
         ssize_t bytesWritten = send(connection->clientSocket,
                                     cache[connection->cacheIndex].data[k],
                                     cache[connection->cacheIndex].dataChunksSize[k], MSG_DONTWAIT);
+        infoPrintf("\tafter send");
         pthread_mutex_unlock(&cache[connection->cacheIndex].mutex);
+        infoPrintf("\tsendNewChunksToClient unlock");
         infoPrintf("sendNewChunksToClientEnd\n");
         if (bytesWritten <= 0) {
             perror("Error client from cache sending");
@@ -22,6 +25,10 @@ int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSi
         }
     }
     return 0;
+}
+
+bool isClientDeadd(struct pollfd clientFd) {
+    return clientFd.revents & POLLERR || clientFd.revents & POLLHUP || clientFd.revents & POLLNVAL;
 }
 
 /**
@@ -35,6 +42,9 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
                                           struct pollfd clientFds,
                                           CacheInfo *cache,
                                           const int *localConnectionsCount) {
+    if (isClientDeadd(clientFds)) {
+        return SEND_TO_CLIENT_EXCEPTION;
+    }
     if (clientFds.revents & POLLOUT) {
         int localCacheStatus;
         size_t localNumChunks;
@@ -99,4 +109,3 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
         }
     }
 }
-

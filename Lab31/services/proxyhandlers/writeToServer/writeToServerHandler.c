@@ -10,7 +10,7 @@
 int handleWriteToServerState(Connection *connection,
                              struct pollfd serverFd) {
     if (serverFd.revents & POLLOUT) {
-        if (send(connection->serverSocket, connection->buffer, connection->buffer_size, 0) <= 0) {
+        if (send(connection->serverSocket, connection->buffer, connection->buffer_size, MSG_DONTWAIT) <= 0) {
             perror("send to server");
             return SEND_TO_SERVER_EXCEPTION;
         }

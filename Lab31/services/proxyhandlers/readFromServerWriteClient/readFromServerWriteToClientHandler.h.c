@@ -42,7 +42,7 @@ int handleReadFromServerWriteToClientState(Connection *connection,
         if (readCount == 0) { return SERVER_CLOSED_EXCEPTION; }
 
         if (connection->clientSocket != -1) {
-            if (send(connection->clientSocket, buf, (size_t) readCount, 0) <= 0) {
+            if (send(connection->clientSocket, buf, (size_t) readCount, MSG_DONTWAIT) <= 0) {
                 printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT: CLIENT ERROR\n", threadId,
                        connection->id);
                 connection->clientSocket = -1;
