@@ -34,7 +34,7 @@
 int handleReadFromServerWriteToClientState(Connection *connection,
                                            struct pollfd clientFd,
                                            struct pollfd serverFd,
-                                           CacheInfo *cache,
+                                           CacheEntry *cache,
                                            char *buf,
                                            int bufferSize,
                                            int threadId);

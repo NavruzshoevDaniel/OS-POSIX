@@ -10,7 +10,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "../pthread/pthreadService.h"
-#include "../connection/connection.h"
+#include "cacheList.h"
 
 enum CacheStatus {
     DOWNLOADING,
@@ -22,10 +22,9 @@ struct CacheInfo {
     size_t allSize;
     size_t recvSize;
     pthread_mutex_t mutex;
-    size_t readers;//
+    size_t readers;
 
-    char **data;
-    int *dataChunksSize;
+    struct NodeCacheData *data;
     size_t numChunks;
     pthread_cond_t numChunksCondVar;
     pthread_mutex_t numChunksMutex;
@@ -33,46 +32,44 @@ struct CacheInfo {
     int writerId;
     char *url;
     enum CacheStatus status;
-} typedef CacheInfo;
+} typedef CacheEntry;
 
-void setCacheStatus(CacheInfo *cacheInfo, CacheStatus status);
+void setCacheStatus(CacheEntry *cacheInfo, CacheStatus status);
 
-CacheStatus getCacheStatus(CacheInfo *cacheInfo);
+CacheStatus getCacheStatus(CacheEntry *cacheInfo);
 
-int getCacheRecvSize(CacheInfo *cacheInfo);
+int getCacheRecvSize(CacheEntry *cacheInfo);
 
-int getCacheAllSize(CacheInfo *cacheInfo);
+int getCacheAllSize(CacheEntry *cacheInfo);
 
-void getDataAndDataChunkSize(CacheInfo *cacheInfo,int index, char **data, int *dataChunksSize);
+void setCacheAllSize(CacheEntry *cacheInfo, int allSize);
 
-void setCacheAllSize(CacheInfo *cacheInfo, int allSize);
+int putDataToCache(CacheEntry *cacheChunk, char *newData, int lengthNewData);
 
-int putDataToCache(CacheInfo *cacheChunk, char *newData, int lengthNewData);
+void destroyCache(CacheEntry *cache, int maxCacheSize);
 
-void destroyCache(CacheInfo *cache, int maxCacheSize);
+int initCache(CacheEntry *cache, int maxCacheSize);
 
-int initCache(CacheInfo *cache, int maxCacheSize);
-
-void makeCacheInvalid(CacheInfo *cache);
-
-void freeDataChunks(char **data, size_t numChunks);
+void makeCacheInvalid(CacheEntry *cache);
 
 /**
  * If not using cache exits return index cache or else return -1
  * */
-int searchNotUsingCacheAndSetDownloadingState(char *url, CacheInfo *cache, int cacheSize, int threadId);
+int searchNotUsingCacheAndSetDownloadingState(char *url, CacheEntry *cache, int cacheSize, int threadId);
 
 /**
  * If free cache exits  return index cache or else return -1
  * */
-int searchFreeCacheAndSetDownloadingState(char *url, CacheInfo *cache, int cacheSize, int threadId);
+int searchFreeCacheAndSetDownloadingState(char *url, CacheEntry *cache, int cacheSize, int threadId);
 
 /**
  * If url exits return index cache or else return -1
  * */
-int searchUrlInCache(char *url, CacheInfo *cache, int cacheSize);
+int searchUrlInCache(char *url, CacheEntry *cache, int cacheSize);
 
-int broadcastWaitingCacheClients(CacheInfo *cacheChunk);
+int broadcastWaitingCacheClients(CacheEntry *cacheChunk);
+
+//void getCopyData(CacheEntry *info,char **data,int *dataChunksSize, int index);
 
 
 #endif //LAB31_CACHE_H

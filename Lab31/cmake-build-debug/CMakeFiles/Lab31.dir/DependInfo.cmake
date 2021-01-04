@@ -7,8 +7,12 @@ set(CMAKE_DEPENDS_CHECK_C
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/argschecker/argsChecker.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/main.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/main.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/cache/cache.c.o"
+  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cacheList.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/cache/cacheList.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o"
+  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/connection/connection.c.o"
+  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o"
+  "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/logger/logger.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/logger/logger.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/httpService.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/net/httpService.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/serverSockerService.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o"
   "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c" "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o"
@@ -23,6 +27,7 @@ set(CMAKE_C_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
+  "../services"
   )
 
 # Targets to which this target links.

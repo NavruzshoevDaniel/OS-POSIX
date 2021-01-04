@@ -21,7 +21,7 @@ void handleNotResolvingUrl(struct Connection *connection) {
  * */
 int handleGetMethod(char *url,
                     Connection *connection,
-                    CacheInfo *cache,
+                    CacheEntry *cache,
                     const int maxCacheSize,
                     int threadId) {
     int urlInCacheResult = searchUrlInCache(url, cache, maxCacheSize);
@@ -63,7 +63,7 @@ int handleGettingRequestState(Connection *connection,
                               const int bufferSize,
                               int threadId,
                               struct pollfd clientFds,
-                              CacheInfo *cache,
+                              CacheEntry *cache,
                               const int maxCacheSize) {
     if (clientFds.revents & POLLHUP) {
         return DEAD_CLIENT_EXCEPTION;
@@ -101,6 +101,7 @@ int handleGettingRequestState(Connection *connection,
             }
         }
     }
+    return 0;
 }
 
 

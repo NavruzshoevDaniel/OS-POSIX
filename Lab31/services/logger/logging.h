@@ -7,7 +7,7 @@
 
 #include "stdio.h"
 #include "stdarg.h"
-#define LOGGING
+//#define LOGGING
 #define ERROR
 #define INFO
 #define WARN

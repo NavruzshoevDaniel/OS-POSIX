@@ -17,6 +17,48 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="TestLogger">
+				<Option output="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/TestLogger" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 TestLogger"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="TestLogger/fast">
+				<Option output="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/TestLogger" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 TestLogger/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/daniel/NSU/Semestr\ 5/OS-POSIX/Lab31/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="rebuild_cache">
 				<Option working_dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug"/>
 				<Option type="4"/>
@@ -44,6 +86,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -64,6 +107,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add directory="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -99,16 +143,41 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cache.h">
 			<Option target="Lab31"/>
 		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cacheList.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cacheList.h">
+			<Option target="Lab31"/>
+		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.h">
 			<Option target="Lab31"/>
 		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.h">
+			<Option target="Lab31"/>
+		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.c">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/logger/logger.c">
+			<Option target="TestLogger"/>
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/logger/logging.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/httpService.c">
@@ -164,6 +233,9 @@
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/threadpool/threadPool.h">
 			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/test/loggerTest.c">
+			<Option target="TestLogger"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

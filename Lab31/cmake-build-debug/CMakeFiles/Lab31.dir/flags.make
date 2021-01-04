@@ -6,5 +6,5 @@ C_FLAGS =  -fsanitize=thread -g -isysroot /Library/Developer/CommandLineTools/SD
 
 C_DEFINES = 
 
-C_INCLUDES = 
+C_INCLUDES = -I"/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services" 
 

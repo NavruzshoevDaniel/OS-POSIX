@@ -7,7 +7,7 @@ static int allConnectionsCount = 0;
 int poolSize;
 int isRun = 1;
 
-CacheInfo cache[MAX_CACHE_SIZE];
+CacheEntry cache[MAX_CACHE_SIZE];
 pthread_mutex_t connectionsMutex;
 int proxySocket;
 bool sigCaptured = false;
@@ -97,7 +97,6 @@ void *work(void *param) {
     while (isRun == 1) {
 #ifdef _MULTITHREAD
         int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
-
         if (newClientSocket != -1) {
             initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
         }
@@ -258,7 +257,8 @@ void handleGettingRequestStateWrapper(Connection *connections,
                                       char *buf,
                                       int threadId,
                                       int i) {
-    switch (handleGettingRequestState(&connections[i], buf, BUFFER_SIZE, threadId, fds[i * 2], cache, MAX_CACHE_SIZE)) {
+    switch (handleGettingRequestState(&connections[i], buf, BUFFER_SIZE, threadId,
+            fds[i * 2], cache, MAX_CACHE_SIZE)) {
         case DEAD_CLIENT_EXCEPTION: {
             dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
                                   connections, localConnectionsCount, threadId);

@@ -5,19 +5,11 @@
 #include "readFromCacheWriteToClientState.h"
 #include "../../logger/logging.h"
 
-int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSize) {
-
+int sendNewChunksToClient(Connection *connection, CacheEntry *cache, size_t newSize) {
     for (size_t k = connection->numChunksWritten; k < newSize; k++) {
-        infoPrintf("sendNewChunksToClient...");
-        pthread_mutex_lock(&cache[connection->cacheIndex].mutex);
-        infoPrintf("\tsendNewChunksToClient lock");
-        ssize_t bytesWritten = send(connection->clientSocket,
-                                    cache[connection->cacheIndex].data[k],
-                                    cache[connection->cacheIndex].dataChunksSize[k], MSG_DONTWAIT);
-        infoPrintf("\tafter send");
-        pthread_mutex_unlock(&cache[connection->cacheIndex].mutex);
-        infoPrintf("\tsendNewChunksToClient unlock");
-        infoPrintf("sendNewChunksToClientEnd\n");
+        NodeCacheData *cacheData = getCacheNode(cache->data, k);
+        ssize_t bytesWritten = send(connection->clientSocket, cacheData->data,
+                                    cacheData->lengthData, MSG_DONTWAIT);
         if (bytesWritten <= 0) {
             perror("Error client from cache sending");
             printf("wht fuck\n");
@@ -40,7 +32,7 @@ bool isClientDeadd(struct pollfd clientFd) {
  * */
 int handleReadFromCacheWriteToClientState(Connection *connection,
                                           struct pollfd clientFds,
-                                          CacheInfo *cache,
+                                          CacheEntry *cache,
                                           const int *localConnectionsCount) {
     if (isClientDeadd(clientFds)) {
         return SEND_TO_CLIENT_EXCEPTION;
@@ -50,7 +42,6 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
         size_t localNumChunks;
 
         localCacheStatus = getCacheStatus(&cache[connection->cacheIndex]);
-#ifdef _MULTITHREAD
         if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
             infoPrintf("numChunksMutex in handle...");
             pthread_mutex_lock(&cache[connection->cacheIndex].numChunksMutex);
@@ -82,27 +73,6 @@ int handleReadFromCacheWriteToClientState(Connection *connection,
             if (localCacheStatus == VALID && connection->numChunksWritten == cache[connection->cacheIndex].numChunks) {
                 return SUCCESS_WITH_END;
             }
-#else
-            if (localCacheStatus == VALID || localCacheStatus == DOWNLOADING) {
-
-                int totalNumChunks = cache[connection->cacheIndex].numChunks;
-                size_t nowChunksWritten = connection->numChunksWritten;
-                if (nowChunksWritten < totalNumChunks) {
-                    //printf("%s\n\n\n", cache[connections[i].cacheIndex].data[nowChunksWritten]);
-                    ssize_t bytesWritten = send(connection->clientSocket,
-                                                cache[connection->cacheIndex].data[nowChunksWritten],
-                                                cache[connection->cacheIndex].dataChunksSize[nowChunksWritten], MSG_DONTWAIT);
-                    printf("%d\n", bytesWritten);
-                    if (bytesWritten < 0) {
-                        return SEND_TO_CLIENT_EXCEPTION;
-                    }
-                    connection->numChunksWritten++;
-                }
-
-                if (localCacheStatus == VALID && connection->numChunksWritten == totalNumChunks) {
-                    return SUCCESS_WITH_END;
-                }
-#endif
             return EXIT_SUCCESS;
         } else if (localCacheStatus == INVALID) {
             return CACHE_INVALID_EXCEPTION;

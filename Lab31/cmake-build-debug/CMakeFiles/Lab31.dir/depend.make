@@ -9,6 +9,7 @@ CMakeFiles/Lab31.dir/main.c.o: ../config.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
 CMakeFiles/Lab31.dir/main.c.o: ../main.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/net/httpService.h
@@ -23,14 +24,38 @@ CMakeFiles/Lab31.dir/main.c.o: ../services/threadpool/threadPool.h
 
 CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cache.c
 CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cache.h
-CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/connection/connection.h
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/logger/logging.h
 CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/pthread/pthreadService.h
+
+CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cacheList.c
+CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.c
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.h
 
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/connection/clientConnection.c
+CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/connection/clientConnection.h
+
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.c
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.h
+
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/connection/serverConnection.c
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/connection/serverConnection.h
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/pthread/pthreadService.h
+
+CMakeFiles/Lab31.dir/services/logger/logger.c.o: ../services/logger/logger.c
+CMakeFiles/Lab31.dir/services/logger/logger.c.o: ../services/logger/logging.h
 
 CMakeFiles/Lab31.dir/services/net/httpService.c.o: ../services/net/httpService.c
 CMakeFiles/Lab31.dir/services/net/httpService.c.o: ../services/net/httpService.h
@@ -39,6 +64,7 @@ CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o: ../services/net/serve
 CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o: ../services/net/serverSockerService.h
 
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/net/httpService.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ../services/proxyhandlers/getRequest/getRequestHandler.c
@@ -47,12 +73,15 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o: ..
 
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../config.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/connection/connection.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/logger/logging.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/net/httpService.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h
@@ -60,6 +89,7 @@ CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromSe
 CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/proxyhandlers/writeToServer/writeToServerHandler.c
 CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o: ../services/proxyhandlers/writeToServer/writeToServerHandler.h

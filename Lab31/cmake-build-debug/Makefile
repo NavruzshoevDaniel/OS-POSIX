@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named TestLogger
+
+# Build rule for target.
+TestLogger: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 TestLogger
+.PHONY : TestLogger
+
+# fast build rule for target.
+TestLogger/fast:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/build
+.PHONY : TestLogger/fast
+
+#=============================================================================
 # Target rules for targets named Lab31
 
 # Build rule for target.
@@ -204,6 +217,33 @@ services/cache/cache.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cache.c.s
 .PHONY : services/cache/cache.c.s
 
+services/cache/cacheList.o: services/cache/cacheList.c.o
+
+.PHONY : services/cache/cacheList.o
+
+# target to build an object file
+services/cache/cacheList.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cacheList.c.o
+.PHONY : services/cache/cacheList.c.o
+
+services/cache/cacheList.i: services/cache/cacheList.c.i
+
+.PHONY : services/cache/cacheList.i
+
+# target to preprocess a source file
+services/cache/cacheList.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cacheList.c.i
+.PHONY : services/cache/cacheList.c.i
+
+services/cache/cacheList.s: services/cache/cacheList.c.s
+
+.PHONY : services/cache/cacheList.s
+
+# target to generate assembly for a file
+services/cache/cacheList.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cacheList.c.s
+.PHONY : services/cache/cacheList.c.s
+
 services/concurrent/atomicInt.o: services/concurrent/atomicInt.c.o
 
 .PHONY : services/concurrent/atomicInt.o
@@ -231,6 +271,33 @@ services/concurrent/atomicInt.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s
 .PHONY : services/concurrent/atomicInt.c.s
 
+services/connection/clientConnection.o: services/connection/clientConnection.c.o
+
+.PHONY : services/connection/clientConnection.o
+
+# target to build an object file
+services/connection/clientConnection.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o
+.PHONY : services/connection/clientConnection.c.o
+
+services/connection/clientConnection.i: services/connection/clientConnection.c.i
+
+.PHONY : services/connection/clientConnection.i
+
+# target to preprocess a source file
+services/connection/clientConnection.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.i
+.PHONY : services/connection/clientConnection.c.i
+
+services/connection/clientConnection.s: services/connection/clientConnection.c.s
+
+.PHONY : services/connection/clientConnection.s
+
+# target to generate assembly for a file
+services/connection/clientConnection.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.s
+.PHONY : services/connection/clientConnection.c.s
+
 services/connection/connection.o: services/connection/connection.c.o
 
 .PHONY : services/connection/connection.o
@@ -257,6 +324,63 @@ services/connection/connection.s: services/connection/connection.c.s
 services/connection/connection.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
 .PHONY : services/connection/connection.c.s
+
+services/connection/serverConnection.o: services/connection/serverConnection.c.o
+
+.PHONY : services/connection/serverConnection.o
+
+# target to build an object file
+services/connection/serverConnection.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o
+.PHONY : services/connection/serverConnection.c.o
+
+services/connection/serverConnection.i: services/connection/serverConnection.c.i
+
+.PHONY : services/connection/serverConnection.i
+
+# target to preprocess a source file
+services/connection/serverConnection.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.i
+.PHONY : services/connection/serverConnection.c.i
+
+services/connection/serverConnection.s: services/connection/serverConnection.c.s
+
+.PHONY : services/connection/serverConnection.s
+
+# target to generate assembly for a file
+services/connection/serverConnection.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.s
+.PHONY : services/connection/serverConnection.c.s
+
+services/logger/logger.o: services/logger/logger.c.o
+
+.PHONY : services/logger/logger.o
+
+# target to build an object file
+services/logger/logger.c.o:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.o
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.o
+.PHONY : services/logger/logger.c.o
+
+services/logger/logger.i: services/logger/logger.c.i
+
+.PHONY : services/logger/logger.i
+
+# target to preprocess a source file
+services/logger/logger.c.i:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.i
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.i
+.PHONY : services/logger/logger.c.i
+
+services/logger/logger.s: services/logger/logger.c.s
+
+.PHONY : services/logger/logger.s
+
+# target to generate assembly for a file
+services/logger/logger.c.s:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.s
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.s
+.PHONY : services/logger/logger.c.s
 
 services/net/httpService.o: services/net/httpService.c.o
 
@@ -501,12 +625,40 @@ services/threadpool/threadPool.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.s
 .PHONY : services/threadpool/threadPool.c.s
 
+test/loggerTest.o: test/loggerTest.c.o
+
+.PHONY : test/loggerTest.o
+
+# target to build an object file
+test/loggerTest.c.o:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.o
+.PHONY : test/loggerTest.c.o
+
+test/loggerTest.i: test/loggerTest.c.i
+
+.PHONY : test/loggerTest.i
+
+# target to preprocess a source file
+test/loggerTest.c.i:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.i
+.PHONY : test/loggerTest.c.i
+
+test/loggerTest.s: test/loggerTest.c.s
+
+.PHONY : test/loggerTest.s
+
+# target to generate assembly for a file
+test/loggerTest.c.s:
+	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.s
+.PHONY : test/loggerTest.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... TestLogger"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Lab31"
@@ -519,12 +671,24 @@ help:
 	@echo "... services/cache/cache.o"
 	@echo "... services/cache/cache.i"
 	@echo "... services/cache/cache.s"
+	@echo "... services/cache/cacheList.o"
+	@echo "... services/cache/cacheList.i"
+	@echo "... services/cache/cacheList.s"
 	@echo "... services/concurrent/atomicInt.o"
 	@echo "... services/concurrent/atomicInt.i"
 	@echo "... services/concurrent/atomicInt.s"
+	@echo "... services/connection/clientConnection.o"
+	@echo "... services/connection/clientConnection.i"
+	@echo "... services/connection/clientConnection.s"
 	@echo "... services/connection/connection.o"
 	@echo "... services/connection/connection.i"
 	@echo "... services/connection/connection.s"
+	@echo "... services/connection/serverConnection.o"
+	@echo "... services/connection/serverConnection.i"
+	@echo "... services/connection/serverConnection.s"
+	@echo "... services/logger/logger.o"
+	@echo "... services/logger/logger.i"
+	@echo "... services/logger/logger.s"
 	@echo "... services/net/httpService.o"
 	@echo "... services/net/httpService.i"
 	@echo "... services/net/httpService.s"
@@ -552,6 +716,9 @@ help:
 	@echo "... services/threadpool/threadPool.o"
 	@echo "... services/threadpool/threadPool.i"
 	@echo "... services/threadpool/threadPool.s"
+	@echo "... test/loggerTest.o"
+	@echo "... test/loggerTest.i"
+	@echo "... test/loggerTest.s"
 .PHONY : help
 
 

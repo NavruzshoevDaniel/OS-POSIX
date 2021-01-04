@@ -16,7 +16,7 @@
 #define CACHE_INVALID_EXCEPTION -44
 #define SUCCESS_WITH_END 11
 
-int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSize);
+int sendNewChunksToClient(Connection *connection, CacheEntry *cache, size_t newSize);
 
 /**
  * @return EXIT_SUCCES 0
@@ -27,6 +27,6 @@ int sendNewChunksToClient(Connection *connection, CacheInfo *cache, size_t newSi
  * */
 int handleReadFromCacheWriteToClientState(Connection *connection,
                                           struct pollfd clientFds,
-                                          CacheInfo *cache,
+                                          CacheEntry *cache,
                                           const int *localConnectionsCount);
 #endif //LAB31_READFROMCACHEWRITETOCLIENTSTATE_H

@@ -26,8 +26,6 @@ struct Queue {
 
 Queue *createQueue();
 
-void clearQueue(Queue *queue);
-
 int getSocketFromQueue(Queue *queue);
 
 void putSocketInQueue(Queue *queue, int sock);

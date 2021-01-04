@@ -58,5 +58,4 @@ int reallocateConnectionBufferMemory(Connection *connection, size_t additionalLe
 void freeConnectionBuffer(Connection *connection);
 
 
-
 #endif //LAB31_CONNECTION_H

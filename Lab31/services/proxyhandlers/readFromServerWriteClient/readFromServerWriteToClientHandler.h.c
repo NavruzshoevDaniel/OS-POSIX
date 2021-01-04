@@ -6,7 +6,7 @@
 
 bool isClientDead(struct pollfd pollfd);
 
-bool isFirstCacheChunk(CacheInfo *cache) {
+bool isFirstCacheChunk(CacheEntry *cache) {
     return DOWNLOADING == getCacheStatus(cache) && getCacheRecvSize(cache) == 0;
 }
 
@@ -25,7 +25,7 @@ bool isFirstCacheChunk(CacheInfo *cache) {
 int handleReadFromServerWriteToClientState(Connection *connection,
                                            struct pollfd clientFd,
                                            struct pollfd serverFd,
-                                           CacheInfo *cache,
+                                           CacheEntry *cache,
                                            char *buf,
                                            int bufferSize,
                                            int threadId) {

@@ -31,7 +31,7 @@ int handleGettingRequestState(Connection *connection,
                               int bufferSize,
                               int threadId,
                               struct pollfd clientFds,
-                              CacheInfo *cache,
+                              CacheEntry *cache,
                               int maxCacheSize);
 
 /**
@@ -40,7 +40,7 @@ int handleGettingRequestState(Connection *connection,
  * */
 int handleGetMethod(char *url,
                     Connection *connection,
-                    CacheInfo *cache,
+                    CacheEntry *cache,
                     int maxCacheSize,
                     int threadId);
 
