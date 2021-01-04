@@ -4,17 +4,6 @@
 
 #include "cacheList.h"
 
-NodeCacheData *getLast(NodeCacheData *head) {
-    if (head == NULL) {
-        return NULL;
-    }
-    while (head->next) {
-        head = head->next;
-    }
-    return head;
-}
-
-
 void pushDataCacheBack(NodeCacheData **head, char *data, int length) {
     while (*head) {
         head = &(*head)->next;

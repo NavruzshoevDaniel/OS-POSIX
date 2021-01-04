@@ -6,15 +6,17 @@
 #include "../../logger/logging.h"
 
 int sendNewChunksToClient(Connection *connection, CacheEntry *cache, size_t newSize) {
-    for (size_t k = connection->numChunksWritten; k < newSize; k++) {
-        NodeCacheData *cacheData = getCacheNode(cache->data, k);
-        ssize_t bytesWritten = send(connection->clientSocket, cacheData->data,
-                                    cacheData->lengthData, MSG_DONTWAIT);
+    NodeCacheData *cacheData = getCacheNode(cache->data, connection->numChunksWritten);
+    int counter = connection->numChunksWritten;
+    while (cacheData != NULL && (counter < newSize)) {
+        ssize_t bytesWritten = send(connection->clientSocket, cacheData->data,cacheData->lengthData, MSG_DONTWAIT);
         if (bytesWritten <= 0) {
             perror("Error client from cache sending");
             printf("wht fuck\n");
             return -1;
         }
+        cacheData = cacheData->next;
+        counter++;
     }
     return 0;
 }
