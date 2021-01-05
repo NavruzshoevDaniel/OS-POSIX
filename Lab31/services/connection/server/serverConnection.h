@@ -7,9 +7,10 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "../logger/logging.h"
-#include "../cache/cache.h"
-#include "../net/httpService.h"
+#include <poll.h>
+#include "logger/logging.h"
+#include "cache/cache.h"
+#include "net/httpService.h"
 
 #define ALLOCATE_ERROR_EXCEPTION -5;
 
@@ -21,11 +22,18 @@
 #define PUT_CACHE_DATA_EXCEPTION -7
 
 #define END_READING_PROCCESS 1
+enum ServerState{
+    REQUEST_SENDING,
+    CACHING
+} typedef ServerState;
 
 struct ServerConnection {
+
     int serverSocket;
     int cacheIndex;
     int id;
+    ServerState state;
+    struct pollfd *fd;
 
     int (*sendRequest)(struct ServerConnection *self, char *data, int dataSize);
 
@@ -33,7 +41,7 @@ struct ServerConnection {
 
 } typedef ServerConnection;
 
-int initServerConnection(int serverSocket, int cacheIndex, ServerConnection **outNewServerConnection);
+ServerConnection *initServerConnection(int serverSocket, int cacheIndex);
 
 int closeServerConnection(struct ServerConnection *self);
 

@@ -1,3 +1,6 @@
+#include <connection/client/clientConnection.h>
+#include <connection/client/clientConnectionList.h>
+#include <connection/server/serverConnectionList.h>
 #include "main.h"
 
 //3 = CRLF EOF
@@ -12,31 +15,73 @@ pthread_mutex_t connectionsMutex;
 int proxySocket;
 bool sigCaptured = false;
 
-void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
-    for (int i = 0; i < localCount; ++i) {
-        fds[i * 2].fd = connections[i].clientSocket;
-        fds[i * 2 + 1].fd = connections[i].serverSocket;
-        switch (connections[i].status) {
-            case GETTING_REQUEST_FROM_CLIENT:
-                fds[i * 2].events = POLLIN;
-                fds[i * 2 + 1].events = 0;
-                break;
-            case WRITE_TO_SERVER:
-                fds[i * 2].events = 0;
-                fds[i * 2 + 1].events = POLLOUT;
-                break;
-            case READ_FROM_SERVER_WRITE_CLIENT:
-                fds[i * 2].events = POLLOUT;
-                fds[i * 2 + 1].events = POLLIN;
-                break;
-            case READ_FROM_CACHE_WRITE_CLIENT:
-                fds[i * 2].events = POLLOUT;
-                fds[i * 2 + 1].events = 0;
-                break;
-            case NOT_ACTIVE:
-                break;
+void updateServers(NodeServerConnection **listServerConnections, int threadId, int *localConnectCount);
+
+void
+updateClients(NodeClientConnection **listClientsConnections, NodeServerConnection **listServerConnection, int threadId,
+              int *localConnectionsCount);
+
+void
+handleSendingFromCacheException(int result, NodeClientConnection **list, ClientConnection *clientConnection,
+                                int threadId, int *localConnectCount);
+
+void
+handleCachingException(int result, NodeServerConnection **listServers, ServerConnection *serverConnection, int threadId,
+                       int *localConnects);
+
+int updatePoll(struct pollfd *fds, NodeClientConnection *clients, NodeServerConnection *servers) {
+    int counter = 0;
+    NodeClientConnection *iterClients = clients;
+    NodeServerConnection *iterServers = servers;
+    while (iterClients != NULL) {
+        ClientConnection *clientConnection = iterClients->connection;
+        fds[counter].fd = clientConnection->clientSocket;
+        if (clientConnection->state == WAITING_REQUEST) {
+            fds[counter].events = POLLIN;
+        } else {
+            fds[counter].events = POLLOUT;
         }
+        clientConnection->fd = &fds[counter];
+        iterClients = iterClients->next;
+        counter++;
     }
+    while (iterServers != NULL) {
+        ServerConnection *serverConnection = iterServers->connection;
+        if (serverConnection->state == REQUEST_SENDING) {
+            fds[counter].events = POLLOUT;
+        } else {
+            fds[counter].events = POLLIN;
+        }
+        fds[counter].fd = serverConnection->serverSocket;
+        serverConnection->fd = &fds[counter];
+        iterServers = iterServers->next;
+        counter++;
+    }
+    return counter;
+    /* for (int i = 0; i < localCount; ++i) {
+         fds[i * 2].fd = connections[i].clientSocket;
+         fds[i * 2 + 1].fd = connections[i].serverSocket;
+         switch (connections[i].status) {
+             case GETTING_REQUEST_FROM_CLIENT:
+                 fds[i * 2].events = POLLIN;
+                 fds[i * 2 + 1].events = 0;
+                 break;
+             case WRITE_TO_SERVER:
+                 fds[i * 2].events = 0;
+                 fds[i * 2 + 1].events = POLLOUT;
+                 break;
+             case READ_FROM_SERVER_WRITE_CLIENT:
+                 fds[i * 2].events = POLLOUT;
+                 fds[i * 2 + 1].events = POLLIN;
+                 break;
+             case READ_FROM_CACHE_WRITE_CLIENT:
+                 fds[i * 2].events = POLLOUT;
+                 fds[i * 2 + 1].events = 0;
+                 break;
+             case NOT_ACTIVE:
+                 break;
+         }
+     }*/
 }
 
 /**
@@ -46,25 +91,25 @@ void updatePoll(struct pollfd *fds, int localCount, Connection *connections) {
  * @return socketFd
  * @return -1 EMPTY_QUEUE
  * */
-int getNewClientSocketOrWait(int *localConnectionsCount, int threadId) {
+int getNewClientSocket(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
     pthread_mutex_lock(&socketsQueue->queueMutex);
-    pthread_mutex_lock(&connectionsMutex);
-    if (MAX_CONNECTIONS_PER_THREAD >= *localConnectionsCount && !isEmpty(socketsQueue) && isRun == 1) {
+    if (!isEmpty(socketsQueue) && isRun == 1) {
 
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
         }
     }
-    pthread_mutex_unlock(&connectionsMutex);
     while (*localConnectionsCount == 0 && isEmpty(socketsQueue) && isRun == 1) {
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
         }
+        //printf("SALAM %d connections=%d\n",threadId,*localConnectionsCount);
     }
+    //printf("after SALAM %d connections=%d\n",threadId,*localConnectionsCount);
     pthread_mutex_unlock(&socketsQueue->queueMutex);
     return newClientSocket;
 }
@@ -75,8 +120,29 @@ void dropConnectionWrapper(int id,
                            Connection *connections,
                            int *connectionsCount,
                            int threadId) {
+    printf("Thread: %d, Connection %d, %s\n", threadId, connections[id].id, reason);
     dropConnection(id, reason, needToCloseServer, connections, connectionsCount, threadId);
     atomicDecrement(&allConnectionsCount, &connectionsMutex);
+}
+
+void removeClientWrapper(const char *reason,
+                         int *localConnectCount,
+                         NodeClientConnection **list,
+                         ClientConnection *clientConnection,
+                         int threadId) {
+    printf("Thread: %d, Connection %d, %s\n", threadId, clientConnection->id, reason);
+    deleteClientConnectionById(list, clientConnection->id);
+    (*localConnectCount)--;
+}
+
+void removeServerWrapper(const char *reason,
+                         int *localConnectCount,
+                         NodeServerConnection **list,
+                         ServerConnection *serverConnection,
+                         int threadId) {
+    printf("Thread: %d, Connection %d, %s\n", threadId, serverConnection->id, reason);
+    deleteServerConnectionById(list, serverConnection->id);
+    (*localConnectCount)--;
 }
 
 void *work(void *param) {
@@ -86,218 +152,196 @@ void *work(void *param) {
 
     int localConnectionsCount = 0;
 
-#ifdef _MULTITHREAD
     struct pollfd fds[2 * MAX_CONNECTIONS];
-#else
-    struct pollfd fds[2 * MAX_CONNECTIONS+1];
-#endif
 
-    Connection connections[MAX_CONNECTIONS];
+    NodeClientConnection *listClientConnections = NULL;
+    NodeServerConnection *listServerConnections = NULL;
 
     while (isRun == 1) {
-#ifdef _MULTITHREAD
-        int newClientSocket = getNewClientSocketOrWait(&localConnectionsCount, threadId);
+        int newClientSocket = getNewClientSocket(&localConnectionsCount, threadId);
         if (newClientSocket != -1) {
-            initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
+            ClientConnection *clientConnection = initClientConnection(newClientSocket);
+            pushClientConnectionBack(&listClientConnections, clientConnection);
+            printf("New connection for thread=%d local=%d\n", threadId, localConnectionsCount);
+            // initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
         }
-#else
-        int newClientSocket =-1;
-        fds[localConnectionsCount * 2].fd = proxySocket;
-        fds[localConnectionsCount * 2].events = POLLIN;
-#endif
-        updatePoll(fds, localConnectionsCount, connections);
-#ifdef _MULTITHREAD
+        localConnectionsCount = updatePoll(fds, listClientConnections, listServerConnections);
         int polled = 0;
         if (isRun == 1) {
-            polled = poll(fds, localConnectionsCount * 2, -1);
+            polled = poll(fds, localConnectionsCount, -1);
         } else { break; }
-#else
-        int polled = poll(fds, localConnectionsCount * 2+1, -1);
-#endif
 
         if (polled < 0) {
             perror("poll error");
         } else if (polled == 0) {
             continue;
         }
-#ifdef _MULTITHREAD
-#else
-        if (0 != (fds[localConnectionsCount*2].revents & POLLIN)) {
-
-            if (localConnectionsCount < MAX_CONNECTIONS) {
-                int newClientSocket = accept(proxySocket, (struct sockaddr *) NULL, NULL);
-                if (newClientSocket != -1) {
-                    initNewConnection(&connections[localConnectionsCount], newClientSocket);
-                    printf("ACCEPTED NEW CONNECTION %d\n", localConnectionsCount);
-                    localConnectionsCount++;
-                }
-            }
-
-        }
-#endif
-
-        char buf[BUFFER_SIZE];
-        for (int i = 0; i < localConnectionsCount; i++) {
-            switch (connections[i].status) {
-                case GETTING_REQUEST_FROM_CLIENT: {
-                    handleGettingRequestStateWrapper(connections, fds, &localConnectionsCount, buf, threadId, i);
-                    break;
-                }
-                case WRITE_TO_SERVER: {
-                    handleWriteToServerStateWrapper(connections, fds, &localConnectionsCount, threadId, i);
-                    break;
-                }
-                case READ_FROM_SERVER_WRITE_CLIENT: {
-                    handleReadFromServerWriteToClientStateWrapper(connections, fds, &localConnectionsCount, buf,
-                                                                  threadId, i);
-                    break;
-                }
-                case READ_FROM_CACHE_WRITE_CLIENT: {
-                    handleReadFromCacheWriteToClientStateWrapper(connections, fds, &localConnectionsCount, threadId, i);
-                    break;
-                }
-                case NOT_ACTIVE:
-                    break;
-            }
-        }
+        updateServers(&listServerConnections, threadId, &localConnectionsCount);
+        updateClients(&listClientConnections, &listServerConnections, threadId, &localConnectionsCount);
     }
     printf("before closing threadid-%d\n", threadId);
-    for (int i = 0; i < localConnectionsCount; ++i) {
-        if (connections[i].clientSocket != -1) {
-            close(connections[i].clientSocket);
-        }
-        if (connections[i].serverSocket != -1) {
-            close(connections[i].serverSocket);
-        }
-    }
     printf("End thread-%d\n", threadId);
     pthread_exit(NULL);
 }
 
-void handleReadFromCacheWriteToClientStateWrapper(Connection *connections,
-                                                  struct pollfd *fds,
-                                                  int *localConnectionsCount,
-                                                  int threadId,
-                                                  int i) {
-    switch (handleReadFromCacheWriteToClientState(&connections[i], fds[i * 2], cache, localConnectionsCount)) {
+void
+updateClients(NodeClientConnection **listClientsConnections, NodeServerConnection **listServerConnection, int threadId,
+              int *localConnectionsCount) {
+    NodeClientConnection *iterClientConnectionNode = *listClientsConnections;
+    char buf[BUFFER_SIZE];
+
+    while (iterClientConnectionNode != NULL) {
+        ClientConnection *clientConnection = iterClientConnectionNode->connection;
+        /*if (clientConnection->fd->revents & POLLHUP) {
+            iterClientConnectionNode = iterClientConnectionNode->next;
+            handleGetException(DEAD_CLIENT_EXCEPTION, listClientsConnections, clientConnection, threadId, localConnectionsCount);
+            continue;
+        }*/
+        if (clientConnection->state == WAITING_REQUEST && (clientConnection->fd->revents & POLLIN) != 0) {
+            int result = clientConnection->handleGetRequest(clientConnection, buf, BUFFER_SIZE, cache, MAX_CACHE_SIZE,
+                                                            localConnectionsCount, threadId,
+                                                            listServerConnection);
+            clientConnection->state = SENDING_FROM_CACHE;
+            if (result != 0) {
+                iterClientConnectionNode = iterClientConnectionNode->next;
+                handleGetException(result, listClientsConnections, clientConnection, threadId, localConnectionsCount);
+                continue;
+            }
+        } else if (clientConnection->state == SENDING_FROM_CACHE && (clientConnection->fd->revents & POLLOUT) != 0) {
+            int result = clientConnection->sendFromCache(clientConnection, cache, localConnectionsCount);
+            if (result != 0) {
+                printf("handleSendingFromCacheException\n");
+                iterClientConnectionNode = iterClientConnectionNode->next;
+                handleSendingFromCacheException(result, listClientsConnections, clientConnection, threadId,
+                                                localConnectionsCount);
+                continue;
+            }
+        }
+        iterClientConnectionNode = iterClientConnectionNode->next;
+    }
+}
+
+void handleSendingFromCacheException(int result, NodeClientConnection **list, ClientConnection *clientConnection,
+                                     int threadId, int *localConnectCount) {
+    switch (result) {
         case WRITER_CACHE_INVALID_EXCEPTION: {
-            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache",
-                                  0, connections, localConnectionsCount, threadId);
+            removeClientWrapper("WRITER_CACHE_INVALID_EXCEPTION:smth happend with writer cache", localConnectCount,
+                                list, clientConnection, threadId);
             break;
         }
         case SEND_TO_CLIENT_EXCEPTION: {
-            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:client err",
-                                  0, connections, localConnectionsCount, threadId);
+            removeClientWrapper("READ_FROM_CACHE_WRITE_CLIENT:client err", localConnectCount,
+                                list, clientConnection, threadId);
             break;
         }
         case SUCCESS_WITH_END: {
-            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:SUCCESS",
-                                  0, connections, localConnectionsCount, threadId);
+            removeClientWrapper("READ_FROM_CACHE_WRITE_CLIENT:SUCCESS", localConnectCount,
+                                list, clientConnection, threadId);
             break;
         }
         case CACHE_INVALID_EXCEPTION: {
-            dropConnectionWrapper(i, "READ_FROM_CACHE_WRITE_CLIENT:smth happend with writer cache",
-                                  0, connections, localConnectionsCount, threadId);
+            removeClientWrapper("CACHE_INVALID_EXCEPTION:smth happend with writer cache", localConnectCount,
+                                list, clientConnection, threadId);
             break;
         }
+        default:
+            printf("default");
     }
 }
 
-void handleReadFromServerWriteToClientStateWrapper(Connection *connections,
-                                                   struct pollfd *fds,
-                                                   int *localConnectionsCount,
-                                                   char *buf,
-                                                   int threadId,
-                                                   int i) {
-    int result = handleReadFromServerWriteToClientState(&connections[i], fds[i * 2],
-                                                        fds[i * 2 + 1],
-                                                        cache, buf, BUFFER_SIZE, threadId);
-    if (result == RECV_FROM_SERVER_EXCEPTION) {
-        printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:recv fron server err\n", threadId, connections[i].id);
-        makeCacheInvalid(&cache[connections[i].cacheIndex]);
-        dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:recv fron server err",
-                              1, connections, localConnectionsCount, threadId);
-    } else if (result == SERVER_CLOSED_EXCEPTION) {
-        if (connections[i].cacheIndex != -1) {
-            printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:INVALID CACHE\n", threadId, connections[i].id);
-            makeCacheInvalid(&cache[connections[i].cacheIndex]);
+void updateServers(NodeServerConnection **listServerConnections, int threadId, int *localConnectCount) {
+    NodeServerConnection *iterServerConnectionNode = *listServerConnections;
+
+    char buf[BUFFER_SIZE];
+
+    while (iterServerConnectionNode != NULL) {
+        ServerConnection *serverConnection = iterServerConnectionNode->connection;
+        if (serverConnection->state == CACHING && (serverConnection->fd->revents & POLLIN)) {
+            int result = serverConnection->caching(serverConnection, &cache[serverConnection->cacheIndex],
+                                                   buf, BUFFER_SIZE);
+            printf("caching\n");
+            if (result != EXIT_SUCCESS) {
+                iterServerConnectionNode = iterServerConnectionNode->next;
+                if (result == END_READING_PROCCESS) {
+                    setCacheStatus(&cache[serverConnection->cacheIndex], VALID);
+                    removeServerWrapper("END_READING_PROCCESS SERVER", localConnectCount, listServerConnections,
+                                        serverConnection, threadId);
+                    continue;
+                }
+                setCacheStatus(&cache[serverConnection->cacheIndex], INVALID);
+                handleCachingException(result, listServerConnections, serverConnection, threadId, localConnectCount);
+                continue;
+            }
         }
-        dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:server closed",
-                              1, connections, localConnectionsCount, threadId);
+        iterServerConnectionNode = iterServerConnectionNode->next;
+    }
+}
+
+void
+handleCachingException(int result, NodeServerConnection **listServers, ServerConnection *serverConnection, int threadId,
+                       int *localConnects) {
+    if (result == RECV_FROM_SERVER_EXCEPTION) {
+        printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:recv fron server err\n", threadId, serverConnection->id);
+        makeCacheInvalid(&cache[serverConnection->cacheIndex]);
+        removeServerWrapper("READ_FROM_SERVER_WRITE_CLIENT:recv fron server err", localConnects, listServers,
+                            serverConnection, threadId);
+    } else if (result == SERVER_CLOSED_EXCEPTION) {
+        if (serverConnection->cacheIndex != -1) {
+            printf("(%d) (%d)| READ_FROM_SERVER_WRITE_CLIENT:INVALID CACHE\n", threadId, serverConnection->id);
+            makeCacheInvalid(&cache[serverConnection->cacheIndex]);
+        }
+        removeServerWrapper("READ_FROM_SERVER_WRITE_CLIENT:server closed", localConnects, listServers, serverConnection,
+                            threadId);
+
     } else if (result == NOT_FREE_CACHE_EXCEPTION) {
         printf("READ_FROM_SERVER_WRITE_CLIENT:i dont have cache");
     } else if (result == STATUS_OR_CONTENT_LENGTH_EXCEPTION) {
-        makeCacheInvalid(&cache[connections[i].cacheIndex]);
-        dropConnectionWrapper(i, "DO NOT NEED TO BE CACHED",
-                              1, connections, localConnectionsCount, threadId);
+        makeCacheInvalid(&cache[serverConnection->cacheIndex]);
+        removeServerWrapper("DO NOT NEED TO BE CACHED", localConnects, listServers, serverConnection, threadId);
     } else if (result == END_READING_PROCCESS) {
-        dropConnectionWrapper(i, "READ_FROM_SERVER_WRITE_CLIENT:SUCCESS",
-                              1, connections, localConnectionsCount, threadId);
+        removeServerWrapper("READ_FROM_SERVER_WRITE_CLIENT:SUCCESS", localConnects, listServers, serverConnection,
+                            threadId);
     } else if (result == PUT_CACHE_DATA_EXCEPTION) {
-        dropConnectionWrapper(i, "PUT_CACHE_DATA_EXCEPTION",
-                              1, connections, localConnectionsCount, threadId);
+        removeServerWrapper("PUT_CACHE_DATA_EXCEPTION", localConnects, listServers, serverConnection, threadId);
+    } else {
+        printf("(default)");
     }
+
 }
 
-void handleWriteToServerStateWrapper(Connection *connections,
-                                     struct pollfd *fds,
-                                     int *localConnectionsCount,
-                                     int threadId,
-                                     int i) {
-    if (SEND_TO_SERVER_EXCEPTION == handleWriteToServerState(&connections[i], fds[i * 2 + 1])) {
-        makeCacheInvalid(&cache[connections[i].cacheIndex]);
-        dropConnectionWrapper(i, "WRITE_TO_SERVER:server err", 1,
-                              connections, localConnectionsCount, threadId);
-    }
-}
-
-void handleGettingRequestStateWrapper(Connection *connections,
-                                      struct pollfd *fds,
-                                      int *localConnectionsCount,
-                                      char *buf,
-                                      int threadId,
-                                      int i) {
-    switch (handleGettingRequestState(&connections[i], buf, BUFFER_SIZE, threadId,
-            fds[i * 2], cache, MAX_CACHE_SIZE)) {
+void handleGetException(int result, NodeClientConnection **list, ClientConnection *clientConnection, int threadId,
+                        int *localConnectCount) {
+    switch (result) {
         case DEAD_CLIENT_EXCEPTION: {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:dead client ", 0,
-                                  connections, localConnectionsCount, threadId);
+            removeClientWrapper("CLIENT_MESSAGE:dead client", localConnectCount, list, clientConnection, threadId);
             break;
         }
         case RECV_CLIENT_EXCEPTION : {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:recv err", 0, connections,
-                                  localConnectionsCount, threadId);
-            break;
-        }
-        case ALLOCATING_BUFFER_MEMORY_EXCEPTION: {
-            dropConnectionWrapper(i, "buffer error",
-                                  0, connections, localConnectionsCount, threadId);
+            removeClientWrapper("CLIENT_MESSAGE:recv err", localConnectCount, list, clientConnection, threadId);
             break;
         }
         case NOT_GET_EXCEPTION: {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:not GET", 0,
-                                  connections, localConnectionsCount, threadId);
+            removeClientWrapper("CLIENT_MESSAGE:not GET", localConnectCount, list, clientConnection, threadId);
             break;
         }
         case URL_EXCEPTION: {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:not good url", 0, connections,
-                                  localConnectionsCount, threadId);
+            removeClientWrapper("CLIENT_MESSAGE:not good url", localConnectCount, list, clientConnection, threadId);
             break;
         }
         case RESOLVING_SOCKET_FROM_URL_EXCEPTION : {
-            dropConnectionWrapper(i, "CLIENT_MESSAGE:get server err", 0, connections, localConnectionsCount,
-                                  threadId);
+            removeClientWrapper("CLIENT_MESSAGE:get server err", localConnectCount, list, clientConnection, threadId);
+            break;
         }
+        default:
+            printf("default----   %d\n", result);
     }
 }
 
 
 void checkArgs(int argcc, const char *argv[]) {
-#ifdef _MULTITHREAD
     checkCountArguments(argcc);
     poolSize = atoi(argv[1]);
     checkIfValidParsedInt(poolSize);
-#endif
     int proxySocketPort = atoi(argv[2]);
     checkIfValidParsedInt(proxySocketPort);
 }
@@ -343,7 +387,6 @@ int main(int argc, const char *argv[]) {
     proxyFds[0].fd = proxySocket;
     proxyFds[0].events = POLLIN;
 
-#ifdef _MULTITHREAD
     socketsQueue = createQueue();
     if (createThreadPool(poolSize, work, threadsId, &poolThreads) == -1) {
         pthread_exit(NULL);
@@ -363,7 +406,6 @@ int main(int argc, const char *argv[]) {
             putSocketInQueue(socketsQueue, newClientSocket);
             pthread_mutex_unlock(&socketsQueue->queueMutex);
 
-            atomicIncrement(&allConnectionsCount, &connectionsMutex);
             pthread_cond_signal(&socketsQueue->condVar);
         } else {
             isRun = 0;
@@ -371,11 +413,6 @@ int main(int argc, const char *argv[]) {
             break;
         }
     }
-
-#else
-    int param=0;
-    work(&param);
-#endif
     close(proxySocket);
     printf("Close proxy socket");
     pthread_exit(NULL);

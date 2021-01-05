@@ -155,10 +155,16 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.h">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.c">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.h">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.c">
@@ -167,10 +173,16 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.h">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.c">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.h">
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.h">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnectionList.c">
+			<Option target="Lab31"/>
+		</Unit>
+		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnectionList.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/logger/logger.c">

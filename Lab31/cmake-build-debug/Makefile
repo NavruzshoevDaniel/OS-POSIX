@@ -271,32 +271,59 @@ services/concurrent/atomicInt.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s
 .PHONY : services/concurrent/atomicInt.c.s
 
-services/connection/clientConnection.o: services/connection/clientConnection.c.o
+services/connection/client/clientConnection.o: services/connection/client/clientConnection.c.o
 
-.PHONY : services/connection/clientConnection.o
+.PHONY : services/connection/client/clientConnection.o
 
 # target to build an object file
-services/connection/clientConnection.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o
-.PHONY : services/connection/clientConnection.c.o
+services/connection/client/clientConnection.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o
+.PHONY : services/connection/client/clientConnection.c.o
 
-services/connection/clientConnection.i: services/connection/clientConnection.c.i
+services/connection/client/clientConnection.i: services/connection/client/clientConnection.c.i
 
-.PHONY : services/connection/clientConnection.i
+.PHONY : services/connection/client/clientConnection.i
 
 # target to preprocess a source file
-services/connection/clientConnection.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.i
-.PHONY : services/connection/clientConnection.c.i
+services/connection/client/clientConnection.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.i
+.PHONY : services/connection/client/clientConnection.c.i
 
-services/connection/clientConnection.s: services/connection/clientConnection.c.s
+services/connection/client/clientConnection.s: services/connection/client/clientConnection.c.s
 
-.PHONY : services/connection/clientConnection.s
+.PHONY : services/connection/client/clientConnection.s
 
 # target to generate assembly for a file
-services/connection/clientConnection.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/clientConnection.c.s
-.PHONY : services/connection/clientConnection.c.s
+services/connection/client/clientConnection.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.s
+.PHONY : services/connection/client/clientConnection.c.s
+
+services/connection/client/clientConnectionList.o: services/connection/client/clientConnectionList.c.o
+
+.PHONY : services/connection/client/clientConnectionList.o
+
+# target to build an object file
+services/connection/client/clientConnectionList.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o
+.PHONY : services/connection/client/clientConnectionList.c.o
+
+services/connection/client/clientConnectionList.i: services/connection/client/clientConnectionList.c.i
+
+.PHONY : services/connection/client/clientConnectionList.i
+
+# target to preprocess a source file
+services/connection/client/clientConnectionList.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.i
+.PHONY : services/connection/client/clientConnectionList.c.i
+
+services/connection/client/clientConnectionList.s: services/connection/client/clientConnectionList.c.s
+
+.PHONY : services/connection/client/clientConnectionList.s
+
+# target to generate assembly for a file
+services/connection/client/clientConnectionList.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.s
+.PHONY : services/connection/client/clientConnectionList.c.s
 
 services/connection/connection.o: services/connection/connection.c.o
 
@@ -325,32 +352,59 @@ services/connection/connection.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
 .PHONY : services/connection/connection.c.s
 
-services/connection/serverConnection.o: services/connection/serverConnection.c.o
+services/connection/server/serverConnection.o: services/connection/server/serverConnection.c.o
 
-.PHONY : services/connection/serverConnection.o
+.PHONY : services/connection/server/serverConnection.o
 
 # target to build an object file
-services/connection/serverConnection.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o
-.PHONY : services/connection/serverConnection.c.o
+services/connection/server/serverConnection.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o
+.PHONY : services/connection/server/serverConnection.c.o
 
-services/connection/serverConnection.i: services/connection/serverConnection.c.i
+services/connection/server/serverConnection.i: services/connection/server/serverConnection.c.i
 
-.PHONY : services/connection/serverConnection.i
+.PHONY : services/connection/server/serverConnection.i
 
 # target to preprocess a source file
-services/connection/serverConnection.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.i
-.PHONY : services/connection/serverConnection.c.i
+services/connection/server/serverConnection.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.i
+.PHONY : services/connection/server/serverConnection.c.i
 
-services/connection/serverConnection.s: services/connection/serverConnection.c.s
+services/connection/server/serverConnection.s: services/connection/server/serverConnection.c.s
 
-.PHONY : services/connection/serverConnection.s
+.PHONY : services/connection/server/serverConnection.s
 
 # target to generate assembly for a file
-services/connection/serverConnection.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/serverConnection.c.s
-.PHONY : services/connection/serverConnection.c.s
+services/connection/server/serverConnection.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.s
+.PHONY : services/connection/server/serverConnection.c.s
+
+services/connection/server/serverConnectionList.o: services/connection/server/serverConnectionList.c.o
+
+.PHONY : services/connection/server/serverConnectionList.o
+
+# target to build an object file
+services/connection/server/serverConnectionList.c.o:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o
+.PHONY : services/connection/server/serverConnectionList.c.o
+
+services/connection/server/serverConnectionList.i: services/connection/server/serverConnectionList.c.i
+
+.PHONY : services/connection/server/serverConnectionList.i
+
+# target to preprocess a source file
+services/connection/server/serverConnectionList.c.i:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.i
+.PHONY : services/connection/server/serverConnectionList.c.i
+
+services/connection/server/serverConnectionList.s: services/connection/server/serverConnectionList.c.s
+
+.PHONY : services/connection/server/serverConnectionList.s
+
+# target to generate assembly for a file
+services/connection/server/serverConnectionList.c.s:
+	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.s
+.PHONY : services/connection/server/serverConnectionList.c.s
 
 services/logger/logger.o: services/logger/logger.c.o
 
@@ -677,15 +731,21 @@ help:
 	@echo "... services/concurrent/atomicInt.o"
 	@echo "... services/concurrent/atomicInt.i"
 	@echo "... services/concurrent/atomicInt.s"
-	@echo "... services/connection/clientConnection.o"
-	@echo "... services/connection/clientConnection.i"
-	@echo "... services/connection/clientConnection.s"
+	@echo "... services/connection/client/clientConnection.o"
+	@echo "... services/connection/client/clientConnection.i"
+	@echo "... services/connection/client/clientConnection.s"
+	@echo "... services/connection/client/clientConnectionList.o"
+	@echo "... services/connection/client/clientConnectionList.i"
+	@echo "... services/connection/client/clientConnectionList.s"
 	@echo "... services/connection/connection.o"
 	@echo "... services/connection/connection.i"
 	@echo "... services/connection/connection.s"
-	@echo "... services/connection/serverConnection.o"
-	@echo "... services/connection/serverConnection.i"
-	@echo "... services/connection/serverConnection.s"
+	@echo "... services/connection/server/serverConnection.o"
+	@echo "... services/connection/server/serverConnection.i"
+	@echo "... services/connection/server/serverConnection.s"
+	@echo "... services/connection/server/serverConnectionList.o"
+	@echo "... services/connection/server/serverConnectionList.i"
+	@echo "... services/connection/server/serverConnectionList.s"
 	@echo "... services/logger/logger.o"
 	@echo "... services/logger/logger.i"
 	@echo "... services/logger/logger.s"

@@ -26,26 +26,26 @@
  *          NOT_GET_EXCEPTION -5
  *          URL_EXCEPTION -6
  * */
-int handleGettingRequestState(Connection *connection,
-                              char *buf,
-                              int bufferSize,
-                              int threadId,
-                              struct pollfd clientFds,
-                              CacheEntry *cache,
-                              int maxCacheSize);
+int handleGettingRequestStatea(Connection *connection,
+                               char *buf,
+                               int bufferSize,
+                               int threadId,
+                               struct pollfd clientFds,
+                               CacheEntry *cache,
+                               int maxCacheSize);
 
 /**
  * @return 0 - SUCCESS
  *         RESOLVING_SOCKET_FROM_URL_EXCEPTION -6
  * */
-int handleGetMethod(char *url,
-                    Connection *connection,
-                    CacheEntry *cache,
-                    int maxCacheSize,
-                    int threadId);
+int handleGetMethoda(char *url,
+                     Connection *connection,
+                     CacheEntry *cache,
+                     int maxCacheSize,
+                     int threadId);
 
-void handleNotResolvingUrl(struct Connection *connection);
+void handleNotResolvingUrla(struct Connection *connection);
 
-void handleNotGetMethod(struct Connection *connection);
+void handleNotGetMethoda(struct Connection *connection);
 
 #endif //LAB31_GETREQUESTHANDLER_H

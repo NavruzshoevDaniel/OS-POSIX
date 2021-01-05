@@ -5,12 +5,12 @@
 #include "getRequestHandler.h"
 
 
-void handleNotGetMethod(struct Connection *connection) {
+void handleNotGetMethoda(struct Connection *connection) {
     char wrong[] = "HTTP: 405\r\nAllow: GET\r\n";
     write(connection->clientSocket, wrong, 23);
 }
 
-void handleNotResolvingUrl(struct Connection *connection) {
+void handleNotResolvingUrla(struct Connection *connection) {
     char errorstr[] = "HTTP: 523\r\n";
     write(connection->clientSocket, errorstr, 11);
 }
@@ -19,11 +19,11 @@ void handleNotResolvingUrl(struct Connection *connection) {
  * @return 0 - SUCCESS
  *         RESOLVING_SOCKET_FROM_URL_EXCEPTION -6
  * */
-int handleGetMethod(char *url,
-                    Connection *connection,
-                    CacheEntry *cache,
-                    const int maxCacheSize,
-                    int threadId) {
+int handleGetMethoda(char *url,
+                     Connection *connection,
+                     CacheEntry *cache,
+                     int maxCacheSize,
+                     int threadId) {
     int urlInCacheResult = searchUrlInCache(url, cache, maxCacheSize);
     if (urlInCacheResult >= 0) {
         setReadFromCacheState(connection, urlInCacheResult);
@@ -40,7 +40,7 @@ int handleGetMethod(char *url,
             connection->buffer = createGet(url, &connection->buffer_size);
 
             if (connection->serverSocket == -1) {
-                handleNotResolvingUrl(connection);
+                handleNotResolvingUrla(connection);
                 free(url);
                 return RESOLVING_SOCKET_FROM_URL_EXCEPTION;
             }
@@ -58,13 +58,13 @@ int handleGetMethod(char *url,
  *          NOT_GET_EXCEPTION -5
  *          URL_EXCEPTION -6
  * */
-int handleGettingRequestState(Connection *connection,
-                              char *buf,
-                              const int bufferSize,
-                              int threadId,
-                              struct pollfd clientFds,
-                              CacheEntry *cache,
-                              const int maxCacheSize) {
+int handleGettingRequestStatea(Connection *connection,
+                               char *buf,
+                               int bufferSize,
+                               int threadId,
+                               struct pollfd clientFds,
+                               CacheEntry *cache,
+                               int maxCacheSize) {
     if (clientFds.revents & POLLHUP) {
         return DEAD_CLIENT_EXCEPTION;
     } else if (clientFds.revents & POLLIN) {
@@ -87,11 +87,11 @@ int handleGettingRequestState(Connection *connection,
 
             if (url != NULL) {
                 if (!isMethodGet(connection->buffer)) {
-                    handleNotGetMethod(connection);
+                    handleNotGetMethoda(connection);
                     free(url);
                     return NOT_GET_EXCEPTION;
                 } else {
-                    int result = handleGetMethod(url, connection, cache, maxCacheSize, threadId);
+                    int result = handleGetMethoda(url, connection, cache, maxCacheSize, threadId);
                     if (result == RESOLVING_SOCKET_FROM_URL_EXCEPTION) {
                         return RESOLVING_SOCKET_FROM_URL_EXCEPTION;
                     }

@@ -56,9 +56,12 @@ void handleWriteToServerStateWrapper(Connection *connections,
                                      int threadId,
                                      int i);
 
-int getNewClientSocketOrWait(int *localConnectionsCount, int threadId);
+int getNewClientSocket(int *localConnectionsCount, int threadId);
 
-void updatePoll(struct pollfd *fds, int localCount, Connection *connections);
+void handleGetException(int result, NodeClientConnection **list, ClientConnection *clientConnection, int threadId,
+                        int *localConnectCount);
+
+int updatePoll(struct pollfd *fds, NodeClientConnection *clients, NodeServerConnection *servers);
 
 void *work(void *param);
 

@@ -4,12 +4,20 @@
 CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.c
 CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.h
 
+CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/connection/client/clientConnection.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/connection/client/clientConnectionList.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/connection/server/serverConnection.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/connection/server/serverConnectionList.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../argschecker/argsChecker.h
 CMakeFiles/Lab31.dir/main.c.o: ../config.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
 CMakeFiles/Lab31.dir/main.c.o: ../main.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
-CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/concurrent/atomicInt.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/connection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/net/httpService.h
@@ -18,7 +26,6 @@ CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/getRequest/getRequestHa
 CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/proxyhandlers/writeToServer/writeToServerHandler.h
-CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/threadpool/threadPool.h
 
@@ -36,23 +43,46 @@ CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/pthread/pthreadSe
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.c
 CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o: ../services/concurrent/atomicInt.h
 
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/cache/cache.h
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/cache/cacheList.h
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/logger/logging.h
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/pthread/pthreadService.h
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/connection/clientConnection.c
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/connection/clientConnection.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/connection/server/serverConnection.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/connection/server/serverConnectionList.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/connection/client/clientConnection.c
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/connection/client/clientConnection.h
+
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/server/serverConnection.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/server/serverConnectionList.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/client/clientConnection.h
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/client/clientConnectionList.c
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/client/clientConnectionList.h
 
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.c
 CMakeFiles/Lab31.dir/services/connection/connection.c.o: ../services/connection/connection.h
 
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/cache/cache.h
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/cache/cacheList.h
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/connection/serverConnection.c
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/connection/serverConnection.h
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/logger/logging.h
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/net/httpService.h
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/connection/server/serverConnection.c
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/connection/server/serverConnection.h
+
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/logger/logging.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/net/httpService.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/pthread/pthreadService.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/connection/server/serverConnection.h
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/connection/server/serverConnectionList.c
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/connection/server/serverConnectionList.h
 
 CMakeFiles/Lab31.dir/services/logger/logger.c.o: ../services/logger/logger.c
 CMakeFiles/Lab31.dir/services/logger/logger.c.o: ../services/logger/logging.h

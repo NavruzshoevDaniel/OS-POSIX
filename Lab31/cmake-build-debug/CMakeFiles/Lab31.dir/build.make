@@ -252,31 +252,31 @@ CMakeFiles/Lab31.dir/services/logger/logger.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/logger/logger.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/logger/logger.c" -o CMakeFiles/Lab31.dir/services/logger/logger.c.s
 
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: CMakeFiles/Lab31.dir/flags.make
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o: ../services/connection/clientConnection.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c"
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/connection/client/clientConnection.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.c"
 
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/clientConnection.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c" > CMakeFiles/Lab31.dir/services/connection/clientConnection.c.i
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.c" > CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.i
 
-CMakeFiles/Lab31.dir/services/connection/clientConnection.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/clientConnection.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/clientConnection.c" -o CMakeFiles/Lab31.dir/services/connection/clientConnection.c.s
+CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.c" -o CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.s
 
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: CMakeFiles/Lab31.dir/flags.make
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o: ../services/connection/serverConnection.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_17) "Building C object CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c"
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o: ../services/connection/server/serverConnection.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_17) "Building C object CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.c"
 
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/serverConnection.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c" > CMakeFiles/Lab31.dir/services/connection/serverConnection.c.i
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.c" > CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.i
 
-CMakeFiles/Lab31.dir/services/connection/serverConnection.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/serverConnection.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/serverConnection.c" -o CMakeFiles/Lab31.dir/services/connection/serverConnection.c.s
+CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.c" -o CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.s
 
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: CMakeFiles/Lab31.dir/flags.make
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cacheList.c
@@ -290,6 +290,32 @@ CMakeFiles/Lab31.dir/services/cache/cacheList.c.i: cmake_force
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/cache/cacheList.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cacheList.c" -o CMakeFiles/Lab31.dir/services/cache/cacheList.c.s
+
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o: ../services/connection/client/clientConnectionList.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_19) "Building C object CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.c"
+
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.c" > CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.i
+
+CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.c" -o CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.s
+
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: CMakeFiles/Lab31.dir/flags.make
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o: ../services/connection/server/serverConnectionList.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_20) "Building C object CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o   -c "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnectionList.c"
+
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnectionList.c" > CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.i
+
+CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnectionList.c" -o CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.s
 
 # Object files for target Lab31
 Lab31_OBJECTS = \
@@ -308,9 +334,11 @@ Lab31_OBJECTS = \
 "CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o" \
 "CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o" \
 "CMakeFiles/Lab31.dir/services/logger/logger.c.o" \
-"CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o" \
-"CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o" \
-"CMakeFiles/Lab31.dir/services/cache/cacheList.c.o"
+"CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o" \
+"CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o" \
+"CMakeFiles/Lab31.dir/services/cache/cacheList.c.o" \
+"CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o" \
+"CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o"
 
 # External object files for target Lab31
 Lab31_EXTERNAL_OBJECTS =
@@ -330,12 +358,14 @@ Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/rea
 Lab31: CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
 Lab31: CMakeFiles/Lab31.dir/services/net/serverSockerService.c.o
 Lab31: CMakeFiles/Lab31.dir/services/logger/logger.c.o
-Lab31: CMakeFiles/Lab31.dir/services/connection/clientConnection.c.o
-Lab31: CMakeFiles/Lab31.dir/services/connection/serverConnection.c.o
+Lab31: CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o
+Lab31: CMakeFiles/Lab31.dir/services/connection/server/serverConnection.c.o
 Lab31: CMakeFiles/Lab31.dir/services/cache/cacheList.c.o
+Lab31: CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.o
+Lab31: CMakeFiles/Lab31.dir/services/connection/server/serverConnectionList.c.o
 Lab31: CMakeFiles/Lab31.dir/build.make
 Lab31: CMakeFiles/Lab31.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_19) "Linking C executable Lab31"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_21) "Linking C executable Lab31"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Lab31.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

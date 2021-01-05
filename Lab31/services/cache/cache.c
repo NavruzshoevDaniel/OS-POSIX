@@ -23,10 +23,10 @@ int searchUrlInCache(char *url, CacheEntry *cache, int cacheSize) {
             }
 
             pthread_mutex_unlock(&cache[j].mutex);
-            infoPrintf("searchUrlInCacheEND");
+            // infoPrintf("searchUrlInCacheEND");
         } else {
             pthread_mutex_unlock(&cache[j].mutex);
-            infoPrintf("searchUrlInCacheEND ");
+            // infoPrintf("searchUrlInCacheEND ");
         }
     }
     return -1;
@@ -61,7 +61,7 @@ int searchFreeCacheAndSetDownloadingState(char *url,
             return j;
         } else {
             pthread_mutex_unlock(&cache[j].mutex);
-            infoPrintf("searchFreeCacheAndSetDownloadingStateEND");
+            //infoPrintf("searchFreeCacheAndSetDownloadingStateEND");
         }
     }
     return -1;
@@ -95,18 +95,18 @@ int searchNotUsingCacheAndSetDownloadingState(char *url,
             memcpy(cache[j].url, url, sizeof(char) * sizeof(url));
 
             pthread_mutex_unlock(&cache[j].mutex);
-            infoPrintf("searchNotUsingCacheAndSetDownloadingState ");
+            //infoPrintf("searchNotUsingCacheAndSetDownloadingState ");
             return j;
         } else {
             pthread_mutex_unlock(&cache[j].mutex);
-            infoPrintf("searchNotUsingCacheAndSetDownloadingStateEND");
+            //infoPrintf("searchNotUsingCacheAndSetDownloadingStateEND");
         }
     }
     return -1;
 }
 
 void makeCacheInvalid(CacheEntry *cache) {
-    cache->status = INVALID;
+    setCacheStatus(cache, INVALID);
     cache->writerId = -1;
     pthread_cond_broadcast(&cache->numChunksCondVar);
 }
@@ -156,7 +156,7 @@ int putDataToCache(CacheEntry *cacheChunk, char *newData, int lengthNewData) {
 }
 
 void setCacheStatus(CacheEntry *cacheInfo, CacheStatus status) {
-    infoPrintf("setCacheStatus %d...");
+    infoPrintf("setCacheStatus...");
     pthread_mutex_lock(&cacheInfo->mutex);
     cacheInfo->status = status;
     pthread_mutex_unlock(&cacheInfo->mutex);
