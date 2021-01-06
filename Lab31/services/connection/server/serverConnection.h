@@ -10,6 +10,7 @@
 #include <poll.h>
 #include "logger/logging.h"
 #include "cache/cache.h"
+#include <sys/socket.h>
 #include "net/httpService.h"
 
 #define ALLOCATE_ERROR_EXCEPTION -5;

@@ -1,7 +1,6 @@
 //
 // Created by Daniel on 03.01.2021.
 //
-#include <sys/socket.h>
 #include "serverConnection.h"
 
 int sendRequest(struct ServerConnection *self, char *data, int dataSize);
@@ -56,7 +55,7 @@ int caching(struct ServerConnection *self, CacheEntry *cache, void *buf, size_t 
 
         if (statusCode != 200 || (contentLength == -1 && body == -1)) {
             printf("status=%d\n",statusCode);
-            printf("contentLength=%d\n",contentLength);
+            printf("contentLength=%ld\n",contentLength);
             printf("body=%d\n",body);
             broadcastWaitingCacheClients(cache);
             return STATUS_OR_CONTENT_LENGTH_EXCEPTION;
@@ -79,7 +78,10 @@ int caching(struct ServerConnection *self, CacheEntry *cache, void *buf, size_t 
 }
 
 int closeServerConnection(struct ServerConnection *self) {
-    close(self->serverSocket);
+    if (self->serverSocket!=-1){
+        close(self->serverSocket);
+        self->serverSocket=-1;
+    }
     free(self);
     return EXIT_SUCCESS;
 }

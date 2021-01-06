@@ -53,7 +53,6 @@ CMAKE_BINARY_DIR = "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/TestLogger.dir/all
 all: CMakeFiles/Lab31.dir/all
 
 .PHONY : all
@@ -64,37 +63,9 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/TestLogger.dir/clean
 clean: CMakeFiles/Lab31.dir/clean
 
 .PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/TestLogger.dir
-
-# All Build rule for target.
-CMakeFiles/TestLogger.dir/all:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/depend
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" --progress-num=16,17,18 "Built target TestLogger"
-.PHONY : CMakeFiles/TestLogger.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/TestLogger.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" 3
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/TestLogger.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/cmake-build-debug/CMakeFiles" 0
-.PHONY : CMakeFiles/TestLogger.dir/rule
-
-# Convenience name for target.
-TestLogger: CMakeFiles/TestLogger.dir/rule
-
-.PHONY : TestLogger
-
-# clean rule for target.
-CMakeFiles/TestLogger.dir/clean:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/clean
-.PHONY : CMakeFiles/TestLogger.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/Lab31.dir

@@ -111,19 +111,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named TestLogger
-
-# Build rule for target.
-TestLogger: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 TestLogger
-.PHONY : TestLogger
-
-# fast build rule for target.
-TestLogger/fast:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/build
-.PHONY : TestLogger/fast
-
-#=============================================================================
 # Target rules for targets named Lab31
 
 # Build rule for target.
@@ -358,7 +345,6 @@ services/logger/logger.o: services/logger/logger.c.o
 
 # target to build an object file
 services/logger/logger.c.o:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.o
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.o
 .PHONY : services/logger/logger.c.o
 
@@ -368,7 +354,6 @@ services/logger/logger.i: services/logger/logger.c.i
 
 # target to preprocess a source file
 services/logger/logger.c.i:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.i
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.i
 .PHONY : services/logger/logger.c.i
 
@@ -378,7 +363,6 @@ services/logger/logger.s: services/logger/logger.c.s
 
 # target to generate assembly for a file
 services/logger/logger.c.s:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/services/logger/logger.c.s
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/logger/logger.c.s
 .PHONY : services/logger/logger.c.s
 
@@ -517,40 +501,12 @@ services/threadpool/threadPool.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/threadpool/threadPool.c.s
 .PHONY : services/threadpool/threadPool.c.s
 
-test/loggerTest.o: test/loggerTest.c.o
-
-.PHONY : test/loggerTest.o
-
-# target to build an object file
-test/loggerTest.c.o:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.o
-.PHONY : test/loggerTest.c.o
-
-test/loggerTest.i: test/loggerTest.c.i
-
-.PHONY : test/loggerTest.i
-
-# target to preprocess a source file
-test/loggerTest.c.i:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.i
-.PHONY : test/loggerTest.c.i
-
-test/loggerTest.s: test/loggerTest.c.s
-
-.PHONY : test/loggerTest.s
-
-# target to generate assembly for a file
-test/loggerTest.c.s:
-	$(MAKE) -f CMakeFiles/TestLogger.dir/build.make CMakeFiles/TestLogger.dir/test/loggerTest.c.s
-.PHONY : test/loggerTest.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... TestLogger"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Lab31"
@@ -596,9 +552,6 @@ help:
 	@echo "... services/threadpool/threadPool.o"
 	@echo "... services/threadpool/threadPool.i"
 	@echo "... services/threadpool/threadPool.s"
-	@echo "... test/loggerTest.o"
-	@echo "... test/loggerTest.i"
-	@echo "... test/loggerTest.s"
 .PHONY : help
 
 

@@ -11,6 +11,7 @@
 #include "string.h"
 #include "../pthread/pthreadService.h"
 #include "cacheList.h"
+#include "../logger/logging.h"
 
 enum CacheStatus {
     DOWNLOADING,
@@ -24,8 +25,7 @@ struct CacheInfo {
     pthread_mutex_t mutex;
     size_t readers;
 
-    struct NodeCacheData *data;
-    struct NodeCacheData *last;
+    struct ListCacheData *data;
     size_t numChunks;
     pthread_cond_t numChunksCondVar;
     pthread_mutex_t numChunksMutex;
@@ -56,17 +56,17 @@ void makeCacheInvalid(CacheEntry *cache);
 /**
  * If not using cache exits return index cache or else return -1
  * */
-int searchNotUsingCacheAndSetDownloadingState(char *url, CacheEntry *cache, int cacheSize, int threadId);
+int searchNotUsingCacheConcurrent(char *url, CacheEntry *cache, int cacheSize, int threadId);
 
 /**
  * If free cache exits  return index cache or else return -1
  * */
-int searchFreeCacheAndSetDownloadingState(char *url, CacheEntry *cache, int cacheSize, int threadId);
+int searchFreeCacheConcurrent(char *url, CacheEntry *cache, int cacheSize, int threadId);
 
 /**
  * If url exits return index cache or else return -1
  * */
-int searchUrlInCache(char *url, CacheEntry *cache, int cacheSize);
+int searchUrlInCacheConncurrent(char *url, CacheEntry *cache, int cacheSize);
 
 int broadcastWaitingCacheClients(CacheEntry *cacheChunk);
 

@@ -35,5 +35,19 @@ void signalHandler(int sig);
 
 void checkArgs(int argcc, const char *argv[]);
 
+void updateServers(NodeServerConnection **listServerConnections, int threadId, int *localConnectCount);
+
+void
+updateClients(NodeClientConnection **listClientsConnections, NodeServerConnection **listServerConnection, int threadId,
+              int *localConnectionsCount);
+
+void
+handleSendingFromCacheException(int result, NodeClientConnection **list, ClientConnection *clientConnection,
+                                int threadId, int *localConnectCount);
+
+void
+handleCachingException(int result, NodeServerConnection **listServers, ServerConnection *serverConnection, int threadId,
+                       int *localConnects);
+
 
 #endif //LAB31_MAIN_H

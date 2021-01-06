@@ -31,6 +31,7 @@ CMakeFiles/Lab31.dir/services/cache/cache.c.o: ../services/pthread/pthreadServic
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cache.h
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cacheList.c
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/logger/logging.h
 CMakeFiles/Lab31.dir/services/cache/cacheList.c.o: ../services/pthread/pthreadService.h
 
 CMakeFiles/Lab31.dir/services/connection/client/clientConnection.c.o: ../services/cache/cache.h

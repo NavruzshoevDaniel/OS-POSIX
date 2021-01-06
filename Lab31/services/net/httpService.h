@@ -7,7 +7,6 @@
 
 #include "string.h"
 #include "stdio.h"
-#include <ntsid.h>
 #include <stdlib.h>
 #include <netdb.h>
 

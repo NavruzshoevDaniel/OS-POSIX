@@ -1,8 +1,6 @@
 //
 // Created by Daniel on 26.12.2020.
 //
-#include <stdio.h>
-#include <poll.h>
 #include "serverSockerService.h"
 
 /**

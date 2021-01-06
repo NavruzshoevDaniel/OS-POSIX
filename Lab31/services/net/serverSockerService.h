@@ -6,7 +6,8 @@
 #define LAB31_SERVERSOCKERSERVICE_H
 
 
-#include <zconf.h>
+#include <stdio.h>
+#include <poll.h>
 #include <netinet/in.h>
 
 #define BIND_EXCEPTION -1;

@@ -4,20 +4,34 @@
 
 #include "cacheList.h"
 
-void pushDataCacheBack(NodeCacheData **head, char *data, int length) {
-    while (*head) {
-        head = &(*head)->next;
+void pushDataCacheBack(ListCacheData *list, char *data, int length) {
+    NodeCacheData *tmp = (NodeCacheData *) malloc(sizeof(NodeCacheData));
+    tmp->data = malloc(sizeof(char) * length);
+    memcpy(tmp->data, data, sizeof(char) * length);
+    tmp->lengthData = length;
+    tmp->next = NULL;
+
+
+    if (list->tail) {
+        list->tail->next = tmp;
     }
-    NodeCacheData *new = malloc(sizeof(NodeCacheData));
-    new->data = malloc(sizeof(char) * length);
-    memcpy(new->data, data, sizeof(char) * length);
-    new->lengthData = length;
-    new->next = NULL;
-    (*head)=new;
+
+    list->tail = tmp;
+
+    if (list->head == NULL) {
+        list->head = tmp;
+    }
 }
 
-NodeCacheData *getCacheNode(NodeCacheData *head, int n) {
+ListCacheData *initDataCacheList() {
+    ListCacheData *tmp = (ListCacheData *) malloc(sizeof(ListCacheData));
+    tmp->head = tmp->tail = NULL;
+    return tmp;
+}
+
+NodeCacheData *getCacheNode(ListCacheData *list, int n) {
     int counter = 0;
+    NodeCacheData *head = list->head;
     while (counter < n && head) {
         head = head->next;
         counter++;
@@ -25,13 +39,14 @@ NodeCacheData *getCacheNode(NodeCacheData *head, int n) {
     return head;
 }
 
-void freeList(NodeCacheData **head) {
+void freeList(ListCacheData *list) {
+    NodeCacheData *head = list->head;
     NodeCacheData *prev = NULL;
-    while ((*head)->next) {
-        prev = (*head);
-        (*head) = (*head)->next;
+    while (head->next) {
+        prev = head;
+        head = head->next;
         free(prev->data);
         free(prev);
     }
-    free(*head);
+    free(head);
 }

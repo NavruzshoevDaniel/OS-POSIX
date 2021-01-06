@@ -6,27 +6,12 @@
 //3 = CRLF EOF
 
 Queue *socketsQueue;
-static int allConnectionsCount = 0;
 int poolSize;
 int isRun = 1;
 
 CacheEntry cache[MAX_CACHE_SIZE];
 int proxySocket;
 bool sigCaptured = false;
-
-void updateServers(NodeServerConnection **listServerConnections, int threadId, int *localConnectCount);
-
-void
-updateClients(NodeClientConnection **listClientsConnections, NodeServerConnection **listServerConnection, int threadId,
-              int *localConnectionsCount);
-
-void
-handleSendingFromCacheException(int result, NodeClientConnection **list, ClientConnection *clientConnection,
-                                int threadId, int *localConnectCount);
-
-void
-handleCachingException(int result, NodeServerConnection **listServers, ServerConnection *serverConnection, int threadId,
-                       int *localConnects);
 
 int updatePoll(struct pollfd *fds, NodeClientConnection *clients, NodeServerConnection *servers) {
     int counter = 0;
@@ -57,30 +42,6 @@ int updatePoll(struct pollfd *fds, NodeClientConnection *clients, NodeServerConn
         counter++;
     }
     return counter;
-    /* for (int i = 0; i < localCount; ++i) {
-         fds[i * 2].fd = connections[i].clientSocket;
-         fds[i * 2 + 1].fd = connections[i].serverSocket;
-         switch (connections[i].status) {
-             case GETTING_REQUEST_FROM_CLIENT:
-                 fds[i * 2].events = POLLIN;
-                 fds[i * 2 + 1].events = 0;
-                 break;
-             case WRITE_TO_SERVER:
-                 fds[i * 2].events = 0;
-                 fds[i * 2 + 1].events = POLLOUT;
-                 break;
-             case READ_FROM_SERVER_WRITE_CLIENT:
-                 fds[i * 2].events = POLLOUT;
-                 fds[i * 2 + 1].events = POLLIN;
-                 break;
-             case READ_FROM_CACHE_WRITE_CLIENT:
-                 fds[i * 2].events = POLLOUT;
-                 fds[i * 2 + 1].events = 0;
-                 break;
-             case NOT_ACTIVE:
-                 break;
-         }
-     }*/
 }
 
 /**
@@ -92,6 +53,7 @@ int updatePoll(struct pollfd *fds, NodeClientConnection *clients, NodeServerConn
  * */
 int getNewClientSocket(int *localConnectionsCount, int threadId) {
     int newClientSocket = -1;
+    //printf("Thread: %d, %s\n", threadId,"queueMutex lock...\n");
     pthread_mutex_lock(&socketsQueue->queueMutex);
     if (!isEmpty(socketsQueue) && isRun == 1) {
 
@@ -100,8 +62,11 @@ int getNewClientSocket(int *localConnectionsCount, int threadId) {
             (*localConnectionsCount)++;
         }
     }
+
     while (*localConnectionsCount == 0 && isEmpty(socketsQueue) && isRun == 1) {
+        //printf("Thread: %d, %s\n", threadId,"pthread_cond_wait...");
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
+        //printf("AFTER Thread: %d, %s\n", threadId,"pthread_cond_wait\n");
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
@@ -109,6 +74,7 @@ int getNewClientSocket(int *localConnectionsCount, int threadId) {
 
     }
     pthread_mutex_unlock(&socketsQueue->queueMutex);
+    //printf("AFTER Thread: %d, %s\n", threadId,"queueMutex unlock\n");
     return newClientSocket;
 }
 
@@ -153,6 +119,7 @@ void *work(void *param) {
             // initNewConnection(&connections[localConnectionsCount - 1], newClientSocket);
         }
         localConnectionsCount = updatePoll(fds, listClientConnections, listServerConnections);
+        //printf("LOCAL COUNT CONNECTS=%d\n",localConnectionsCount);
         int polled = 0;
         if (isRun == 1) {
             polled = poll(fds, localConnectionsCount, -1);
@@ -179,11 +146,11 @@ updateClients(NodeClientConnection **listClientsConnections, NodeServerConnectio
 
     while (iterClientConnectionNode != NULL) {
         ClientConnection *clientConnection = iterClientConnectionNode->connection;
-        /*if (clientConnection->fd->revents & POLLHUP) {
+        if (clientConnection->fd->revents & POLLHUP) {
             iterClientConnectionNode = iterClientConnectionNode->next;
             handleGetException(DEAD_CLIENT_EXCEPTION, listClientsConnections, clientConnection, threadId, localConnectionsCount);
             continue;
-        }*/
+        }
         if (clientConnection->state == WAITING_REQUEST && (clientConnection->fd->revents & POLLIN) != 0) {
             int result = clientConnection->handleGetRequest(clientConnection, buf, BUFFER_SIZE, cache, MAX_CACHE_SIZE,
                                                             localConnectionsCount, threadId,
@@ -375,6 +342,7 @@ int main(int argc, const char *argv[]) {
     while (true) {
 
         int newClientSocket = acceptPollWrapper(proxyFds, proxySocket, 1);
+        printf("acceptPollWrapper=%d\n",newClientSocket);
         if (sigCaptured) {
             joinThreadPool(poolThreads, poolSize);
             break;

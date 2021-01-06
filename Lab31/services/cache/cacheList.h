@@ -16,10 +16,17 @@ struct NodeCacheData {
 
 } typedef NodeCacheData;
 
-void pushDataCacheBack(NodeCacheData **head, char *data, int length);
+struct ListCacheData {
+    NodeCacheData *head;
+    NodeCacheData *tail;
+} typedef ListCacheData;
 
-NodeCacheData *getCacheNode(NodeCacheData *head, int n);
+ListCacheData *initDataCacheList();
 
-void freeList(NodeCacheData **head);
+void pushDataCacheBack(ListCacheData *head, char *data, int length);
+
+NodeCacheData *getCacheNode(ListCacheData *list, int n);
+
+void freeList(ListCacheData *list);
 
 #endif //LAB31_CACHELIST_H

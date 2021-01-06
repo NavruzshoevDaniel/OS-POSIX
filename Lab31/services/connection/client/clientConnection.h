@@ -9,6 +9,9 @@
 #include <unistd.h>
 #include <poll.h>
 #include <connection/server/serverConnectionList.h>
+#include <logger/logging.h>
+#include <sys/socket.h>
+#include <net/httpService.h>
 
 #define DEAD_CLIENT_EXCEPTION -2
 #define RECV_CLIENT_EXCEPTION -3
