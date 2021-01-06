@@ -25,6 +25,7 @@ struct CacheInfo {
     size_t readers;
 
     struct NodeCacheData *data;
+    struct NodeCacheData *last;
     size_t numChunks;
     pthread_cond_t numChunksCondVar;
     pthread_mutex_t numChunksMutex;

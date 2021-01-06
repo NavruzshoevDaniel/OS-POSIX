@@ -149,12 +149,6 @@
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/cache/cacheList.h">
 			<Option target="Lab31"/>
 		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/concurrent/atomicInt.h">
-			<Option target="Lab31"/>
-		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnection.c">
 			<Option target="Lab31"/>
 		</Unit>
@@ -165,12 +159,6 @@
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/client/clientConnectionList.h">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/connection.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/connection/server/serverConnection.c">
@@ -202,30 +190,6 @@
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/net/serverSockerService.h">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/getRequest/getRequestHandler.h">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.h">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/writeToServer/writeToServerHandler.c">
-			<Option target="Lab31"/>
-		</Unit>
-		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/proxyhandlers/writeToServer/writeToServerHandler.h">
 			<Option target="Lab31"/>
 		</Unit>
 		<Unit filename="/Users/daniel/NSU/Semestr 5/OS-POSIX/Lab31/services/pthread/pthreadService.c">

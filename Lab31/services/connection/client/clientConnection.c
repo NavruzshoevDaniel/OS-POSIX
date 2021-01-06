@@ -152,7 +152,7 @@ int sendFromCache(struct ClientConnection *self, CacheEntry *cache, const int *l
         pthread_mutex_unlock(&cache[self->cacheIndex].numChunksMutex);
         //infoPrintf("numChunksMutex after in handle\n");
         // printf("after numChunksMutex\n");
-        if (sendNewChunksToClientt(self, cache, localNumChunks) == -1) {
+        if (sendNewChunksToClientt(self, &cache[self->cacheIndex], localNumChunks) == -1) {
             return SEND_TO_CLIENT_EXCEPTION;
         }
         self->numChunksWritten = localNumChunks;

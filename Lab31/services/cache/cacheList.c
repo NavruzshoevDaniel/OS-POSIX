@@ -8,11 +8,12 @@ void pushDataCacheBack(NodeCacheData **head, char *data, int length) {
     while (*head) {
         head = &(*head)->next;
     }
-    *head = malloc(sizeof(NodeCacheData));
-    (*head)->data = malloc(sizeof(char) * length);
-    memcpy((*head)->data, data, sizeof(char) * length);
-    (*head)->lengthData = length;
-    (*head)->next = NULL;
+    NodeCacheData *new = malloc(sizeof(NodeCacheData));
+    new->data = malloc(sizeof(char) * length);
+    memcpy(new->data, data, sizeof(char) * length);
+    new->lengthData = length;
+    new->next = NULL;
+    (*head)=new;
 }
 
 NodeCacheData *getCacheNode(NodeCacheData *head, int n) {

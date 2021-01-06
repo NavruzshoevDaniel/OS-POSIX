@@ -244,33 +244,6 @@ services/cache/cacheList.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/cache/cacheList.c.s
 .PHONY : services/cache/cacheList.c.s
 
-services/concurrent/atomicInt.o: services/concurrent/atomicInt.c.o
-
-.PHONY : services/concurrent/atomicInt.o
-
-# target to build an object file
-services/concurrent/atomicInt.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.o
-.PHONY : services/concurrent/atomicInt.c.o
-
-services/concurrent/atomicInt.i: services/concurrent/atomicInt.c.i
-
-.PHONY : services/concurrent/atomicInt.i
-
-# target to preprocess a source file
-services/concurrent/atomicInt.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.i
-.PHONY : services/concurrent/atomicInt.c.i
-
-services/concurrent/atomicInt.s: services/concurrent/atomicInt.c.s
-
-.PHONY : services/concurrent/atomicInt.s
-
-# target to generate assembly for a file
-services/concurrent/atomicInt.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/concurrent/atomicInt.c.s
-.PHONY : services/concurrent/atomicInt.c.s
-
 services/connection/client/clientConnection.o: services/connection/client/clientConnection.c.o
 
 .PHONY : services/connection/client/clientConnection.o
@@ -324,33 +297,6 @@ services/connection/client/clientConnectionList.s: services/connection/client/cl
 services/connection/client/clientConnectionList.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/client/clientConnectionList.c.s
 .PHONY : services/connection/client/clientConnectionList.c.s
-
-services/connection/connection.o: services/connection/connection.c.o
-
-.PHONY : services/connection/connection.o
-
-# target to build an object file
-services/connection/connection.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.o
-.PHONY : services/connection/connection.c.o
-
-services/connection/connection.i: services/connection/connection.c.i
-
-.PHONY : services/connection/connection.i
-
-# target to preprocess a source file
-services/connection/connection.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.i
-.PHONY : services/connection/connection.c.i
-
-services/connection/connection.s: services/connection/connection.c.s
-
-.PHONY : services/connection/connection.s
-
-# target to generate assembly for a file
-services/connection/connection.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/connection/connection.c.s
-.PHONY : services/connection/connection.c.s
 
 services/connection/server/serverConnection.o: services/connection/server/serverConnection.c.o
 
@@ -490,114 +436,6 @@ services/net/serverSockerService.c.s:
 	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/net/serverSockerService.c.s
 .PHONY : services/net/serverSockerService.c.s
 
-services/proxyhandlers/getRequest/getRequestHandler.o: services/proxyhandlers/getRequest/getRequestHandler.c.o
-
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.o
-
-# target to build an object file
-services/proxyhandlers/getRequest/getRequestHandler.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.o
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.o
-
-services/proxyhandlers/getRequest/getRequestHandler.i: services/proxyhandlers/getRequest/getRequestHandler.c.i
-
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.i
-
-# target to preprocess a source file
-services/proxyhandlers/getRequest/getRequestHandler.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.i
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.i
-
-services/proxyhandlers/getRequest/getRequestHandler.s: services/proxyhandlers/getRequest/getRequestHandler.c.s
-
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.s
-
-# target to generate assembly for a file
-services/proxyhandlers/getRequest/getRequestHandler.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/getRequest/getRequestHandler.c.s
-.PHONY : services/proxyhandlers/getRequest/getRequestHandler.c.s
-
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
-
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o
-
-# target to build an object file
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.o
-
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
-
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i
-
-# target to preprocess a source file
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.i
-
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s: services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
-
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s
-
-# target to generate assembly for a file
-services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
-.PHONY : services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.c.s
-
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
-
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o
-
-# target to build an object file
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.o
-
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
-
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i
-
-# target to preprocess a source file
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.i
-
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s: services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
-
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s
-
-# target to generate assembly for a file
-services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
-.PHONY : services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.c.s
-
-services/proxyhandlers/writeToServer/writeToServerHandler.o: services/proxyhandlers/writeToServer/writeToServerHandler.c.o
-
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.o
-
-# target to build an object file
-services/proxyhandlers/writeToServer/writeToServerHandler.c.o:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.o
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.o
-
-services/proxyhandlers/writeToServer/writeToServerHandler.i: services/proxyhandlers/writeToServer/writeToServerHandler.c.i
-
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.i
-
-# target to preprocess a source file
-services/proxyhandlers/writeToServer/writeToServerHandler.c.i:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.i
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.i
-
-services/proxyhandlers/writeToServer/writeToServerHandler.s: services/proxyhandlers/writeToServer/writeToServerHandler.c.s
-
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.s
-
-# target to generate assembly for a file
-services/proxyhandlers/writeToServer/writeToServerHandler.c.s:
-	$(MAKE) -f CMakeFiles/Lab31.dir/build.make CMakeFiles/Lab31.dir/services/proxyhandlers/writeToServer/writeToServerHandler.c.s
-.PHONY : services/proxyhandlers/writeToServer/writeToServerHandler.c.s
-
 services/pthread/pthreadService.o: services/pthread/pthreadService.c.o
 
 .PHONY : services/pthread/pthreadService.o
@@ -728,18 +566,12 @@ help:
 	@echo "... services/cache/cacheList.o"
 	@echo "... services/cache/cacheList.i"
 	@echo "... services/cache/cacheList.s"
-	@echo "... services/concurrent/atomicInt.o"
-	@echo "... services/concurrent/atomicInt.i"
-	@echo "... services/concurrent/atomicInt.s"
 	@echo "... services/connection/client/clientConnection.o"
 	@echo "... services/connection/client/clientConnection.i"
 	@echo "... services/connection/client/clientConnection.s"
 	@echo "... services/connection/client/clientConnectionList.o"
 	@echo "... services/connection/client/clientConnectionList.i"
 	@echo "... services/connection/client/clientConnectionList.s"
-	@echo "... services/connection/connection.o"
-	@echo "... services/connection/connection.i"
-	@echo "... services/connection/connection.s"
 	@echo "... services/connection/server/serverConnection.o"
 	@echo "... services/connection/server/serverConnection.i"
 	@echo "... services/connection/server/serverConnection.s"
@@ -755,18 +587,6 @@ help:
 	@echo "... services/net/serverSockerService.o"
 	@echo "... services/net/serverSockerService.i"
 	@echo "... services/net/serverSockerService.s"
-	@echo "... services/proxyhandlers/getRequest/getRequestHandler.o"
-	@echo "... services/proxyhandlers/getRequest/getRequestHandler.i"
-	@echo "... services/proxyhandlers/getRequest/getRequestHandler.s"
-	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.o"
-	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.i"
-	@echo "... services/proxyhandlers/readFromCacheWriteToClient/readFromCacheWriteToClientState.s"
-	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.o"
-	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.i"
-	@echo "... services/proxyhandlers/readFromServerWriteClient/readFromServerWriteToClientHandler.h.s"
-	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.o"
-	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.i"
-	@echo "... services/proxyhandlers/writeToServer/writeToServerHandler.s"
 	@echo "... services/pthread/pthreadService.o"
 	@echo "... services/pthread/pthreadService.i"
 	@echo "... services/pthread/pthreadService.s"

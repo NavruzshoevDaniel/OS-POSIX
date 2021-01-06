@@ -11,7 +11,6 @@ int poolSize;
 int isRun = 1;
 
 CacheEntry cache[MAX_CACHE_SIZE];
-pthread_mutex_t connectionsMutex;
 int proxySocket;
 bool sigCaptured = false;
 
@@ -107,22 +106,10 @@ int getNewClientSocket(int *localConnectionsCount, int threadId) {
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
         }
-        //printf("SALAM %d connections=%d\n",threadId,*localConnectionsCount);
+
     }
-    //printf("after SALAM %d connections=%d\n",threadId,*localConnectionsCount);
     pthread_mutex_unlock(&socketsQueue->queueMutex);
     return newClientSocket;
-}
-
-void dropConnectionWrapper(int id,
-                           const char *reason,
-                           int needToCloseServer,
-                           Connection *connections,
-                           int *connectionsCount,
-                           int threadId) {
-    printf("Thread: %d, Connection %d, %s\n", threadId, connections[id].id, reason);
-    dropConnection(id, reason, needToCloseServer, connections, connectionsCount, threadId);
-    atomicDecrement(&allConnectionsCount, &connectionsMutex);
 }
 
 void removeClientWrapper(const char *reason,
@@ -259,7 +246,6 @@ void updateServers(NodeServerConnection **listServerConnections, int threadId, i
         if (serverConnection->state == CACHING && (serverConnection->fd->revents & POLLIN)) {
             int result = serverConnection->caching(serverConnection, &cache[serverConnection->cacheIndex],
                                                    buf, BUFFER_SIZE);
-            printf("caching\n");
             if (result != EXIT_SUCCESS) {
                 iterServerConnectionNode = iterServerConnectionNode->next;
                 if (result == END_READING_PROCCESS) {
@@ -362,11 +348,6 @@ int main(int argc, const char *argv[]) {
 
     checkArgs(argc, argv);
     int proxySocketPort = atoi(argv[2]);
-
-    if (initMutex(&connectionsMutex) == -1) {
-        printf("ERROR in initMUTEX");
-        pthread_exit(NULL);
-    }
 
     if (initCache(cache, MAX_CACHE_SIZE) == -1) {
         printf("ERROR in initCACHE");
