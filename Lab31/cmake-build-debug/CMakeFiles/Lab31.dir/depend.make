@@ -5,20 +5,21 @@ CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.c
 CMakeFiles/Lab31.dir/argschecker/argsChecker.c.o: ../argschecker/argsChecker.h
 
 CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
-CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cacheList.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/client/clientConnection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/client/clientConnectionList.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/server/serverConnection.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/connection/server/serverConnectionList.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/logger/logging.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/net/httpService.h
-CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../argschecker/argsChecker.h
 CMakeFiles/Lab31.dir/main.c.o: ../config.h
 CMakeFiles/Lab31.dir/main.c.o: ../main.c
 CMakeFiles/Lab31.dir/main.c.o: ../main.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cache.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/cache/cacheList.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/logger/logging.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/net/serverSockerService.h
+CMakeFiles/Lab31.dir/main.c.o: ../services/pthread/pthreadService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/queue/queueService.h
 CMakeFiles/Lab31.dir/main.c.o: ../services/threadpool/threadPool.h
 

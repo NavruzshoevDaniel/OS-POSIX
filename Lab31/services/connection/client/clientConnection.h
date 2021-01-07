@@ -15,7 +15,6 @@
 
 #define DEAD_CLIENT_EXCEPTION -2
 #define RECV_CLIENT_EXCEPTION -3
-#define ALLOCATING_BUFFER_MEMORY_EXCEPTION -4
 #define NOT_GET_EXCEPTION -5
 #define URL_EXCEPTION -6
 #define RESOLVING_SOCKET_FROM_URL_EXCEPTION -7
@@ -35,6 +34,7 @@ struct ClientConnection {
     int id;
     int numChunksWritten;
     int cacheIndex;
+    NodeCacheData **curData;
     ClientState state;
     struct pollfd *fd;
 /**

@@ -38,6 +38,7 @@ int handleGetMethod(ClientConnection *clientConnection, char *url,
     int urlInCacheResult = searchUrlInCacheConncurrent(url, cache, maxCacheSize);
     if (urlInCacheResult >= 0) {
         clientConnection->cacheIndex = urlInCacheResult;
+        clientConnection->curData = &cache[urlInCacheResult].data->head;
     } else {
         int freeCacheIndex = searchFreeCacheConcurrent(url, cache, maxCacheSize, threadId);
         if ((-1 != freeCacheIndex) ||
@@ -53,8 +54,8 @@ int handleGetMethod(ClientConnection *clientConnection, char *url,
             ServerConnection *serverConnection = initServerConnection(serverSocket, freeCacheIndex);
             serverConnection->cacheIndex = freeCacheIndex;
             clientConnection->cacheIndex = freeCacheIndex;
+            clientConnection->curData = &cache[freeCacheIndex].data->head;
             char *data = createGet(url, &bufferLength);
-            //printf("data=%s\n", data);
             int result = serverConnection->sendRequest(serverConnection, data, bufferLength);
             (*localConnectionsCount)++;
             if (result != 0) {
@@ -101,12 +102,8 @@ int handleGettRequest(struct ClientConnection *self, char *buffer, int bufferSiz
 
 int closeClientConnection(struct ClientConnection *self) {
     if (self->clientSocket != -1) {
-        int resSutdown=shutdown(self->clientSocket, SHUT_RDWR);
-        if (resSutdown!=0){
-            perror("shutdown");
-        }
-        int closeRes=close(self->clientSocket);
-        if (closeRes!=0){
+        int closeRes = close(self->clientSocket);
+        if (closeRes != 0) {
             perror("close");
         }
     }
@@ -118,21 +115,19 @@ int sendNewChunksToClientt(ClientConnection *connection, CacheEntry *cache, size
     NodeCacheData *cacheData = getCacheNode(cache->data, connection->numChunksWritten);
     int counter = connection->numChunksWritten;
 
-    while (cacheData != NULL && (counter < newSize) /*&& iterChunks < maxChunksPerTick*/) {
-        printf("fuck send...");
-        ssize_t bytesWritten = send(connection->clientSocket, cacheData->data, cacheData->lengthData, 0);
-        printf("after fuck send\n");
+    while (cacheData != NULL && (counter < newSize)) {
+        warnPrintf("send...");
+        ssize_t bytesWritten = send(connection->clientSocket, cacheData->data, cacheData->lengthData, MSG_DONTWAIT);
+        warnPrintf("send\n");
         if (bytesWritten <= 0) {
             perror("Error client from cache sending");
-            printf("wht fuck\n");
             return -1;
         }
-        //printf("cacheData->next...\n");
+        connection->curData = &cacheData->next;
         cacheData = cacheData->next;
-        //printf("after cacheData->next\n");
+
         counter++;
     }
-    //printf("sendNewChunksToClienttEND\n");
     return 0;
 }
 

@@ -142,7 +142,7 @@ void destroyCache(CacheEntry *cache, const int maxCacheSize) {
 
         free(cache[i].url);
     }
-    printf("destroy cache");
+    printf("destroy cache\n");
 }
 
 int putDataToCache(CacheEntry *cacheChunk, char *newData, int lengthNewData) {
@@ -177,7 +177,6 @@ CacheStatus getCacheStatus(CacheEntry *cacheInfo) {
 int getCacheRecvSize(CacheEntry *cacheInfo) {
     return cacheInfo->recvSize;
 }
-
 
 int getCacheAllSize(CacheEntry *cacheInfo) {
     CacheStatus returnAllSize;

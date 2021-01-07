@@ -10,6 +10,7 @@
 #include <poll.h>
 #include <pthread.h>
 #include <signal.h>
+#include <connection/client/clientConnectionList.h>
 #include "services/queue/queueService.h"
 #include "services/threadpool/threadPool.h"
 #include "argschecker/argsChecker.h"

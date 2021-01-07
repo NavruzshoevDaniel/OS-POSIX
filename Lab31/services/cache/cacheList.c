@@ -40,6 +40,9 @@ NodeCacheData *getCacheNode(ListCacheData *list, int n) {
 }
 
 void freeList(ListCacheData *list) {
+    if (list == NULL || list->head==NULL) {
+        return;
+    }
     NodeCacheData *head = list->head;
     NodeCacheData *prev = NULL;
     while (head->next) {

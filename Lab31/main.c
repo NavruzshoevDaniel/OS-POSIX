@@ -1,6 +1,4 @@
-#include <connection/client/clientConnection.h>
-#include <connection/client/clientConnectionList.h>
-#include <connection/server/serverConnectionList.h>
+
 #include "main.h"
 
 //3 = CRLF EOF
@@ -64,9 +62,7 @@ int getNewClientSocket(int *localConnectionsCount, int threadId) {
     }
 
     while (*localConnectionsCount == 0 && isEmpty(socketsQueue) && isRun == 1) {
-        //printf("Thread: %d, %s\n", threadId,"pthread_cond_wait...");
         pthread_cond_wait(&socketsQueue->condVar, &socketsQueue->queueMutex);
-        //printf("AFTER Thread: %d, %s\n", threadId,"pthread_cond_wait\n");
         newClientSocket = getSocketFromQueue(socketsQueue);
         if (newClientSocket != -1) {
             (*localConnectionsCount)++;
@@ -74,7 +70,6 @@ int getNewClientSocket(int *localConnectionsCount, int threadId) {
 
     }
     pthread_mutex_unlock(&socketsQueue->queueMutex);
-    //printf("AFTER Thread: %d, %s\n", threadId,"queueMutex unlock\n");
     return newClientSocket;
 }
 
@@ -362,6 +357,7 @@ int main(int argc, const char *argv[]) {
             break;
         }
     }
+    destroyCache(cache,MAX_CACHE_SIZE);
     close(proxySocket);
     printf("Close proxy socket");
     pthread_exit(NULL);
