@@ -112,13 +112,11 @@ int closeClientConnection(struct ClientConnection *self) {
 }
 
 int sendNewChunksToClientt(ClientConnection *connection, CacheEntry *cache, size_t newSize) {
-    NodeCacheData *cacheData = getCacheNode(cache->data, connection->numChunksWritten);
+    NodeCacheData *cacheData = *connection->curData;
     int counter = connection->numChunksWritten;
 
     while (cacheData != NULL && (counter < newSize)) {
-        warnPrintf("send...");
         ssize_t bytesWritten = send(connection->clientSocket, cacheData->data, cacheData->lengthData, MSG_DONTWAIT);
-        warnPrintf("send\n");
         if (bytesWritten <= 0) {
             perror("Error client from cache sending");
             return -1;
